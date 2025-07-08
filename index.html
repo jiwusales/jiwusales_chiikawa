@@ -246,14 +246,13 @@
         const json = parseJSONP(text);
         const rows = json.table.rows || [];
 
-        // 用欄位順序抓資料，不管欄位名稱
-        // 欄位：類型(0), 名稱(1), 貨號(2), 圖片(3), 網址(4), 尺寸(5)
+        // 改成只要名稱有值就顯示
         return rows.slice(1).map(r => ({
           type: r.c[0]?.v || "",
           name: r.c[1]?.v || "",
           img: r.c[3]?.v || "",
           size: r.c[5]?.v || ""
-        }));
+        })).filter(item => item.name);
       });
   }
 
