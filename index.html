@@ -1,356 +1,279 @@
 <!DOCTYPE html>
-<html lang="zh-Hant">
+<html lang="zh-TW">
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>JIWU吉物販售᯽.ﾟ‪‪༘༘ ˖寶寶圖鑑</title>
+<title>JIWU吉物販售．吉伊卡哇寶寶圖鑑</title>
 <style>
   body {
-    margin: 0;
     font-family: Arial, sans-serif;
+    margin: 10px;
+    background: #f8f8f8;
     color: #333333;
-    padding-bottom: 160px; /* 預留底圖高度空間，避免被蓋 */
-    position: relative;
-    background: #fff;
   }
   h1 {
-    font-size: 1.4rem;
     text-align: center;
-    margin: 10px 0 5px;
-  }
-  #notice {
-    text-align: center;
-    font-size: 0.9rem;
-    color: #887BB0;
+    color: #333333;
+    font-size: 1.4em;
     margin-bottom: 10px;
   }
-  #notice a {
-    color: #887BB0;
-    font-weight: bold;
-    text-decoration: none;
+  #sheetButtons {
+    text-align: center;
+    margin-bottom: 10px;
   }
-  #notice a:hover {
-    text-decoration: underline;
+  #sheetButtons button {
+    background-color: #eee;
+    border: none;
+    border-radius: 15px;
+    padding: 6px 12px;
+    margin: 0 4px 8px 4px;
+    font-size: 0.95em;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    color: #333333;
   }
-  .buttons {
+  #sheetButtons button.active {
+    color: white;
+  }
+  #sheetButtons button:hover:not(.active) {
+    background-color: #ddd;
+  }
+  .group-title {
+    position: relative;
     display: flex;
     justify-content: center;
-    flex-wrap: wrap;
-    gap: 8px;
-    margin-bottom: 15px;
-  }
-  .buttons button {
-    padding: 6px 15px;
-    border: 2px solid #ccc;
-    border-radius: 16px;
-    background-color: white;
+    align-items: center;
+    font-size: 1.2em;
+    margin: 20px 0 12px;
     color: #333333;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    font-weight: 600;
-    user-select: none;
+    background: #f8f8f8;
+    padding: 0 10px;
+    width: 100%;
+    box-sizing: border-box;
+    z-index: 1;
   }
-  /* 角色顏色按鈕-示範: 按下時改變邊框和文字顏色 */
-  .buttons button.active.ji {
-    border-color: #d77485;
-    color: #d77485;
+  .group-title::before,
+  .group-title::after {
+    content: "";
+    flex-grow: 1;
+    height: 1.5px;
+    background: #bbb;
+    margin: 0 6px;
+    min-width: 90px;  /* 最少延伸跟卡片寬度一樣 */
   }
-  .buttons button.active.xb {
-    border-color: #6293b8;
-    color: #6293b8;
-  }
-  .buttons button.active.tt {
-    border-color: #f9be3c;
-    color: #f9be3c;
-  }
-  .buttons button.active.xt {
-    border-color: #838BC2;
-    color: #838BC2;
-  }
-  .buttons button.active.sf {
-    border-color: #CCAFA5;
-    color: #CCAFA5;
-  }
-  .buttons button.active.lz {
-    border-color: #94C973;
-    color: #94C973;
-  }
-  .buttons button.active.ss {
-    border-color: #FBAA60;
-    color: #FBAA60;
-  }
-  .buttons button.active.gb {
-    border-color: #eb9e97;
-    color: #eb9e97;
-  }
-  .buttons button.active.qt {
-    border-color: #45818e;
-    color: #45818e;
-  }
-
   .cards {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
-    gap: 2px;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 4px;
     justify-items: center;
-    max-width: 100%;
-    margin: 0 auto;
-    box-sizing: border-box;
-    padding-left: 5px; /* 左邊距離5px */
-  }
-  @media (max-width: 768px) {
-    .cards {
-      grid-template-columns: repeat(4, 90px);
-      gap: 2px;
-      padding-left: 5px;
-    }
   }
   .card {
+    background: white;
+    border: 2px solid transparent;
+    border-radius: 6px;
     width: 90px;
-    border: 2px solid #ccc;
-    border-radius: 12px;
-    padding: 6px;
-    box-sizing: border-box;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
     cursor: pointer;
+    transition: border-color 0.3s, box-shadow 0.3s;
+    position: relative;
+    text-align: center;
     color: #333333;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    user-select: none;
   }
-  /* 邊框和勾勾顏色依角色 */
-  .card.ji.active { border-color: #d77485; }
-  .card.xb.active { border-color: #6293b8; }
-  .card.tt.active { border-color: #f9be3c; }
-  .card.xt.active { border-color: #838BC2; }
-  .card.sf.active { border-color: #CCAFA5; }
-  .card.lz.active { border-color: #94C973; }
-  .card.ss.active { border-color: #FBAA60; }
-  .card.gb.active { border-color: #eb9e97; }
-  .card.qt.active { border-color: #45818e; }
-
+  .card:hover {
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+  }
   .card img {
     width: 85px;
     height: auto;
-    margin-top: auto;
-    margin-bottom: 0;
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
   }
-  .card .name {
-    font-weight: bold;
-    font-size: 0.85rem;
+  .info {
+    padding: 4px;
+  }
+  .info .name,
+  .info .size {
+    font-size: 0.85em;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    text-align: center;
-    margin: 4px 0 2px;
+    margin-bottom: 2px;
+    color: #333333;
   }
-  .card .size {
-    font-size: 0.75rem;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    text-align: center;
-  }
-  /* 勾勾 */
-  .card .checkmark {
-    display: none;
+  .checkmark {
     position: absolute;
-    top: 6px;
-    right: 6px;
-    width: 18px;
-    height: 18px;
-    background: #d77485;
-    border-radius: 50%;
+    top: 4px;
+    right: 4px;
     color: white;
-    font-size: 14px;
-    line-height: 18px;
-    text-align: center;
-    font-weight: bold;
+    border-radius: 50%;
+    width: 16px;
+    height: 16px;
+    display: none;
+    justify-content: center;
+    align-items: center;
+    font-size: 10px;
   }
-  .card.active .checkmark {
-    display: block;
-  }
-
-  footer {
-    width: 100%;
-    max-width: 800px;
-    margin: 0 auto 20px;
-    text-align: center;
-    position: relative;
-    bottom: 0;
-  }
-  footer img {
-    width: 60%;
-    height: auto;
-    opacity: 0.8;
-    display: inline-block;
+  .card.selected .checkmark {
+    display: flex;
   }
 </style>
 </head>
 <body>
-  <h1>JIWU吉物販售᯽.ﾟ‪‪༘༘ ˖寶寶圖鑑</h1>
-  <div id="notice">
-    如資料有誤或有缺可私訊 ⮕ <a href="https://lin.ee/X6FUFI9" target="_blank" rel="noopener noreferrer">JIWU吉物販售</a><br />
-    吉物小法師 (๑˃́ꇴ˂̀๑) 感謝尼 𖤐ˊ˗
-  </div>
-
-  <div class="buttons" id="roleButtons"></div>
-  <div class="cards" id="cardsContainer"></div>
-
-  <footer>
-    <img src="https://i.postimg.cc/pTfvLh2z/image.png" alt="底圖" />
-  </footer>
+  <h1>JIWU吉物販售．吉伊卡哇寶寶圖鑑</h1>
+  <div id="sheetButtons"></div>
+  <div id="catalog"></div>
 
 <script>
-  // 角色對應顏色class
-  const roleClassMap = {
-    "吉伊": "ji",
-    "小八": "xb",
-    "兔兔": "tt",
-    "小桃": "xt",
-    "師傅": "sf",
-    "栗子": "lz",
-    "獅薩": "ss",
-    "古本": "gb",
-    "其他角色": "qt"
+  const sheetID = "17gH9HZKvW_6fMCWYLyqnzMHj40rA7PiwWg6L0GvbFgQ";
+
+  const sheetColors = {
+    "吉伊": "#d77485",
+    "小八": "#6293b8",
+    "兔兔": "#f9be3c",
+    "小桃": "#838BC2",
+    "師傅": "#CCAFA5",
+    "栗子": "#94C973",
+    "獅薩": "#FBAA60",
+    "古本": "#eb9e97",
+    "其他角色": "#45818e"
   };
 
-  const sheetURL = 'https://docs.google.com/spreadsheets/d/17gH9HZKvW_6fMCWYLyqnzMHj40rA7PiwWg6L0GvbFgQ/gviz/tq?tqx=out:json';
+  const sheetNames = Object.keys(sheetColors);
+  const sheetButtons = document.getElementById("sheetButtons");
+  const catalog = document.getElementById("catalog");
 
-  const roleButtons = document.getElementById('roleButtons');
-  const cardsContainer = document.getElementById('cardsContainer');
+  let currentSheet = sheetNames[0];
 
-  let allData = {};
-  let selectedRole = "";
+  function createButtons() {
+    sheetNames.forEach(name => {
+      const btn = document.createElement("button");
+      btn.textContent = name;
+      btn.type = "button";
+      btn.style.backgroundColor = "#eee";
+      btn.style.color = "#333333";
+      btn.addEventListener("click", () => {
+        currentSheet = name;
+        updateActiveButton();
+        loadAllSheets();
+      });
+      sheetButtons.appendChild(btn);
+    });
+  }
 
-  function fetchData() {
-    fetch(sheetURL)
+  function updateActiveButton() {
+    Array.from(sheetButtons.children).forEach(btn => {
+      if (btn.textContent === currentSheet) {
+        btn.classList.add("active");
+        btn.style.backgroundColor = sheetColors[currentSheet];
+        btn.style.color = "white";
+      } else {
+        btn.classList.remove("active");
+        btn.style.backgroundColor = "#eee";
+        btn.style.color = "#333333";
+      }
+    });
+  }
+
+  function parseJSONP(text) {
+    const jsonStr = text.substring(text.indexOf('(') + 1, text.lastIndexOf(')'));
+    return JSON.parse(jsonStr);
+  }
+
+  function fetchSheetData(sheetName) {
+    const url = `https://docs.google.com/spreadsheets/d/${sheetID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(sheetName)}&range=A:D`;
+    return fetch(url)
       .then(res => res.text())
       .then(text => {
-        // 解析 JSONP 格式
-        const json = JSON.parse(text.substr(47).slice(0, -2));
-        // 篩選只要名稱欄有值的列（抓第二列也行）
-        const rows = json.table.rows.filter(row => row.c[1]?.v);
-        const data = {};
-        rows.forEach(row => {
-          const role = row.c[0]?.v || "";
-          const name = row.c[1]?.v || "";
-          const img = row.c[3]?.v || "";
-          const size = row.c[5]?.v || "";
-          if (name && img) {
-            if (!data[role]) data[role] = [];
-            data[role].push({ name, img, size });
-          }
-        });
-        allData = data;
-        renderButtons(Object.keys(data));
-        if(Object.keys(data).length > 0){
-          selectedRole = Object.keys(data)[0];
-          renderCards(selectedRole);
-          setActiveButton(selectedRole);
-        }
-      })
-      .catch(e => {
-        cardsContainer.innerHTML = "載入資料失敗，請稍後再試。";
-        console.error(e);
+        const json = parseJSONP(text);
+        const rows = json.table.rows || [];
+        return rows.slice(1).map(r => ({
+          type: r.c[0]?.v || "",
+          name: r.c[1]?.v || "",
+          img: r.c[2]?.v || "",
+          size: r.c[3]?.v || ""
+        }));
       });
   }
 
-  function renderButtons(roles) {
-    roleButtons.innerHTML = "";
-    roles.forEach(role => {
-      const btn = document.createElement("button");
-      btn.textContent = role;
-      const c = roleClassMap[role] || "qt";
-      btn.classList.add(c);
-      btn.onclick = () => {
-        selectedRole = role;
-        renderCards(role);
-        setActiveButton(role);
-      };
-      roleButtons.appendChild(btn);
+  function renderCharacter(entries, sheetName) {
+    const grouped = {};
+    entries.forEach(item => {
+      if (!grouped[item.type]) grouped[item.type] = [];
+      grouped[item.type].push(item);
     });
-  }
 
-  function setActiveButton(role) {
-    const buttons = roleButtons.querySelectorAll("button");
-    buttons.forEach(btn => {
-      if (btn.textContent === role) {
-        btn.classList.add("active");
-      } else {
-        btn.classList.remove("active");
-      }
-    });
-  }
+    catalog.innerHTML = "";
 
-  // 讀取勾選紀錄
-  function loadChecked() {
-    const checked = localStorage.getItem("checkedCards");
-    return checked ? JSON.parse(checked) : {};
-  }
-  // 存勾選紀錄
-  function saveChecked(data) {
-    localStorage.setItem("checkedCards", JSON.stringify(data));
-  }
+    Object.keys(grouped).forEach(type => {
+      const groupDiv = document.createElement("div");
+      const groupTitle = document.createElement("div");
+      groupTitle.className = "group-title";
+      groupTitle.textContent = type;
+      groupDiv.appendChild(groupTitle);
 
-  // 渲染商品卡片
-  function renderCards(role) {
-    const cards = allData[role] || [];
-    const checkedCards = loadChecked();
-    cardsContainer.innerHTML = "";
+      const cardsContainer = document.createElement("div");
+      cardsContainer.className = "cards";
 
-    cards.forEach((card, index) => {
-      const c = roleClassMap[role] || "qt";
-      const cardDiv = document.createElement("div");
-      cardDiv.className = `card ${c}`;
-      if(checkedCards[card.name]){
-        cardDiv.classList.add("active");
-      }
-      cardDiv.style.position = "relative";
+      grouped[type].forEach(item => {
+        const card = document.createElement("div");
+        card.className = "card";
 
-      // 勾勾
-      const checkmark = document.createElement("div");
-      checkmark.className = "checkmark";
-      checkmark.textContent = "✓";
-      cardDiv.appendChild(checkmark);
-
-      // 圖片
-      const img = document.createElement("img");
-      img.src = card.img;
-      img.alt = card.name;
-      cardDiv.appendChild(img);
-
-      // 名稱
-      const nameDiv = document.createElement("div");
-      nameDiv.className = "name";
-      nameDiv.textContent = card.name;
-      cardDiv.appendChild(nameDiv);
-
-      // 尺寸
-      const sizeDiv = document.createElement("div");
-      sizeDiv.className = "size";
-      sizeDiv.textContent = card.size;
-      cardDiv.appendChild(sizeDiv);
-
-      cardDiv.onclick = () => {
-        cardDiv.classList.toggle("active");
-        const checked = loadChecked();
-        if(cardDiv.classList.contains("active")){
-          checked[card.name] = true;
-        } else {
-          delete checked[card.name];
+        const id = `${sheetName}|${type}|${item.name}`;
+        if (localStorage.getItem(id)) {
+          card.classList.add("selected");
+          card.style.borderColor = sheetColors[sheetName];
         }
-        saveChecked(checked);
-      };
 
-      cardsContainer.appendChild(cardDiv);
+        const img = document.createElement("img");
+        img.src = item.img;
+        img.alt = item.name;
+
+        const info = document.createElement("div");
+        info.className = "info";
+        info.innerHTML = `<div class="name">${item.name}</div><div class="size">${item.size}</div>`;
+
+        const checkmark = document.createElement("div");
+        checkmark.className = "checkmark";
+        checkmark.style.backgroundColor = sheetColors[sheetName];
+        checkmark.textContent = "✔";
+
+        card.appendChild(img);
+        card.appendChild(info);
+        card.appendChild(checkmark);
+
+        card.addEventListener("click", () => {
+          card.classList.toggle("selected");
+          if (card.classList.contains("selected")) {
+            localStorage.setItem(id, "1");
+            card.style.borderColor = sheetColors[sheetName];
+          } else {
+            localStorage.removeItem(id);
+            card.style.borderColor = "transparent";
+          }
+        });
+
+        cardsContainer.appendChild(card);
+      });
+
+      groupDiv.appendChild(cardsContainer);
+      catalog.appendChild(groupDiv);
     });
   }
 
-  fetchData();
+  function loadAllSheets() {
+    catalog.innerHTML = "<p style='text-align:center;color:#888;'>資料載入中...</p>";
+    fetchSheetData(currentSheet)
+      .then(entries => {
+        renderCharacter(entries, currentSheet);
+      })
+      .catch(() => {
+        catalog.innerHTML = "<p style='text-align:center;color:red;'>載入資料失敗，請稍後再試。</p>";
+      });
+  }
+
+  createButtons();
+  updateActiveButton();
+  loadAllSheets();
 </script>
 </body>
 </html>
