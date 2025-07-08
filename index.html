@@ -11,7 +11,7 @@
     background: #f8f8f8;
     color: #333333;
     min-height: 100vh;
-    padding-bottom: 140px; /* 預留底部空間給背景圖 */
+    padding-bottom: 140px;
     position: relative;
   }
   h1 {
@@ -247,10 +247,11 @@
         const headers = json.table.cols.map(c => c.label.trim().toLowerCase());
         const rows = json.table.rows || [];
 
-        const typeIdx = headers.findIndex(h => h === "類型");
-        const nameIdx = headers.findIndex(h => h === "名稱");
-        const imgIdx = headers.findIndex(h => h === "圖片");
-        const sizeIdx = headers.findIndex(h => h === "尺寸");
+        // 找欄位索引，大小寫忽略
+        const typeIdx = headers.findIndex(h => h === "類型" || h === "類型".toLowerCase());
+        const nameIdx = headers.findIndex(h => h === "名稱" || h === "名稱".toLowerCase());
+        const imgIdx = headers.findIndex(h => h === "圖片" || h === "圖片".toLowerCase());
+        const sizeIdx = headers.findIndex(h => h === "尺寸" || h === "尺寸".toLowerCase());
 
         return rows.slice(1).map(r => ({
           type: r.c[typeIdx]?.v || "",
@@ -296,7 +297,7 @@
 
         const info = document.createElement("div");
         info.className = "info";
-        info.innerHTML = `<div class="name">${item.name}</div><div class="size">${item.size}</div>`;
+        info.innerHTML = `<div class="name" title="${item.name}">${item.name}</div><div class="size" title="${item.size}">${item.size}</div>`;
 
         const checkmark = document.createElement("div");
         checkmark.className = "checkmark";
@@ -332,7 +333,8 @@
       .then(entries => {
         renderCharacter(entries, sheetName);
       })
-      .catch(() => {
+      .catch((err) => {
+        console.error("載入失敗:", err);
         catalog.innerHTML = "<p style='text-align:center;color:red;'>載入資料失敗，請稍後再試。</p>";
       });
   }
