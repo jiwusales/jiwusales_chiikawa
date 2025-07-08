@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>娃娃圖鑑</title>
+  <style>
+    body {
+      font-family: "Noto Sans TC", sans-serif;
+      margin: 0;
+      background: #f4f4f4;
+    }
+    h2 {
+      text-align: center;
+      background: #ddd;
+      margin: 0;
+      padding: 8px;
+      font-size: 1.2em;
+    }
+    .category {
+      margin: 15px 10px;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      gap: 15px;
+    }
+    .item {
+      background: #fff;
+      border: 2px solid #ccc;
+      border-radius: 10px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      overflow: hidden;
+      transition: border-color 0.3s, box-shadow 0.3s;
+    }
+    .item.selected {
+      border-color: #007bff;
+      box-shadow: 0 0 15px rgba(0,123,255,0.6);
+    }
+    .item img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+    .name {
+      font-weight: bold;
+      text-align: center;
+      margin: 5px 0;
+      font-size: 1.1em;
+    }
+    .size {
+      text-align: center;
+      color: #666;
+      margin-bottom: 5px;
+      font-size: 0.9em;
+    }
+    .checkbox {
+      text-align: center;
+      margin-bottom: 8px;
+    }
+    .checkbox input {
+      transform: scale(1.2);
+      margin-right: 5px;
+    }
+    .jump-buttons {
+      text-align: center;
+      margin: 10px;
+    }
+    .jump-buttons button {
+      margin: 4px;
+      padding: 5px 12px;
+      border: none;
+      background: #007bff;
+      color: #fff;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 0.9em;
+    }
+    .jump-buttons button:hover {
+      background: #0056b3;
+    }
+  </style>
+</head>
+<body>
+  <div class="jump-buttons" id="jumpButtons"></div>
+  <div id="content"></div>
+
+  <script>
+    const sheetCSV = 'https://docs.google.com/spreadsheets/d/你的ID/pub?output=csv';
+
+    function toggleItem(id) {
+      const current = localStorage.getItem(id);
+      const next = current === 'true' ? 'false' : 'true';
+      localStorage.setItem(id, next);
+      const itemCard = document.getElementById('card-' + id);
+      itemCard.classList.toggle('selected', next === 'true');
+    }
+
+    fetch(sheetCSV)
+      .then(response => response.text())
+      .then(data => {
+        const rows = data.split('\n').slice(1); // 去掉標題
+        const items = rows.map(row => {
+          const [類型, 名稱, 圖片, 尺寸] = row.split(',');
+          return { 類型, 名稱, 圖片, 尺寸 };
+        });
+
+        const categories = [...new Set(items.map(i => i.類型))];
+        const content = document.getElementById('content');
+        const jumpButtons = document.getElementById('jumpButtons');
+
+        categories.forEach(cat => {
+          // 快速跳轉按鈕
+          const btn = document.createElement('button');
+          btn.textContent = cat;
+          btn.onclick = () => document.getElementById(cat).scrollIntoView({ behavior: 'smooth' });
+          jumpButtons.appendChild(btn);
+
+          // 分類區塊
+          const div = document.createElement('div');
+          div.id = cat;
+          div.className = 'category';
+          div.innerHTML = `<h2>${cat}</h2><div class="grid"></div>`;
+          content.appendChild(div);
+
+          const grid = div.querySelector('.grid');
+
+          items.filter(i => i.類型 === cat).forEach(item => {
+            const id = `${cat}-${item.名稱}`.replace(/\s+/g, '-');
+            const checked = localStorage.getItem(id) === 'true';
+            const itemDiv = document.createElement('div');
+            itemDiv.className = 'item';
+            itemDiv.id = 'card-' + id;
+            if (checked) itemDiv.classList.add('selected');
+            itemDiv.innerHTML = `
+              <img src="${item.圖片}" alt="${item.名稱}">
+              <div class="name">${item.名稱}</div>
+              <div class="size">${item.尺寸}</div>
+              <div class="checkbox">
+                <label>
+                  <input type="checkbox" id="${id}" ${checked ? 'checked' : ''} onclick="toggleItem('${id}')">
+                  已收藏
+                </label>
+              </div>
+            `;
+            grid.appendChild(itemDiv);
+          });
+        });
+      });
+  </script>
+</body>
+</html>
