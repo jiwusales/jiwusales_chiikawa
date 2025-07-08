@@ -14,10 +14,11 @@
   h1 {
     text-align: center;
     color: #333333;
+    margin-bottom: 15px;
   }
   #sheetButtons {
     text-align: center;
-    margin-bottom: 30px;
+    margin-bottom: 20px;
   }
   #sheetButtons button {
     background-color: #eee;
@@ -37,17 +38,23 @@
   #sheetButtons button:hover:not(.active) {
     background-color: #ddd;
   }
-  .group {
+  .character {
     margin-bottom: 40px;
+  }
+  .character-title {
+    font-size: 1.8em;
+    text-align: center;
+    margin: 30px 0 15px;
+    color: #333333;
   }
   .group-title {
     position: relative;
     text-align: center;
-    font-size: 1.6em; /* 名稱字體更大 */
-    margin-bottom: 20px;
+    font-size: 1.4em;
+    margin: 25px 0 15px;
     color: #333333;
-    background: #f8f8f8;
     display: inline-block;
+    background: #f8f8f8;
     padding: 0 15px;
     z-index: 1;
   }
@@ -63,48 +70,56 @@
     z-index: -1;
   }
   .group-title::before {
-    left: 0;
+    left: -45%;
   }
   .group-title::after {
-    right: 0;
+    right: -45%;
   }
   .cards {
     display: flex;
     flex-wrap: nowrap;
     gap: 10px;
     overflow-x: auto;
+    padding-bottom: 10px;
   }
   .card {
     background: white;
     border: 2px solid transparent;
     border-radius: 8px;
-    width: 170px; /* 卡片寬度 */
+    width: 170px;
     box-shadow: 0 2px 6px rgba(0,0,0,0.1);
     cursor: pointer;
     transition: border-color 0.3s, box-shadow 0.3s;
     position: relative;
     text-align: center;
     color: #333333;
+    flex-shrink: 0;
   }
   .card:hover {
     box-shadow: 0 4px 12px rgba(0,0,0,0.2);
   }
   .card img {
-    width: 160px; /* 圖片寬度 */
+    width: 160px;
     height: auto;
     border-top-left-radius: 6px;
     border-top-right-radius: 6px;
   }
   .info {
     padding: 8px;
-    font-size: 1em; /* 名稱字體更大 */
+  }
+  .info .name {
+    font-size: 1.2em;
+    font-weight: bold;
+    margin-bottom: 4px;
     color: #333333;
   }
-  .info div:last-child {
-    max-width: 165px; /* 尺寸文字寬度限制 */
+  .info .size {
+    max-width: 165px;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+    font-size: 0.95em;
+    color: #666;
   }
   .checkmark {
     position: absolute;
@@ -125,8 +140,8 @@
 </style>
 </head>
 <body>
-  <h1>娃娃圖鑑</h1>
-  <div id="sheetButtons" role="tablist" aria-label="角色分頁切換"></div>
+  <h1>JIWU吉物販售．吉伊卡哇寶寶圖鑑</h1>
+  <div id="sheetButtons"></div>
   <div id="catalog"></div>
 
   <script>
@@ -155,13 +170,10 @@
         const btn = document.createElement("button");
         btn.textContent = name;
         btn.type = "button";
-        btn.setAttribute("role", "tab");
-        btn.setAttribute("aria-selected", "false");
         btn.addEventListener("click", () => {
-          if(currentSheet === name) return;
           currentSheet = name;
           updateActiveButton();
-          loadSheet(name);
+          loadAllSheets();
         });
         sheetButtons.appendChild(btn);
       });
@@ -171,11 +183,9 @@
       Array.from(sheetButtons.children).forEach(btn => {
         if (btn.textContent === currentSheet) {
           btn.classList.add("active");
-          btn.setAttribute("aria-selected", "true");
           btn.style.backgroundColor = sheetColors[currentSheet];
         } else {
           btn.classList.remove("active");
-          btn.setAttribute("aria-selected", "false");
           btn.style.backgroundColor = "#eee";
         }
       });
@@ -193,7 +203,7 @@
         .then(text => {
           const json = parseJSONP(text);
           const rows = json.table.rows || [];
-          return rows.map(r => ({
+          return rows.slice(1).map(r => ({
             type: r.c[0]?.v || "",
             name: r.c[1]?.v || "",
             img: r.c[2]?.v || "",
@@ -202,12 +212,14 @@
         });
     }
 
-    function renderCatalog(entries, sheetName) {
-      catalog.innerHTML = "";
-      if (entries.length === 0) {
-        catalog.innerHTML = `<p style="text-align:center;color:#888;">${sheetName} 分頁沒有資料喔</p>`;
-        return;
-      }
+    function renderCharacter(entries, sheetName) {
+      const characterDiv = document.createElement("div");
+      characterDiv.className = "character";
+
+      const title = document.createElement("div");
+      title.className = "character-title";
+      title.textContent = sheetName;
+      characterDiv.appendChild(title);
 
       const grouped = {};
       entries.forEach(item => {
@@ -217,12 +229,10 @@
 
       Object.keys(grouped).forEach(type => {
         const groupDiv = document.createElement("div");
-        groupDiv.className = "group";
-
-        const title = document.createElement("div");
-        title.className = "group-title";
-        title.textContent = type;
-        groupDiv.appendChild(title);
+        const groupTitle = document.createElement("div");
+        groupTitle.className = "group-title";
+        groupTitle.textContent = type;
+        groupDiv.appendChild(groupTitle);
 
         const cardsContainer = document.createElement("div");
         cardsContainer.className = "cards";
@@ -232,7 +242,10 @@
           card.className = "card";
 
           const id = `${sheetName}|${type}|${item.name}`;
-          if (localStorage.getItem(id)) card.classList.add("selected");
+          if (localStorage.getItem(id)) {
+            card.classList.add("selected");
+            card.style.borderColor = sheetColors[sheetName];
+          }
 
           const img = document.createElement("img");
           img.src = item.img;
@@ -240,7 +253,7 @@
 
           const info = document.createElement("div");
           info.className = "info";
-          info.innerHTML = `<div>${item.name}</div><div>${item.size}</div>`;
+          info.innerHTML = `<div class="name">${item.name}</div><div class="size">${item.size}</div>`;
 
           const checkmark = document.createElement("div");
           checkmark.className = "checkmark";
@@ -266,14 +279,19 @@
         });
 
         groupDiv.appendChild(cardsContainer);
-        catalog.appendChild(groupDiv);
+        characterDiv.appendChild(groupDiv);
       });
+
+      catalog.appendChild(characterDiv);
     }
 
-    function loadSheet(sheetName) {
+    function loadAllSheets() {
       catalog.innerHTML = "<p style='text-align:center;color:#888;'>資料載入中...</p>";
-      fetchSheetData(sheetName)
-        .then(entries => renderCatalog(entries, sheetName))
+      fetchSheetData(currentSheet)
+        .then(entries => {
+          catalog.innerHTML = "";
+          renderCharacter(entries, currentSheet);
+        })
         .catch(() => {
           catalog.innerHTML = "<p style='text-align:center;color:red;'>載入資料失敗，請稍後再試。</p>";
         });
@@ -281,7 +299,7 @@
 
     createButtons();
     updateActiveButton();
-    loadSheet(currentSheet);
+    loadAllSheets();
   </script>
 </body>
 </html>
