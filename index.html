@@ -148,6 +148,10 @@
     align-items: center;
     font-size: 10px;
   }
+  .card.selected {
+    border-color: #d77485;
+    box-shadow: 0 0 6px #d77485;
+  }
   .card.selected .checkmark {
     display: flex;
   }
@@ -160,12 +164,14 @@
     max-width: 800px;
     pointer-events: none;
     z-index: -1;
+    text-align: center;
   }
   footer img {
     width: 90%;
     height: auto;
-    display: block;
+    display: inline-block;
     opacity: 0.8;
+    margin: 0 auto;
   }
 </style>
 </head>
@@ -189,6 +195,7 @@
 <script>
   const sheetID = "17gH9HZKvW_6fMCWYLyqnzMHj40rA7PiwWg6L0GvbFgQ";
 
+  // 按鈕顏色對應角色
   const sheetColors = {
     "吉伊": "#d77485",
     "小八": "#6293b8",
@@ -201,145 +208,132 @@
     "其他角色": "#45818e"
   };
 
-  const sheetNames = Object.keys(sheetColors);
-  const sheetButtons = document.getElementById("sheetButtons");
-  const catalog = document.getElementById("catalog");
+  // 角色分頁名稱
+  const sheets = ["吉伊", "小八", "兔兔", "小桃", "師傅", "栗子", "獅薩", "古本", "其他角色"];
 
-  let currentSheet = sheetNames[0];
+  // 紀錄勾選狀態
+  let selectedMap = {};
 
-  function createButtons() {
-    sheetNames.forEach(name => {
-      const btn = document.createElement("button");
-      btn.textContent = name;
-      btn.type = "button";
-      btn.style.backgroundColor = "#eee";
-      btn.style.color = "#333333";
-      btn.addEventListener("click", () => {
-        currentSheet = name;
-        updateActiveButton();
-        loadSheetData(currentSheet);
-      });
-      sheetButtons.appendChild(btn);
-    });
-  }
+  // 建立按鈕區
+  const btnContainer = document.getElementById("sheetButtons");
+  sheets.forEach(s => {
+    const btn = document.createElement("button");
+    btn.textContent = s;
+    btn.style.border = `2px solid ${sheetColors[s] || "#999"}`;
+    btn.style.color = sheetColors[s] || "#999";
+    btn.onclick = () => {
+      currentSheet = s;
+      updateButtons();
+      loadDataAndRender(currentSheet);
+    };
+    btnContainer.appendChild(btn);
+  });
 
-  function updateActiveButton() {
-    Array.from(sheetButtons.children).forEach(btn => {
+  function updateButtons() {
+    Array.from(btnContainer.children).forEach(btn => {
       if (btn.textContent === currentSheet) {
         btn.classList.add("active");
-        btn.style.backgroundColor = sheetColors[currentSheet];
-        btn.style.color = "white";
+        btn.style.backgroundColor = sheetColors[currentSheet] || "#d77485";
+        btn.style.color = "#fff";
       } else {
         btn.classList.remove("active");
-        btn.style.backgroundColor = "#eee";
-        btn.style.color = "#333333";
+        btn.style.backgroundColor = "";
+        btn.style.color = sheetColors[btn.textContent] || "#333";
       }
     });
   }
 
-  function parseJSONP(text) {
-    const jsonStr = text.substring(text.indexOf('(') + 1, text.lastIndexOf(')'));
-    return JSON.parse(jsonStr);
-  }
-
+  // 讀取 Google Sheet 資料
   function fetchSheetData(sheetName) {
     const url = `https://docs.google.com/spreadsheets/d/${sheetID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(sheetName)}`;
     return fetch(url)
       .then(res => res.text())
       .then(text => {
-        const json = parseJSONP(text);
+        // Google Sheets JSONP 格式需處理
+        const json = JSON.parse(text.match(/google\.visualization\.Query\.setResponse\((.*)\);/s)[1]);
         const rows = json.table.rows || [];
-
-        // 強制從第 2 列開始抓資料
-        return rows.slice(1).map(r => ({
+        // 取 A(0), B(1), D(3), F(5)欄位資料
+        // 跳過名稱空白列
+        const data = rows.slice(1).map(r => ({
           type: r.c[0]?.v || "",
           name: r.c[1]?.v || "",
           img: r.c[3]?.v || "",
           size: r.c[5]?.v || ""
-        }));
+        })).filter(item => item.name.trim() !== "");
+        return data;
       });
   }
 
-  function renderCharacter(entries, sheetName) {
-    const grouped = {};
-    entries.forEach(item => {
-      if (!grouped[item.type]) grouped[item.type] = [];
-      grouped[item.type].push(item);
-    });
-
+  // 顯示資料
+  function renderData(data) {
+    const catalog = document.getElementById("catalog");
     catalog.innerHTML = "";
 
-    Object.keys(grouped).forEach(type => {
-      const groupDiv = document.createElement("div");
+    // 分類 group
+    const groups = {};
+    data.forEach(item => {
+      if (!groups[item.type]) groups[item.type] = [];
+      groups[item.type].push(item);
+    });
+
+    Object.keys(groups).forEach(type => {
+      // 分類標題
       const groupTitle = document.createElement("div");
       groupTitle.className = "group-title";
       groupTitle.textContent = type;
-      groupDiv.appendChild(groupTitle);
+      catalog.appendChild(groupTitle);
 
-      const cardsContainer = document.createElement("div");
-      cardsContainer.className = "cards";
+      // 卡片容器
+      const cardsDiv = document.createElement("div");
+      cardsDiv.className = "cards";
 
-      grouped[type].forEach(item => {
+      groups[type].forEach(item => {
         const card = document.createElement("div");
         card.className = "card";
+        if (selectedMap[item.name]) card.classList.add("selected");
 
-        const id = `${sheetName}|${type}|${item.name}`;
-        if (localStorage.getItem(id)) {
-          card.classList.add("selected");
-          card.style.borderColor = sheetColors[sheetName];
-        }
+        card.style.borderColor = sheetColors[currentSheet] || "#d77485";
 
-        const img = document.createElement("img");
-        img.src = item.img;
-        img.alt = item.name;
+        card.innerHTML = `
+          <img src="${item.img}" alt="${item.name}" />
+          <div class="info">
+            <div class="name" title="${item.name}">${item.name}</div>
+            <div class="size" title="${item.size}">${item.size}</div>
+          </div>
+          <div class="checkmark">✓</div>
+        `;
 
-        const info = document.createElement("div");
-        info.className = "info";
-        info.innerHTML = `<div class="name" title="${item.name}">${item.name}</div><div class="size" title="${item.size}">${item.size}</div>`;
-
-        const checkmark = document.createElement("div");
-        checkmark.className = "checkmark";
-        checkmark.style.backgroundColor = sheetColors[sheetName];
-        checkmark.textContent = "✔";
-
-        card.appendChild(img);
-        card.appendChild(info);
-        card.appendChild(checkmark);
-
-        card.addEventListener("click", () => {
-          card.classList.toggle("selected");
-          if (card.classList.contains("selected")) {
-            localStorage.setItem(id, "1");
-            card.style.borderColor = sheetColors[sheetName];
+        card.onclick = () => {
+          if (selectedMap[item.name]) {
+            delete selectedMap[item.name];
+            card.classList.remove("selected");
           } else {
-            localStorage.removeItem(id);
-            card.style.borderColor = "transparent";
+            selectedMap[item.name] = true;
+            card.classList.add("selected");
           }
-        });
+        };
 
-        cardsContainer.appendChild(card);
+        cardsDiv.appendChild(card);
       });
 
-      groupDiv.appendChild(cardsContainer);
-      catalog.appendChild(groupDiv);
+      catalog.appendChild(cardsDiv);
     });
   }
 
-  createButtons();
-  updateActiveButton();
-  loadSheetData(currentSheet);
-
-  function loadSheetData(sheetName) {
-    catalog.innerHTML = "<p style='text-align:center;color:#888;'>資料載入中...</p>";
+  // 讀取並渲染
+  function loadDataAndRender(sheetName) {
     fetchSheetData(sheetName)
-      .then(entries => {
-        renderCharacter(entries, sheetName);
-      })
-      .catch((err) => {
-        console.error("載入失敗:", err);
-        catalog.innerHTML = "<p style='text-align:center;color:red;'>載入資料失敗，請稍後再試。</p>";
+      .then(data => renderData(data))
+      .catch(err => {
+        console.error(err);
+        alert("資料載入失敗，請稍後再試。");
       });
   }
+
+  // 初始選擇第一個分頁
+  let currentSheet = sheets[0];
+  updateButtons();
+  loadDataAndRender(currentSheet);
 </script>
 </body>
 </html>
