@@ -26,11 +26,6 @@
     margin-bottom: 10px;
     color: #887BB0;
   }
-  #infoMsg a {
-    color: #887BB0;
-    text-decoration: none;
-    font-weight: bold;
-  }
   #sheetButtons {
     text-align: center;
     margin-bottom: 10px;
@@ -76,7 +71,6 @@
     gap: 8px;
     justify-items: center;
     max-width: 100%;
-    padding: 0;
     margin: 0 auto;
     box-sizing: border-box;
   }
@@ -223,17 +217,24 @@
   }
 
   function fetchSheetData(sheetName) {
-    const url = `https://docs.google.com/spreadsheets/d/${sheetID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(sheetName)}&range=A:D`;
+    const url = `https://docs.google.com/spreadsheets/d/${sheetID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(sheetName)}`;
     return fetch(url)
       .then(res => res.text())
       .then(text => {
         const json = parseJSONP(text);
+        const headers = json.table.cols.map(c => c.label);
         const rows = json.table.rows || [];
+
+        const typeIdx = headers.indexOf("類型");
+        const nameIdx = headers.indexOf("名稱");
+        const imgIdx = headers.indexOf("圖片");
+        const sizeIdx = headers.indexOf("尺寸");
+
         return rows.slice(1).map(r => ({
-          type: r.c[0]?.v || "",
-          name: r.c[1]?.v || "",
-          img: r.c[2]?.v || "",
-          size: r.c[3]?.v || ""
+          type: r.c[typeIdx]?.v || "",
+          name: r.c[nameIdx]?.v || "",
+          img: r.c[imgIdx]?.v || "",
+          size: r.c[sizeIdx]?.v || ""
         }));
       });
   }
