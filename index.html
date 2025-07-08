@@ -99,6 +99,7 @@
     border: 2px solid #ccc;
     border-radius: 6px;
     width: 90px;
+    height: 140px; /* 統一高度 */
     box-shadow: 0 1px 3px rgba(0,0,0,0.1);
     cursor: pointer;
     transition: border-color 0.3s, box-shadow 0.3s;
@@ -108,18 +109,17 @@
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
-    justify-content: space-between; /* 圖片和文字上下分佈 */
-  }
-  .card:hover {
-    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+    justify-content: space-between;
+    padding: 4px 0;
   }
   .card img {
     width: 85px;
     height: auto;
-    margin: auto 0 0 0; /* 上面自動留白，圖片貼到底部 */
+    margin-top: auto;
+    margin-bottom: 0;
   }
   .info {
-    padding: 4px;
+    padding: 2px;
   }
   .info .name {
     font-weight: bold;
@@ -165,7 +165,7 @@
     text-align: center;
   }
   footer img {
-    width: 70%;
+    width: 60%;
     height: auto;
     display: inline-block;
     opacity: 0.8;
@@ -190,7 +190,79 @@
   </footer>
 
 <script>
-// JS 部分照之前版本不變
+const sheetURL = "https://docs.google.com/spreadsheets/d/17gH9HZKvW_6fMCWYLyqnzMHj40rA7PiwWg6L0GvbFgQ/gviz/tq?tqx=out:json";
+const roleColors = {
+  "吉伊": "#d77485", "小八": "#6293b8", "兔兔": "#f9be3c",
+  "小桃": "#838BC2", "師傅": "#CCAFA5", "栗子": "#94C973",
+  "獅薩": "#FBAA60", "古本": "#eb9e97", "其他角色": "#45818e"
+};
+let currentRole = localStorage.getItem("jiwuRole") || "吉伊";
+let ownedItems = JSON.parse(localStorage.getItem("jiwuOwned") || "{}");
+
+function fetchData() {
+  fetch(sheetURL)
+    .then(res => res.text())
+    .then(text => {
+      const json = JSON.parse(text.substr(47).slice(0, -2));
+      const rows = json.table.rows.slice(1); // 跳過標題
+      const data = {};
+      rows.forEach(row => {
+        const role = row.c[0]?.v || "";
+        const name = row.c[1]?.v || "";
+        const img = row.c[3]?.v || "";
+        const size = row.c[5]?.v || "";
+        if (name && img) {
+          if (!data[role]) data[role] = [];
+          data[role].push({ name, img, size });
+        }
+      });
+      renderButtons(Object.keys(data));
+      renderCatalog(data);
+    });
+}
+
+function renderButtons(roles) {
+  const btns = roles.map(role =>
+    `<button style="--highlight-color:${roleColors[role]}" 
+      class="${role === currentRole ? "active" : ""}" 
+      onclick="switchRole('${role}')">${role}</button>`).join("");
+  document.getElementById("sheetButtons").innerHTML = btns;
+}
+
+function renderCatalog(data) {
+  const catalog = document.getElementById("catalog");
+  catalog.innerHTML = "";
+  Object.keys(data).forEach(role => {
+    const group = document.createElement("div");
+    group.innerHTML = `<div class="group-title">${role}</div>
+      <div class="cards">${data[role].map(item => {
+        const selected = ownedItems[item.name] ? "selected" : "";
+        return `<div class="card ${selected}" style="--highlight-color:${roleColors[role]}" onclick="toggleItem('${item.name}', this)">
+          <div class="checkmark">✔</div>
+          <img src="${item.img}" alt="${item.name}">
+          <div class="info">
+            <div class="name">${item.name}</div>
+            <div class="size">${item.size}</div>
+          </div>
+        </div>`;
+      }).join("")}</div>`;
+    catalog.appendChild(group);
+  });
+}
+
+function switchRole(role) {
+  currentRole = role;
+  localStorage.setItem("jiwuRole", role);
+  fetchData();
+}
+
+function toggleItem(name, el) {
+  ownedItems[name] = !ownedItems[name];
+  localStorage.setItem("jiwuOwned", JSON.stringify(ownedItems));
+  el.classList.toggle("selected");
+}
+
+fetchData();
 </script>
 </body>
 </html>
