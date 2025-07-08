@@ -12,6 +12,7 @@
     color: #333333;
     min-height: 100vh;
     padding-bottom: 140px; /* 預留底部空間給背景圖 */
+    position: relative;
   }
   h1 {
     text-align: center;
@@ -21,7 +22,7 @@
   }
   #infoMsg1 {
     text-align: center;
-    color: #333333;
+    color: #887BB0;
     margin-top: 0;
     margin-bottom: 4px;
     font-size: 0.95em;
@@ -29,6 +30,7 @@
   #infoMsg1 a {
     color: #887BB0;
     text-decoration: none;
+    font-weight: bold;
   }
   #infoMsg2 {
     text-align: center;
@@ -85,6 +87,15 @@
     margin: 0 auto;
     box-sizing: border-box;
   }
+  @media (max-width: 768px) {
+    .cards {
+      grid-template-columns: repeat(4, 90px);
+      gap: 6px;
+      justify-content: center;
+      padding: 0 6px;
+      box-sizing: border-box;
+    }
+  }
   .card {
     background: rgba(255, 255, 255, 0.95);
     border: 2px solid transparent;
@@ -135,31 +146,21 @@
   .card.selected .checkmark {
     display: flex;
   }
-  @media (max-width: 768px) {
-    .cards {
-      grid-template-columns: repeat(4, 90px);
-      gap: 6px;
-      justify-content: center;
-      padding: 0 6px;
-      box-sizing: border-box;
-    }
-  }
+
   footer {
-    position: fixed;
-    bottom: 0;
-    left: 0;
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
     width: 100%;
-    max-height: 130px;
-    overflow: hidden;
-    z-index: -1;
+    max-width: 800px;
     pointer-events: none;
+    z-index: -1;
   }
   footer img {
     width: 100%;
-    max-width: 800px;
     height: auto;
     display: block;
-    margin: 0 auto;
     opacity: 0.8;
   }
 </style>
@@ -243,16 +244,14 @@
       .then(res => res.text())
       .then(text => {
         const json = parseJSONP(text);
-        const headers = json.table.cols.map(c => c.label);
+        const headers = json.table.cols.map(c => c.label.trim().toLowerCase());
         const rows = json.table.rows || [];
 
-        // 找出欄位 index
-        const typeIdx = headers.indexOf("類型");
-        const nameIdx = headers.indexOf("名稱");
-        const imgIdx = headers.indexOf("圖片");
-        const sizeIdx = headers.indexOf("尺寸");
+        const typeIdx = headers.findIndex(h => h === "類型");
+        const nameIdx = headers.findIndex(h => h === "名稱");
+        const imgIdx = headers.findIndex(h => h === "圖片");
+        const sizeIdx = headers.findIndex(h => h === "尺寸");
 
-        // 轉換成物件陣列，只取需要欄位
         return rows.slice(1).map(r => ({
           type: r.c[typeIdx]?.v || "",
           name: r.c[nameIdx]?.v || "",
