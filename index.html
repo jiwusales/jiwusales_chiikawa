@@ -3,16 +3,17 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>吉物販售 吉伊卡哇寶寶圖鑑</title>
+<title>JIWU吉物販售．吉伊卡哇寶寶圖鑑</title>
 <style>
   body {
     font-family: Arial, sans-serif;
     margin: 20px;
     background: #f8f8f8;
+    color: #333333;
   }
   h1 {
     text-align: center;
-    color: #333;
+    color: #333333;
   }
   #sheetButtons {
     text-align: center;
@@ -27,6 +28,7 @@
     font-size: 1em;
     cursor: pointer;
     transition: background-color 0.3s;
+    color: #333333;
   }
   #sheetButtons button.active {
     background-color: #FF69B4;
@@ -39,10 +41,32 @@
     margin-bottom: 40px;
   }
   .group-title {
+    position: relative;
     text-align: center;
-    font-size: 1.4em;
-    margin-bottom: 15px;
-    color: #555;
+    font-size: 1.6em; /* 名稱字體更大 */
+    margin-bottom: 20px;
+    color: #333333;
+    background: #f8f8f8;
+    display: inline-block;
+    padding: 0 15px;
+    z-index: 1;
+  }
+  .group-title::before,
+  .group-title::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    width: 40%;
+    height: 1.5px;
+    background: #bbb;
+    transform: translateY(-50%);
+    z-index: -1;
+  }
+  .group-title::before {
+    left: 0;
+  }
+  .group-title::after {
+    right: 0;
   }
   .cards {
     display: flex;
@@ -54,35 +78,38 @@
     background: white;
     border: 2px solid transparent;
     border-radius: 8px;
-    width: 18%;
-    min-width: 150px;
+    width: 170px; /* 卡片寬度 */
     box-shadow: 0 2px 6px rgba(0,0,0,0.1);
     cursor: pointer;
     transition: border-color 0.3s, box-shadow 0.3s;
     position: relative;
     text-align: center;
+    color: #333333;
   }
   .card:hover {
     box-shadow: 0 4px 12px rgba(0,0,0,0.2);
   }
-  .card.selected {
-    border-color: #FF69B4;
-  }
   .card img {
-    width: 100%;
+    width: 160px; /* 圖片寬度 */
+    height: auto;
     border-top-left-radius: 6px;
     border-top-right-radius: 6px;
   }
   .info {
     padding: 8px;
-    font-size: 0.9em;
-    color: #333;
+    font-size: 1em; /* 名稱字體更大 */
+    color: #333333;
+  }
+  .info div:last-child {
+    max-width: 165px; /* 尺寸文字寬度限制 */
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
   .checkmark {
     position: absolute;
     top: 6px;
     right: 6px;
-    background: #FF69B4;
     color: white;
     border-radius: 50%;
     width: 20px;
@@ -100,13 +127,24 @@
 <body>
   <h1>娃娃圖鑑</h1>
   <div id="sheetButtons" role="tablist" aria-label="角色分頁切換"></div>
-
   <div id="catalog"></div>
 
   <script>
     const sheetID = "17gH9HZKvW_6fMCWYLyqnzMHj40rA7PiwWg6L0GvbFgQ";
 
-    const sheetNames = ["吉伊", "小八", "兔兔", "小桃", "師傅", "栗子", "獅薩", "古本", "其他角色"];
+    const sheetColors = {
+      "吉伊": "#d77485",
+      "小八": "#6293b8",
+      "兔兔": "#f9be3c",
+      "小桃": "#838BC2",
+      "師傅": "#CCAFA5",
+      "栗子": "#94C973",
+      "獅薩": "#FBAA60",
+      "古本": "#eb9e97",
+      "其他角色": "#45818e"
+    };
+
+    const sheetNames = Object.keys(sheetColors);
     const sheetButtons = document.getElementById("sheetButtons");
     const catalog = document.getElementById("catalog");
 
@@ -134,15 +172,15 @@
         if (btn.textContent === currentSheet) {
           btn.classList.add("active");
           btn.setAttribute("aria-selected", "true");
-          btn.focus();
+          btn.style.backgroundColor = sheetColors[currentSheet];
         } else {
           btn.classList.remove("active");
           btn.setAttribute("aria-selected", "false");
+          btn.style.backgroundColor = "#eee";
         }
       });
     }
 
-    // 解析Google Sheets返回的JSONP格式，取出JSON物件
     function parseJSONP(text) {
       const jsonStr = text.substring(text.indexOf('(') + 1, text.lastIndexOf(')'));
       return JSON.parse(jsonStr);
@@ -183,7 +221,7 @@
 
         const title = document.createElement("div");
         title.className = "group-title";
-        title.textContent = `－－－ ${type} －－－`;
+        title.textContent = type;
         groupDiv.appendChild(title);
 
         const cardsContainer = document.createElement("div");
@@ -206,6 +244,7 @@
 
           const checkmark = document.createElement("div");
           checkmark.className = "checkmark";
+          checkmark.style.backgroundColor = sheetColors[sheetName];
           checkmark.textContent = "✔";
 
           card.appendChild(img);
@@ -216,8 +255,10 @@
             card.classList.toggle("selected");
             if (card.classList.contains("selected")) {
               localStorage.setItem(id, "1");
+              card.style.borderColor = sheetColors[sheetName];
             } else {
               localStorage.removeItem(id);
+              card.style.borderColor = "transparent";
             }
           });
 
