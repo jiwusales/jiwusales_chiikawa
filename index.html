@@ -146,10 +146,9 @@
   .card.selected .checkmark {
     display: flex;
   }
-
   footer {
     position: absolute;
-    bottom: 20px;
+    bottom: 60px;
     left: 50%;
     transform: translateX(-50%);
     width: 100%;
@@ -158,7 +157,7 @@
     z-index: -1;
   }
   footer img {
-    width: 100%;
+    width: 90%;
     height: auto;
     display: block;
     opacity: 0.8;
@@ -246,13 +245,14 @@
         const json = parseJSONP(text);
         const rows = json.table.rows || [];
 
-        // 改成只要名稱有值就顯示
-        return rows.slice(1).map(r => ({
-          type: r.c[0]?.v || "",
-          name: r.c[1]?.v || "",
-          img: r.c[3]?.v || "",
-          size: r.c[5]?.v || ""
-        })).filter(item => item.name);
+        return rows.slice(1).map(r => {
+          return {
+            type: r.c[0]?.v || "",
+            name: r.c[1]?.v || "",
+            img: r.c[3]?.v || "",
+            size: r.c[5]?.v || ""
+          };
+        });
       });
   }
 
