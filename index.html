@@ -244,20 +244,15 @@
       .then(res => res.text())
       .then(text => {
         const json = parseJSONP(text);
-        const headers = json.table.cols.map(c => c.label.trim().toLowerCase());
         const rows = json.table.rows || [];
 
-        // 找欄位索引，大小寫忽略
-        const typeIdx = headers.findIndex(h => h === "類型" || h === "類型".toLowerCase());
-        const nameIdx = headers.findIndex(h => h === "名稱" || h === "名稱".toLowerCase());
-        const imgIdx = headers.findIndex(h => h === "圖片" || h === "圖片".toLowerCase());
-        const sizeIdx = headers.findIndex(h => h === "尺寸" || h === "尺寸".toLowerCase());
-
+        // 用欄位順序抓資料，不管欄位名稱
+        // 欄位：類型(0), 名稱(1), 貨號(2), 圖片(3), 網址(4), 尺寸(5)
         return rows.slice(1).map(r => ({
-          type: r.c[typeIdx]?.v || "",
-          name: r.c[nameIdx]?.v || "",
-          img: r.c[imgIdx]?.v || "",
-          size: r.c[sizeIdx]?.v || ""
+          type: r.c[0]?.v || "",
+          name: r.c[1]?.v || "",
+          img: r.c[3]?.v || "",
+          size: r.c[5]?.v || ""
         }));
       });
   }
@@ -327,6 +322,10 @@
     });
   }
 
+  createButtons();
+  updateActiveButton();
+  loadSheetData(currentSheet);
+
   function loadSheetData(sheetName) {
     catalog.innerHTML = "<p style='text-align:center;color:#888;'>資料載入中...</p>";
     fetchSheetData(sheetName)
@@ -338,10 +337,6 @@
         catalog.innerHTML = "<p style='text-align:center;color:red;'>載入資料失敗，請稍後再試。</p>";
       });
   }
-
-  createButtons();
-  updateActiveButton();
-  loadSheetData(currentSheet);
 </script>
 </body>
 </html>
