@@ -8,9 +8,10 @@
   body {
     font-family: Arial, sans-serif;
     margin: 10px;
-    background: #f8f8f8 url('https://i.postimg.cc/pTfvLh2z/image.png') no-repeat center center fixed;
-    background-size: cover;
+    background: #f8f8f8;
     color: #333333;
+    position: relative;
+    min-height: 100vh;
   }
   h1 {
     text-align: center;
@@ -59,11 +60,6 @@
     font-size: 1.2em;
     margin: 20px 0 12px;
     color: #333333;
-    background: rgba(248, 248, 248, 0.7);
-    padding: 0 10px;
-    width: 100%;
-    box-sizing: border-box;
-    z-index: 1;
   }
   .group-title::before,
   .group-title::after {
@@ -85,7 +81,7 @@
     box-sizing: border-box;
   }
   .card {
-    background: rgba(255, 255, 255, 0.9);
+    background: rgba(255, 255, 255, 0.95);
     border: 2px solid transparent;
     border-radius: 6px;
     width: 90px;
@@ -134,7 +130,6 @@
   .card.selected .checkmark {
     display: flex;
   }
-
   @media (max-width: 768px) {
     .cards {
       grid-template-columns: repeat(4, 90px);
@@ -144,20 +139,32 @@
       box-sizing: border-box;
     }
   }
+  footer {
+    width: 100%;
+    margin-top: 20px;
+  }
+  footer img {
+    width: 100%;
+    max-width: 800px;
+    display: block;
+    margin: 0 auto;
+    opacity: 0.8;
+  }
 </style>
 </head>
 <body>
   <h1>JIWU吉物販售．吉伊卡哇寶寶圖鑑</h1>
   <p id="infoMsg">
-    如資料有誤或有缺可私訊 ⮕
-    <a href="https://lin.ee/X6FUFI9" target="_blank" rel="noopener noreferrer">
-      JIWU吉物販售
-    </a><br />
-    (ෆ꒳´ෆ) 感謝尼 𖤐ˊ˗
+    吉物小法師 (๑˃́ꇴ˂̀๑)<br />
+    感謝尼 𖤐ˊ˗
   </p>
 
   <div id="sheetButtons"></div>
   <div id="catalog"></div>
+
+  <footer>
+    <img src="https://i.postimg.cc/pTfvLh2z/image.png" alt="背景圖">
+  </footer>
 
 <script>
   const sheetID = "17gH9HZKvW_6fMCWYLyqnzMHj40rA7PiwWg6L0GvbFgQ";
