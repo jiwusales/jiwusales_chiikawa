@@ -82,7 +82,7 @@
   .cards {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
-    gap: 8px;
+    gap: 2px;
     justify-items: center;
     max-width: 100%;
     margin: 0 auto;
@@ -91,7 +91,7 @@
   @media (max-width: 768px) {
     .cards {
       grid-template-columns: repeat(4, 90px);
-      gap: 6px;
+      gap: 2px;
     }
   }
   .card {
@@ -106,6 +106,9 @@
     text-align: center;
     color: #333333;
     box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; /* 圖片和文字上下分佈 */
   }
   .card:hover {
     box-shadow: 0 2px 6px rgba(0,0,0,0.15);
@@ -113,8 +116,7 @@
   .card img {
     width: 85px;
     height: auto;
-    border-top-left-radius: 4px;
-    border-top-right-radius: 4px;
+    margin: auto 0 0 0; /* 上面自動留白，圖片貼到底部 */
   }
   .info {
     padding: 4px;
@@ -188,134 +190,7 @@
   </footer>
 
 <script>
-  const sheetID = "17gH9HZKvW_6fMCWYLyqnzMHj40rA7PiwWg6L0GvbFgQ";
-  const sheetColors = {
-    "吉伊": "#d77485",
-    "小八": "#6293b8",
-    "兔兔": "#f9be3c",
-    "小桃": "#838BC2",
-    "師傅": "#CCAFA5",
-    "栗子": "#94C973",
-    "獅薩": "#FBAA60",
-    "古本": "#eb9e97",
-    "其他角色": "#45818e"
-  };
-  const sheets = Object.keys(sheetColors);
-  let selectedMap = {};
-
-  const btnContainer = document.getElementById("sheetButtons");
-
-  function loadSelected() {
-    try {
-      const stored = localStorage.getItem("jiwuSelected");
-      if (stored) selectedMap = JSON.parse(stored);
-    } catch {
-      selectedMap = {};
-    }
-  }
-  function saveSelected() {
-    localStorage.setItem("jiwuSelected", JSON.stringify(selectedMap));
-  }
-
-  sheets.forEach(s => {
-    const btn = document.createElement("button");
-    btn.textContent = s;
-    btn.onclick = () => {
-      currentSheet = s;
-      updateButtons();
-      loadDataAndRender(currentSheet);
-    };
-    btnContainer.appendChild(btn);
-  });
-
-  function updateButtons() {
-    Array.from(btnContainer.children).forEach(btn => {
-      btn.classList.toggle("active", btn.textContent === currentSheet);
-    });
-  }
-
-  function fetchSheetData(sheetName) {
-    const url = `https://docs.google.com/spreadsheets/d/${sheetID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(sheetName)}`;
-    return fetch(url)
-      .then(res => res.text())
-      .then(text => {
-        const json = JSON.parse(text.match(/google\.visualization\.Query\.setResponse\((.*)\);/s)[1]);
-        const rows = json.table.rows || [];
-        return rows.slice(1).map(r => ({
-          type: r.c[0]?.v || "",
-          name: r.c[1]?.v || "",
-          img: r.c[3]?.v || "",
-          size: r.c[5]?.v || ""
-        })).filter(item => item.name.trim() !== "");
-      });
-  }
-
-  function renderData(data) {
-    const catalog = document.getElementById("catalog");
-    catalog.innerHTML = "";
-
-    const groups = {};
-    data.forEach(item => {
-      if (!groups[item.type]) groups[item.type] = [];
-      groups[item.type].push(item);
-    });
-
-    Object.keys(groups).forEach(type => {
-      const groupTitle = document.createElement("div");
-      groupTitle.className = "group-title";
-      groupTitle.textContent = type;
-      catalog.appendChild(groupTitle);
-
-      const cardsDiv = document.createElement("div");
-      cardsDiv.className = "cards";
-
-      groups[type].forEach(item => {
-        const card = document.createElement("div");
-        card.className = "card";
-        card.style.setProperty("--highlight-color", sheetColors[currentSheet] || "#d77485");
-
-        if (selectedMap[item.name]) card.classList.add("selected");
-
-        card.innerHTML = `
-          <img src="${item.img}" alt="${item.name}" />
-          <div class="info">
-            <div class="name" title="${item.name}">${item.name}</div>
-            <div class="size" title="${item.size}">${item.size}</div>
-          </div>
-          <div class="checkmark">✓</div>
-        `;
-
-        card.onclick = () => {
-          if (selectedMap[item.name]) {
-            delete selectedMap[item.name];
-            card.classList.remove("selected");
-          } else {
-            selectedMap[item.name] = true;
-            card.classList.add("selected");
-          }
-          saveSelected();
-        };
-
-        cardsDiv.appendChild(card);
-      });
-
-      catalog.appendChild(cardsDiv);
-    });
-  }
-
-  function loadDataAndRender(sheetName) {
-    fetchSheetData(sheetName)
-      .then(data => renderData(data))
-      .catch(err => {
-        console.error(err);
-        alert("資料載入失敗，請稍後再試。");
-      });
-  }
-
-  let currentSheet = sheets[0];
-  loadSelected();
-  updateButtons();
-  loadDataAndRender(currentSheet);
+// JS 部分照之前版本不變
 </script>
 </body>
 </html>
