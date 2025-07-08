@@ -59,12 +59,12 @@
     height: 1.5px;
     background: #bbb;
     margin: 0 6px;
-    min-width: 90px;  /* 最少延伸跟卡片寬度一樣 */
+    min-width: 90px;
   }
   .cards {
     display: grid;
     grid-template-columns: repeat(5, 1fr);
-    gap: 4px;
+    gap: 2px;
     justify-items: center;
   }
   .card {
@@ -91,13 +91,21 @@
   .info {
     padding: 4px;
   }
-  .info .name,
-  .info .size {
-    font-size: 0.85em;
+  .info .name {
+    font-weight: bold;
+    font-size: 0.9em;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
     margin-bottom: 2px;
+    color: #333333;
+  }
+  .info .size {
+    font-size: 0.8em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 85px;
     color: #333333;
   }
   .checkmark {
@@ -180,7 +188,7 @@
   }
 
   function fetchSheetData(sheetName) {
-    const url = `https://docs.google.com/spreadsheets/d/${sheetID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(sheetName)}&range=A:D`;
+    const url = `https://docs.google.com/spreadsheets/d/${sheetID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(sheetName)}&range=A:F`;
     return fetch(url)
       .then(res => res.text())
       .then(text => {
@@ -189,9 +197,9 @@
         return rows.slice(1).map(r => ({
           type: r.c[0]?.v || "",
           name: r.c[1]?.v || "",
-          img: r.c[2]?.v || "",
-          size: r.c[3]?.v || ""
-        }));
+          img: r.c[3]?.v || "",
+          size: r.c[5]?.v || ""
+        })).filter(item => item.name.trim() !== "");
       });
   }
 
