@@ -1,152 +1,246 @@
 <!DOCTYPE html>
-<html lang="zh-Hant">
+<html lang="zh-TW">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>娃娃圖鑑</title>
-  <style>
-    body {
-      font-family: "Noto Sans TC", sans-serif;
-      margin: 0;
-      background: #f4f4f4;
-    }
-    h2 {
-      text-align: center;
-      background: #ddd;
-      margin: 0;
-      padding: 8px;
-      font-size: 1.2em;
-    }
-    .category {
-      margin: 15px 10px;
-    }
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-      gap: 15px;
-    }
-    .item {
-      background: #fff;
-      border: 2px solid #ccc;
-      border-radius: 10px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-      overflow: hidden;
-      transition: border-color 0.3s, box-shadow 0.3s;
-    }
-    .item.selected {
-      border-color: #007bff;
-      box-shadow: 0 0 15px rgba(0,123,255,0.6);
-    }
-    .item img {
-      width: 100%;
-      height: auto;
-      display: block;
-    }
-    .name {
-      font-weight: bold;
-      text-align: center;
-      margin: 5px 0;
-      font-size: 1.1em;
-    }
-    .size {
-      text-align: center;
-      color: #666;
-      margin-bottom: 5px;
-      font-size: 0.9em;
-    }
-    .checkbox {
-      text-align: center;
-      margin-bottom: 8px;
-    }
-    .checkbox input {
-      transform: scale(1.2);
-      margin-right: 5px;
-    }
-    .jump-buttons {
-      text-align: center;
-      margin: 10px;
-    }
-    .jump-buttons button {
-      margin: 4px;
-      padding: 5px 12px;
-      border: none;
-      background: #007bff;
-      color: #fff;
-      border-radius: 5px;
-      cursor: pointer;
-      font-size: 0.9em;
-    }
-    .jump-buttons button:hover {
-      background: #0056b3;
-    }
-  </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>娃娃圖鑑</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+    background: #f8f8f8;
+  }
+  h1 {
+    text-align: center;
+    color: #333;
+  }
+  #sheetButtons {
+    text-align: center;
+    margin-bottom: 30px;
+  }
+  #sheetButtons button {
+    background-color: #eee;
+    border: none;
+    border-radius: 15px;
+    padding: 8px 15px;
+    margin: 0 6px 10px 6px;
+    font-size: 1em;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  #sheetButtons button.active {
+    background-color: #FF69B4;
+    color: white;
+  }
+  #sheetButtons button:hover:not(.active) {
+    background-color: #ddd;
+  }
+  .group {
+    margin-bottom: 40px;
+  }
+  .group-title {
+    text-align: center;
+    font-size: 1.4em;
+    margin-bottom: 15px;
+    color: #555;
+  }
+  .cards {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 10px;
+    overflow-x: auto;
+  }
+  .card {
+    background: white;
+    border: 2px solid transparent;
+    border-radius: 8px;
+    width: 18%;
+    min-width: 150px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    cursor: pointer;
+    transition: border-color 0.3s, box-shadow 0.3s;
+    position: relative;
+    text-align: center;
+  }
+  .card:hover {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  }
+  .card.selected {
+    border-color: #FF69B4;
+  }
+  .card img {
+    width: 100%;
+    border-top-left-radius: 6px;
+    border-top-right-radius: 6px;
+  }
+  .info {
+    padding: 8px;
+    font-size: 0.9em;
+    color: #333;
+  }
+  .checkmark {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    background: #FF69B4;
+    color: white;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    display: none;
+    justify-content: center;
+    align-items: center;
+    font-size: 14px;
+  }
+  .card.selected .checkmark {
+    display: flex;
+  }
+</style>
 </head>
 <body>
-  <div class="jump-buttons" id="jumpButtons"></div>
-  <div id="content"></div>
+  <h1>娃娃圖鑑</h1>
+  <div id="sheetButtons" role="tablist" aria-label="角色分頁切換"></div>
+
+  <div id="catalog"></div>
 
   <script>
-    const sheetCSV = 'https://docs.google.com/spreadsheets/d/你的ID/pub?output=csv';
+    const sheetID = "17gH9HZKvW_6fMCWYLyqnzMHj40rA7PiwWg6L0GvbFgQ";
 
-    function toggleItem(id) {
-      const current = localStorage.getItem(id);
-      const next = current === 'true' ? 'false' : 'true';
-      localStorage.setItem(id, next);
-      const itemCard = document.getElementById('card-' + id);
-      itemCard.classList.toggle('selected', next === 'true');
+    const sheetNames = ["吉伊", "小八", "兔兔", "小桃", "師傅", "栗子", "獅薩", "古本", "其他角色"];
+    const sheetButtons = document.getElementById("sheetButtons");
+    const catalog = document.getElementById("catalog");
+
+    let currentSheet = sheetNames[0];
+
+    function createButtons() {
+      sheetNames.forEach(name => {
+        const btn = document.createElement("button");
+        btn.textContent = name;
+        btn.type = "button";
+        btn.setAttribute("role", "tab");
+        btn.setAttribute("aria-selected", "false");
+        btn.addEventListener("click", () => {
+          if(currentSheet === name) return;
+          currentSheet = name;
+          updateActiveButton();
+          loadSheet(name);
+        });
+        sheetButtons.appendChild(btn);
+      });
     }
 
-    fetch(sheetCSV)
-      .then(response => response.text())
-      .then(data => {
-        const rows = data.split('\n').slice(1); // 去掉標題
-        const items = rows.map(row => {
-          const [類型, 名稱, 圖片, 尺寸] = row.split(',');
-          return { 類型, 名稱, 圖片, 尺寸 };
-        });
-
-        const categories = [...new Set(items.map(i => i.類型))];
-        const content = document.getElementById('content');
-        const jumpButtons = document.getElementById('jumpButtons');
-
-        categories.forEach(cat => {
-          // 快速跳轉按鈕
-          const btn = document.createElement('button');
-          btn.textContent = cat;
-          btn.onclick = () => document.getElementById(cat).scrollIntoView({ behavior: 'smooth' });
-          jumpButtons.appendChild(btn);
-
-          // 分類區塊
-          const div = document.createElement('div');
-          div.id = cat;
-          div.className = 'category';
-          div.innerHTML = `<h2>${cat}</h2><div class="grid"></div>`;
-          content.appendChild(div);
-
-          const grid = div.querySelector('.grid');
-
-          items.filter(i => i.類型 === cat).forEach(item => {
-            const id = `${cat}-${item.名稱}`.replace(/\s+/g, '-');
-            const checked = localStorage.getItem(id) === 'true';
-            const itemDiv = document.createElement('div');
-            itemDiv.className = 'item';
-            itemDiv.id = 'card-' + id;
-            if (checked) itemDiv.classList.add('selected');
-            itemDiv.innerHTML = `
-              <img src="${item.圖片}" alt="${item.名稱}">
-              <div class="name">${item.名稱}</div>
-              <div class="size">${item.尺寸}</div>
-              <div class="checkbox">
-                <label>
-                  <input type="checkbox" id="${id}" ${checked ? 'checked' : ''} onclick="toggleItem('${id}')">
-                  已收藏
-                </label>
-              </div>
-            `;
-            grid.appendChild(itemDiv);
-          });
-        });
+    function updateActiveButton() {
+      Array.from(sheetButtons.children).forEach(btn => {
+        if (btn.textContent === currentSheet) {
+          btn.classList.add("active");
+          btn.setAttribute("aria-selected", "true");
+          btn.focus();
+        } else {
+          btn.classList.remove("active");
+          btn.setAttribute("aria-selected", "false");
+        }
       });
+    }
+
+    // 解析Google Sheets返回的JSONP格式，取出JSON物件
+    function parseJSONP(text) {
+      const jsonStr = text.substring(text.indexOf('(') + 1, text.lastIndexOf(')'));
+      return JSON.parse(jsonStr);
+    }
+
+    function fetchSheetData(sheetName) {
+      const url = `https://docs.google.com/spreadsheets/d/${sheetID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(sheetName)}&range=A:D`;
+      return fetch(url)
+        .then(res => res.text())
+        .then(text => {
+          const json = parseJSONP(text);
+          const rows = json.table.rows || [];
+          return rows.map(r => ({
+            type: r.c[0]?.v || "",
+            name: r.c[1]?.v || "",
+            img: r.c[2]?.v || "",
+            size: r.c[3]?.v || ""
+          }));
+        });
+    }
+
+    function renderCatalog(entries, sheetName) {
+      catalog.innerHTML = "";
+      if (entries.length === 0) {
+        catalog.innerHTML = `<p style="text-align:center;color:#888;">${sheetName} 分頁沒有資料喔</p>`;
+        return;
+      }
+
+      const grouped = {};
+      entries.forEach(item => {
+        if (!grouped[item.type]) grouped[item.type] = [];
+        grouped[item.type].push(item);
+      });
+
+      Object.keys(grouped).forEach(type => {
+        const groupDiv = document.createElement("div");
+        groupDiv.className = "group";
+
+        const title = document.createElement("div");
+        title.className = "group-title";
+        title.textContent = `－－－ ${type} －－－`;
+        groupDiv.appendChild(title);
+
+        const cardsContainer = document.createElement("div");
+        cardsContainer.className = "cards";
+
+        grouped[type].forEach(item => {
+          const card = document.createElement("div");
+          card.className = "card";
+
+          const id = `${sheetName}|${type}|${item.name}`;
+          if (localStorage.getItem(id)) card.classList.add("selected");
+
+          const img = document.createElement("img");
+          img.src = item.img;
+          img.alt = item.name;
+
+          const info = document.createElement("div");
+          info.className = "info";
+          info.innerHTML = `<div>${item.name}</div><div>${item.size}</div>`;
+
+          const checkmark = document.createElement("div");
+          checkmark.className = "checkmark";
+          checkmark.textContent = "✔";
+
+          card.appendChild(img);
+          card.appendChild(info);
+          card.appendChild(checkmark);
+
+          card.addEventListener("click", () => {
+            card.classList.toggle("selected");
+            if (card.classList.contains("selected")) {
+              localStorage.setItem(id, "1");
+            } else {
+              localStorage.removeItem(id);
+            }
+          });
+
+          cardsContainer.appendChild(card);
+        });
+
+        groupDiv.appendChild(cardsContainer);
+        catalog.appendChild(groupDiv);
+      });
+    }
+
+    function loadSheet(sheetName) {
+      catalog.innerHTML = "<p style='text-align:center;color:#888;'>資料載入中...</p>";
+      fetchSheetData(sheetName)
+        .then(entries => renderCatalog(entries, sheetName))
+        .catch(() => {
+          catalog.innerHTML = "<p style='text-align:center;color:red;'>載入資料失敗，請稍後再試。</p>";
+        });
+    }
+
+    createButtons();
+    updateActiveButton();
+    loadSheet(currentSheet);
   </script>
 </body>
 </html>
