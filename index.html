@@ -33,7 +33,6 @@
     color: #333333;
   }
   #sheetButtons button.active {
-    background-color: #FF69B4;
     color: white;
   }
   #sheetButtons button:hover:not(.active) {
@@ -41,42 +40,37 @@
   }
   .group-title {
     position: relative;
-    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     font-size: 1.2em;
     margin: 20px 0 12px;
     color: #333333;
-    display: inline-block;
     background: #f8f8f8;
     padding: 0 10px;
+    width: 100%;
+    box-sizing: border-box;
     z-index: 1;
   }
   .group-title::before,
   .group-title::after {
     content: "";
-    position: absolute;
-    top: 50%;
-    width: 100vw;
+    flex-grow: 1;
     height: 1.5px;
     background: #bbb;
-    z-index: -1;
-  }
-  .group-title::before {
-    left: -100vw;
-  }
-  .group-title::after {
-    right: -100vw;
+    margin: 0 10px;
   }
   .cards {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-    gap: 6px;
+    grid-template-columns: repeat(5, 1fr); /* 固定5欄 */
+    gap: 4px;
     justify-items: center;
   }
   .card {
     background: white;
     border: 2px solid transparent;
     border-radius: 6px;
-    width: 100px; /* 縮小卡片 */
+    width: 90px;
     box-shadow: 0 1px 3px rgba(0,0,0,0.1);
     cursor: pointer;
     transition: border-color 0.3s, box-shadow 0.3s;
@@ -88,7 +82,7 @@
     box-shadow: 0 2px 6px rgba(0,0,0,0.15);
   }
   .card img {
-    width: 95px;
+    width: 85px;
     height: auto;
     border-top-left-radius: 4px;
     border-top-right-radius: 4px;
@@ -103,10 +97,9 @@
     color: #333333;
   }
   .info .size {
-    max-width: 95px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+    max-width: 85px;
+    white-space: normal;      /* 允許換行 */
+    word-wrap: break-word;    /* 長字自動換行 */
     font-size: 0.8em;
     color: #666;
   }
@@ -133,152 +126,157 @@
   <div id="sheetButtons"></div>
   <div id="catalog"></div>
 
-  <script>
-    const sheetID = "17gH9HZKvW_6fMCWYLyqnzMHj40rA7PiwWg6L0GvbFgQ";
+<script>
+  const sheetID = "17gH9HZKvW_6fMCWYLyqnzMHj40rA7PiwWg6L0GvbFgQ";
 
-    const sheetColors = {
-      "吉伊": "#d77485",
-      "小八": "#6293b8",
-      "兔兔": "#f9be3c",
-      "小桃": "#838BC2",
-      "師傅": "#CCAFA5",
-      "栗子": "#94C973",
-      "獅薩": "#FBAA60",
-      "古本": "#eb9e97",
-      "其他角色": "#45818e"
-    };
+  const sheetColors = {
+    "吉伊": "#d77485",
+    "小八": "#6293b8",
+    "兔兔": "#f9be3c",
+    "小桃": "#838BC2",
+    "師傅": "#CCAFA5",
+    "栗子": "#94C973",
+    "獅薩": "#FBAA60",
+    "古本": "#eb9e97",
+    "其他角色": "#45818e"
+  };
 
-    const sheetNames = Object.keys(sheetColors);
-    const sheetButtons = document.getElementById("sheetButtons");
-    const catalog = document.getElementById("catalog");
+  const sheetNames = Object.keys(sheetColors);
+  const sheetButtons = document.getElementById("sheetButtons");
+  const catalog = document.getElementById("catalog");
 
-    let currentSheet = sheetNames[0];
+  let currentSheet = sheetNames[0];
 
-    function createButtons() {
-      sheetNames.forEach(name => {
-        const btn = document.createElement("button");
-        btn.textContent = name;
-        btn.type = "button";
-        btn.addEventListener("click", () => {
-          currentSheet = name;
-          updateActiveButton();
-          loadAllSheets();
-        });
-        sheetButtons.appendChild(btn);
+  function createButtons() {
+    sheetNames.forEach(name => {
+      const btn = document.createElement("button");
+      btn.textContent = name;
+      btn.type = "button";
+      btn.style.backgroundColor = "#eee";
+      btn.style.color = "#333333";
+      btn.addEventListener("click", () => {
+        currentSheet = name;
+        updateActiveButton();
+        loadAllSheets();
       });
-    }
+      sheetButtons.appendChild(btn);
+    });
+  }
 
-    function updateActiveButton() {
-      Array.from(sheetButtons.children).forEach(btn => {
-        if (btn.textContent === currentSheet) {
-          btn.classList.add("active");
-          btn.style.backgroundColor = sheetColors[currentSheet];
-        } else {
-          btn.classList.remove("active");
-          btn.style.backgroundColor = "#eee";
+  function updateActiveButton() {
+    Array.from(sheetButtons.children).forEach(btn => {
+      if (btn.textContent === currentSheet) {
+        btn.classList.add("active");
+        btn.style.backgroundColor = sheetColors[currentSheet];
+        btn.style.color = "white";
+      } else {
+        btn.classList.remove("active");
+        btn.style.backgroundColor = "#eee";
+        btn.style.color = "#333333";
+      }
+    });
+  }
+
+  function parseJSONP(text) {
+    const jsonStr = text.substring(text.indexOf('(') + 1, text.lastIndexOf(')'));
+    return JSON.parse(jsonStr);
+  }
+
+  function fetchSheetData(sheetName) {
+    const url = `https://docs.google.com/spreadsheets/d/${sheetID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(sheetName)}&range=A:D`;
+    return fetch(url)
+      .then(res => res.text())
+      .then(text => {
+        const json = parseJSONP(text);
+        const rows = json.table.rows || [];
+        return rows.slice(1).map(r => ({
+          type: r.c[0]?.v || "",
+          name: r.c[1]?.v || "",
+          img: r.c[2]?.v || "",
+          size: r.c[3]?.v || ""
+        }));
+      });
+  }
+
+  function renderCharacter(entries, sheetName) {
+    const grouped = {};
+    entries.forEach(item => {
+      if (!grouped[item.type]) grouped[item.type] = [];
+      grouped[item.type].push(item);
+    });
+
+    catalog.innerHTML = "";
+
+    Object.keys(grouped).forEach(type => {
+      const groupDiv = document.createElement("div");
+      const groupTitle = document.createElement("div");
+      groupTitle.className = "group-title";
+      groupTitle.textContent = type;
+      groupDiv.appendChild(groupTitle);
+
+      const cardsContainer = document.createElement("div");
+      cardsContainer.className = "cards";
+
+      grouped[type].forEach(item => {
+        const card = document.createElement("div");
+        card.className = "card";
+
+        const id = `${sheetName}|${type}|${item.name}`;
+        if (localStorage.getItem(id)) {
+          card.classList.add("selected");
+          card.style.borderColor = sheetColors[sheetName];
         }
-      });
-    }
 
-    function parseJSONP(text) {
-      const jsonStr = text.substring(text.indexOf('(') + 1, text.lastIndexOf(')'));
-      return JSON.parse(jsonStr);
-    }
+        const img = document.createElement("img");
+        img.src = item.img;
+        img.alt = item.name;
 
-    function fetchSheetData(sheetName) {
-      const url = `https://docs.google.com/spreadsheets/d/${sheetID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(sheetName)}&range=A:D`;
-      return fetch(url)
-        .then(res => res.text())
-        .then(text => {
-          const json = parseJSONP(text);
-          const rows = json.table.rows || [];
-          return rows.slice(1).map(r => ({
-            type: r.c[0]?.v || "",
-            name: r.c[1]?.v || "",
-            img: r.c[2]?.v || "",
-            size: r.c[3]?.v || ""
-          }));
-        });
-    }
+        const info = document.createElement("div");
+        info.className = "info";
+        info.innerHTML = `<div class="name">${item.name}</div><div class="size">${item.size}</div>`;
 
-    function renderCharacter(entries, sheetName) {
-      const grouped = {};
-      entries.forEach(item => {
-        if (!grouped[item.type]) grouped[item.type] = [];
-        grouped[item.type].push(item);
-      });
+        const checkmark = document.createElement("div");
+        checkmark.className = "checkmark";
+        checkmark.style.backgroundColor = sheetColors[sheetName];
+        checkmark.textContent = "✔";
 
-      Object.keys(grouped).forEach(type => {
-        const groupDiv = document.createElement("div");
-        const groupTitle = document.createElement("div");
-        groupTitle.className = "group-title";
-        groupTitle.textContent = type;
-        groupDiv.appendChild(groupTitle);
+        card.appendChild(img);
+        card.appendChild(info);
+        card.appendChild(checkmark);
 
-        const cardsContainer = document.createElement("div");
-        cardsContainer.className = "cards";
-
-        grouped[type].forEach(item => {
-          const card = document.createElement("div");
-          card.className = "card";
-
-          const id = `${sheetName}|${type}|${item.name}`;
-          if (localStorage.getItem(id)) {
-            card.classList.add("selected");
+        card.addEventListener("click", () => {
+          card.classList.toggle("selected");
+          if (card.classList.contains("selected")) {
+            localStorage.setItem(id, "1");
             card.style.borderColor = sheetColors[sheetName];
+          } else {
+            localStorage.removeItem(id);
+            card.style.borderColor = "transparent";
           }
-
-          const img = document.createElement("img");
-          img.src = item.img;
-          img.alt = item.name;
-
-          const info = document.createElement("div");
-          info.className = "info";
-          info.innerHTML = `<div class="name">${item.name}</div><div class="size">${item.size}</div>`;
-
-          const checkmark = document.createElement("div");
-          checkmark.className = "checkmark";
-          checkmark.style.backgroundColor = sheetColors[sheetName];
-          checkmark.textContent = "✔";
-
-          card.appendChild(img);
-          card.appendChild(info);
-          card.appendChild(checkmark);
-
-          card.addEventListener("click", () => {
-            card.classList.toggle("selected");
-            if (card.classList.contains("selected")) {
-              localStorage.setItem(id, "1");
-              card.style.borderColor = sheetColors[sheetName];
-            } else {
-              localStorage.removeItem(id);
-              card.style.borderColor = "transparent";
-            }
-          });
-
-          cardsContainer.appendChild(card);
         });
 
-        groupDiv.appendChild(cardsContainer);
-        catalog.appendChild(groupDiv);
+        cardsContainer.appendChild(card);
       });
-    }
 
-    function loadAllSheets() {
-      catalog.innerHTML = "<p style='text-align:center;color:#888;'>資料載入中...</p>";
-      fetchSheetData(currentSheet)
-        .then(entries => {
-          catalog.innerHTML = "";
-          renderCharacter(entries, currentSheet);
-        })
-        .catch(() => {
-          catalog.innerHTML = "<p style='text-align:center;color:red;'>載入資料失敗，請稍後再試。</p>";
-        });
-    }
+      groupDiv.appendChild(cardsContainer);
+      catalog.appendChild(groupDiv);
+    });
+  }
 
-    createButtons();
-    updateActiveButton();
-    loadAllSheets();
-  </script>
+  function loadAllSheets() {
+    catalog.innerHTML = "<p style='text-align:center;color:#888;'>資料載入中...</p>";
+    fetchSheetData(currentSheet)
+      .then(entries => {
+        renderCharacter(entries, currentSheet);
+      })
+      .catch(() => {
+        catalog.innerHTML = "<p style='text-align:center;color:red;'>載入資料失敗，請稍後再試。</p>";
+      });
+  }
+
+  createButtons();
+  updateActiveButton();
+  loadAllSheets();
+</script>
 </body>
 </html>
