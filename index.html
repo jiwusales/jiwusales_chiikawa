@@ -121,14 +121,19 @@
   .info {
     padding: 4px;
   }
-  .info .name,
-  .info .size {
-    font-size: 0.85em;
+  .info .name {
+    font-weight: bold;
+    font-size: clamp(0.75em, 2vw, 0.85em);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
     margin-bottom: 2px;
-    color: #333333;
+  }
+  .info .size {
+    font-size: clamp(0.7em, 1.8vw, 0.8em);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
   .checkmark {
     position: absolute;
@@ -148,7 +153,7 @@
   }
   footer {
     position: absolute;
-    bottom: 60px;
+    bottom: 20px;
     left: 50%;
     transform: translateX(-50%);
     width: 100%;
@@ -245,14 +250,13 @@
         const json = parseJSONP(text);
         const rows = json.table.rows || [];
 
-        return rows.slice(1).map(r => {
-          return {
-            type: r.c[0]?.v || "",
-            name: r.c[1]?.v || "",
-            img: r.c[3]?.v || "",
-            size: r.c[5]?.v || ""
-          };
-        });
+        // 強制從第 2 列開始抓資料
+        return rows.slice(1).map(r => ({
+          type: r.c[0]?.v || "",
+          name: r.c[1]?.v || "",
+          img: r.c[3]?.v || "",
+          size: r.c[5]?.v || ""
+        }));
       });
   }
 
