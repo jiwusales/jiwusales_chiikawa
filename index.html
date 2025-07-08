@@ -14,8 +14,20 @@
   h1 {
     text-align: center;
     color: #333333;
-    font-size: 1.4em; /* 縮小讓它一行 */
+    font-size: 1.4em;
+    margin-bottom: 6px;
+  }
+  #infoMsg {
+    text-align: center;
+    font-size: 0.9em;
+    margin-top: 0;
     margin-bottom: 10px;
+    color: #887BB0;
+  }
+  #infoMsg a {
+    color: #887BB0;
+    text-decoration: none;
+    font-weight: bold;
   }
   #sheetButtons {
     text-align: center;
@@ -58,13 +70,18 @@
     flex-grow: 1;
     height: 1.5px;
     background: #bbb;
-    margin: 0 10px;
+    margin: 0 6px;
+    min-width: 90px;
   }
   .cards {
     display: grid;
-    grid-template-columns: repeat(5, 1fr); /* 固定5欄 */
-    gap: 4px;
+    grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
+    gap: 8px;
     justify-items: center;
+    max-width: 100%;
+    padding: 0;
+    margin: 0 auto;
+    box-sizing: border-box;
   }
   .card {
     background: white;
@@ -77,6 +94,7 @@
     position: relative;
     text-align: center;
     color: #333333;
+    box-sizing: border-box;
   }
   .card:hover {
     box-shadow: 0 2px 6px rgba(0,0,0,0.15);
@@ -90,18 +108,14 @@
   .info {
     padding: 4px;
   }
-  .info .name {
-    font-size: 0.9em;
-    font-weight: bold;
+  .info .name,
+  .info .size {
+    font-size: 0.85em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
     margin-bottom: 2px;
     color: #333333;
-  }
-  .info .size {
-    max-width: 85px;
-    white-space: normal;      /* 允許換行 */
-    word-wrap: break-word;    /* 長字自動換行 */
-    font-size: 0.8em;
-    color: #666;
   }
   .checkmark {
     position: absolute;
@@ -119,10 +133,25 @@
   .card.selected .checkmark {
     display: flex;
   }
+
+  @media (max-width: 768px) {
+    .cards {
+      grid-template-columns: repeat(5, 90px);
+      gap: 6px;
+      justify-content: center;
+    }
+  }
 </style>
 </head>
 <body>
   <h1>JIWU吉物販售．吉伊卡哇寶寶圖鑑</h1>
+  <p id="infoMsg">
+    如資料有誤或有缺可私訊 ⮕
+    <a href="https://lin.ee/X6FUFI9" target="_blank" rel="noopener noreferrer">
+      JIWU吉物販售 (ෆ`꒳´ෆ) 感謝尼 𖤐ˊ˗
+    </a>
+  </p>
+
   <div id="sheetButtons"></div>
   <div id="catalog"></div>
 
