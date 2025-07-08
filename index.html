@@ -211,6 +211,21 @@
   let selectedMap = {};
 
   const btnContainer = document.getElementById("sheetButtons");
+
+  // 讀取 LocalStorage 勾選狀態
+  function loadSelected() {
+    try {
+      const stored = localStorage.getItem("jiwuSelected");
+      if (stored) selectedMap = JSON.parse(stored);
+    } catch {
+      selectedMap = {};
+    }
+  }
+  // 儲存勾選狀態到 LocalStorage
+  function saveSelected() {
+    localStorage.setItem("jiwuSelected", JSON.stringify(selectedMap));
+  }
+
   sheets.forEach(s => {
     const btn = document.createElement("button");
     btn.textContent = s;
@@ -287,6 +302,7 @@
             selectedMap[item.name] = true;
             card.classList.add("selected");
           }
+          saveSelected();
         };
 
         cardsDiv.appendChild(card);
@@ -306,6 +322,7 @@
   }
 
   let currentSheet = sheets[0];
+  loadSelected();
   updateButtons();
   loadDataAndRender(currentSheet);
 </script>
