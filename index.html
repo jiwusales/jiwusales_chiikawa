@@ -7,11 +7,16 @@
   <style>
     body {
       font-family: Arial, sans-serif;
-      background: #f9f9f9;
+      background-color: #f9f9f9;
+      background-image: url('https://i.postimg.cc/Kj8V5YMg/2.png'); /* 加上背景圖 */
+      background-repeat: repeat;
+      background-size: 135px; /* 根據你剛剛設定的縮小比例 */
       margin: 0;
       padding: 0;
       color: #333333;
       text-align: center;
+}
+
     }
     .top-bar {
       background: #dac7b7;
@@ -62,23 +67,32 @@
       color: white;
     }
     .type-divider {
-      display: inline-block;
-      background-color: var(--tab-color);
-      color: white;
-      padding: 6px 16px;
-      border-radius: 999px;
-      font-weight: bold;
-      margin: 15px auto 5px;
-      font-size: 13px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 20px 0 10px;
+  color: #333333;
+  user-select: none;
+}
+.type-divider::before,
+.type-divider::after {
+  content: "";
+  flex: 1;
+  border-top: 1px solid #333333;
+  margin: 0 10px;
+}
+.type-divider span {
+  margin: 0 15px;
+  font-weight: bold;
+  text-align: center;
+  white-space: nowrap;
+}
     }
     #card-container {
       padding: 10px;
       display: flex;
       flex-direction: column;
       gap: 20px;
-      background-image: url('https://i.postimg.cc/Kj8V5YMg/2.png');
-      background-repeat: repeat;
-      background-size: 135px;
     }
     .card {
       width: 82px;
