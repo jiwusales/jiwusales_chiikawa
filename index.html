@@ -92,12 +92,15 @@
       width: 82px; /* 手機版卡片寬度 */
       border: 2px solid #ccc;
       border-radius: 8px;
-      background: #ffffff !important; /* 白底 */
+      background-color: #ffffff !important; /* 強制白底 */
+      opacity: 1 !important;
       position: relative;
       cursor: pointer;
       transition: border-color 0.3s;
       text-align: center;
       user-select: none;
+      color: #333333;
+      box-shadow: none !important;
     }
     .card img {
       width: 80px; /* 手機版圖片寬度 */
@@ -117,6 +120,7 @@
       overflow: visible;
       text-overflow: clip;
       min-height: 16px;
+      color: #333333 !important;
     }
     .card .name {
       font-weight: bold;
@@ -159,13 +163,21 @@
         font-size: 12px;
       }
     }
+
+    /* 深色模式強制卡片白底文字深色 */
     @media (prefers-color-scheme: dark) {
-  .card {
-    background-color: #ffffff !important;
-    color: #333333;
-    border-color: #ccc;
-  }
-}
+      .card {
+        background-color: #ffffff !important;
+        color: #333333 !important;
+        border-color: #ccc !important;
+        box-shadow: none !important;
+        opacity: 1 !important;
+      }
+      .card .name,
+      .card .size {
+        color: #333333 !important;
+      }
+    }
   </style>
 </head>
 <body>
