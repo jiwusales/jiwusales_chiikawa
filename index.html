@@ -1,93 +1,80 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>JIWU吉物販售．吉伊卡哇寶寶圖鑑</title>
   <style>
     body {
       font-family: Arial, sans-serif;
-      text-align: center;
       background: #f9f9f9;
-      margin: 0;
-      padding: 0;
+      margin: 0; padding: 0;
       color: #333333;
+      text-align: center;
     }
-
     .top-bar {
-      background-color: #dac7b7;
-      color: #ffffff;
+      background: #dac7b7;
+      color: #fff;
       padding: 10px 0;
       position: fixed;
-      top: 0;
-      left: 0;
+      top: 0; left: 0;
       width: 100%;
       z-index: 999;
     }
-
     .top-bar a {
-      color: #ffffff;
+      color: #fff;
       text-decoration: none;
       font-weight: bold;
       font-size: 16px;
     }
-
     .tabs {
       margin-top: 50px;
       display: flex;
-      flex-wrap: wrap;
       justify-content: center;
       gap: 10px;
+      flex-wrap: wrap;
     }
-
     .tab {
+      background: #dac7b7;
+      color: white;
       padding: 8px 12px;
-      background-color: #dac7b7;
       border-radius: 5px;
-      color: #ffffff;
-      font-weight: bold;
       cursor: pointer;
-      transition: background-color 0.3s;
+      font-weight: bold;
+      transition: background 0.3s;
+      user-select: none;
     }
-
     .tab.active {
-      background-color: #b59f91;
+      background: #b59f91;
     }
-
     h1 {
       margin: 15px 0;
       font-size: 18px;
       color: #333333;
     }
-
     .type-divider {
       display: flex;
       align-items: center;
       margin: 20px 0 10px;
+      color: #333333;
     }
-
     .type-divider::before,
     .type-divider::after {
       content: "";
       flex: 1;
-      height: 1px;
-      background: #ccc;
+      border-top: 1px solid #333333;
     }
-
     .type-divider span {
       margin: 0 10px;
       font-weight: bold;
-      color: #333333;
     }
-
     #card-container {
+      padding: 10px;
       display: flex;
       flex-wrap: wrap;
       justify-content: center;
       gap: 8px;
-      padding: 10px;
     }
-
     .card {
       width: 80px;
       border: 2px solid #ccc;
@@ -95,15 +82,15 @@
       background: #fff;
       position: relative;
       cursor: pointer;
-      transition: border-color 0.3s, box-shadow 0.3s;
+      transition: border-color 0.3s;
+      text-align: center;
+      user-select: none;
     }
-
     .card img {
       width: 75px;
-      object-fit: contain;
       margin-top: 5px;
+      object-fit: contain;
     }
-
     .card .name,
     .card .size {
       width: 75px;
@@ -111,41 +98,47 @@
       font-size: 12px;
       word-wrap: break-word;
     }
-
     .card .checkmark {
       position: absolute;
       top: 2px;
       right: 2px;
       font-size: 16px;
       display: none;
+      pointer-events: none;
+      user-select: none;
     }
-
     .card.collected .checkmark {
       display: block;
     }
   </style>
 </head>
 <body>
-  <!-- 最上方固定 Bar -->
   <div class="top-bar">
-    <a href="https://portaly.cc/jiwusales?fbclid=PAZXh0bgNhZW0CMTEAAacZE2VmLbS9E3S68kFA-ozxF2GupCqwGGHlWeJ6cxe6CHpgBBnYiGgKZms_fw_aem_vzWk5B1N5cah6MV48WZNgg" target="_blank">
+    <a href="https://portaly.cc/jiwusales?fbclid=PAZXh0bgNhZW0CMTEAAacZE2VmLbS9E3S68kFA-ozxF2GupCqwGGHlWeJ6cxe6CHpgBBnYiGgKZms_fw_aem_vzWk5B1N5cah6MV48WZNgg" target="_blank" rel="noopener noreferrer">
       JIWU吉物販售
     </a>
   </div>
 
-  <!-- 分頁按鈕 -->
   <div class="tabs" id="tabs"></div>
 
-  <!-- 標題 -->
   <h1>JIWU吉物販售．吉伊卡哇寶寶圖鑑</h1>
 
-  <!-- 卡片區域 -->
   <div id="card-container"></div>
 
   <script>
-    const SHEET_URL = "https://docs.google.com/spreadsheets/d/17gH9HZKvW_6fMCWYLyqnzMHj40rA7PiwWg6L0GvbFgQ/gviz/tq?tqx=out:json";
-    const container = document.getElementById("card-container");
-    const tabsContainer = document.getElementById("tabs");
+    const SHEET_ID = "17gH9HZKvW_6fMCWYLyqnzMHj40rA7PiwWg6L0GvbFgQ";
+
+    const sheetNames = [
+      "吉伊",
+      "小八",
+      "兔兔",
+      "小桃",
+      "師傅",
+      "栗子",
+      "獅薩",
+      "古本",
+      "其他角色"
+    ];
 
     const colors = {
       "吉伊": "#d77485",
@@ -159,79 +152,65 @@
       "其他角色": "#45818e"
     };
 
+    const tabsContainer = document.getElementById("tabs");
+    const cardContainer = document.getElementById("card-container");
     let collected = JSON.parse(localStorage.getItem("collectedDolls")) || [];
-    let allData = {};
-    let currentType = null;
 
-    fetch(SHEET_URL)
-      .then(response => response.text())
-      .then(text => JSON.parse(text.substr(47).slice(0, -2)))
-      .then(data => {
-        const rows = data.table.rows;
-
-        rows.forEach(row => {
-          const [type, name, code, imgUrl, link, size] = [
-            row.c[0]?.v, row.c[1]?.v, row.c[2]?.v,
-            row.c[3]?.v, row.c[4]?.v, row.c[5]?.v
-          ];
-
-          if (!allData[type]) allData[type] = [];
-          allData[type].push({ name, imgUrl, size, type });
-        });
-
-        // 建立分頁按鈕
-        Object.keys(allData).forEach((type, index) => {
-          const tab = document.createElement("div");
-          tab.className = "tab" + (index === 0 ? " active" : "");
-          tab.textContent = type;
-          tab.addEventListener("click", () => switchTab(type, tab));
-          tabsContainer.appendChild(tab);
-
-          if (index === 0) currentType = type;
-        });
-
-        renderCards(currentType);
-      });
-
-    function switchTab(type, tab) {
-      currentType = type;
-      document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
-      tab.classList.add("active");
-      renderCards(type);
+    function buildSheetURL(sheetName) {
+      return `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(sheetName)}`;
     }
 
-    function renderCards(type) {
-      container.innerHTML = "";
+    function createTab(sheetName, index) {
+      const tab = document.createElement("div");
+      tab.className = "tab";
+      if (index === 0) tab.classList.add("active");
+      tab.textContent = sheetName;
+      tab.addEventListener("click", () => {
+        document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+        tab.classList.add("active");
+        loadSheetData(sheetName);
+      });
+      tabsContainer.appendChild(tab);
+    }
 
-      const typeData = allData[type];
-      const grouped = {};
+    function renderCards(data, sheetName) {
+      cardContainer.innerHTML = "";
 
-      typeData.forEach(item => {
-        if (!grouped[item.type]) grouped[item.type] = [];
-        grouped[item.type].push(item);
+      // 按「類型」欄位分類
+      let grouped = {};
+      data.forEach(item => {
+        const type = item.type || "無類型";
+        if (!grouped[type]) grouped[type] = [];
+        grouped[type].push(item);
       });
 
-      Object.keys(grouped).forEach(group => {
-        // 分隔線
+      Object.keys(grouped).forEach(type => {
+        // 類型標題分隔線
         const divider = document.createElement("div");
         divider.className = "type-divider";
-        divider.innerHTML = `<span>${group}</span>`;
-        container.appendChild(divider);
+        divider.innerHTML = `<span>${type}</span>`;
+        cardContainer.appendChild(divider);
 
-        grouped[group].forEach(item => {
+        // 類型卡片容器
+        const groupContainer = document.createElement("div");
+        groupContainer.style.display = "flex";
+        groupContainer.style.flexWrap = "wrap";
+        groupContainer.style.justifyContent = "center";
+        groupContainer.style.gap = "8px";
+
+        grouped[type].forEach(item => {
           const card = document.createElement("div");
           card.className = "card";
-          const borderColor = colors[type] || "#ccc";
+          const borderColor = colors[sheetName] || "#ccc";
 
           if (collected.includes(item.name)) {
             card.classList.add("collected");
           }
-
           card.style.borderColor = borderColor;
 
           card.innerHTML = `
             <div class="checkmark" style="color: ${borderColor}">✔</div>
-            <img src="${item.imgUrl}" alt="${item.name}">
+            <img src="${item.imgUrl}" alt="${item.name}" />
             <div class="name">${item.name}</div>
             <div class="size">${item.size}</div>
           `;
@@ -246,10 +225,43 @@
             localStorage.setItem("collectedDolls", JSON.stringify(collected));
           });
 
-          container.appendChild(card);
+          groupContainer.appendChild(card);
         });
+
+        cardContainer.appendChild(groupContainer);
       });
     }
+
+    function loadSheetData(sheetName) {
+      cardContainer.innerHTML = "載入中...";
+      fetch(buildSheetURL(sheetName))
+        .then(res => res.text())
+        .then(t => JSON.parse(t.substr(47).slice(0, -2)))
+        .then(data => {
+          const rows = data.table.rows || [];
+
+          // 解析成陣列格式 {type, name, imgUrl, size}
+          let parsed = rows.map(row => {
+            return {
+              type: row.c[0]?.v || "無類型",
+              name: row.c[1]?.v || "",
+              imgUrl: row.c[3]?.v || "",
+              size: row.c[5]?.v || ""
+            };
+          });
+
+          renderCards(parsed, sheetName);
+        })
+        .catch(err => {
+          cardContainer.innerHTML = "載入資料失敗，請稍後再試。";
+          console.error(err);
+        });
+    }
+
+    // 初始化分頁按鈕
+    sheetNames.forEach(createTab);
+    // 預設載入第一分頁
+    loadSheetData(sheetNames[0]);
   </script>
 </body>
 </html>
