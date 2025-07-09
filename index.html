@@ -88,8 +88,12 @@
       flex-direction: column;
       gap: 20px;
     }
+    .group-wrapper {
+      display: flex;
+      justify-content: center;
+    }
     .card {
-      width: 82px; /* 卡片寬度 */
+      width: 82px;
       border: 2px solid #ccc;
       border-radius: 8px;
       background: #fff;
@@ -100,12 +104,12 @@
       user-select: none;
     }
     .card img {
-      width: 80px; /* 圖片寬度 */
+      width: 80px;
       margin-top: 5px;
       object-fit: contain;
     }
     .card .name, .card .size {
-      width: 80px; /* 文字區寬度 */
+      width: 80px;
       max-width: 80px;
       margin: 2px auto;
       font-size: 10px;
@@ -147,54 +151,37 @@
 </head>
 <body>
   <div class="top-bar">
-    如資料有誤或有缺可私訊 ⮕ <a href="https://portaly.cc/jiwusales?fbclid=PAZXh0bgNhZW0CMTEAAacZE2VmLbS9E3S68kFA-ozxF2GupCqwGGHlWeJ6cxe6CHpgBBnYiGgKZms_fw_aem_vzWk5B1N5cah6MV48WZNgg" target="_blank" rel="noopener noreferrer">JIWU吉物販售</a>
+    如資料有誤或有缺可私訊 ⮕ <a href="https://portaly.cc/jiwusales" target="_blank" rel="noopener noreferrer">JIWU吉物販售</a>
   </div>
 
   <h1>JIWU吉物販售．吉伊卡哇寶寶圖鑑</h1>
 
   <div class="tabs" id="tabs"></div>
-
   <div id="card-container"></div>
 
   <script>
     const SHEET_ID = "17gH9HZKvW_6fMCWYLyqnzMHj40rA7PiwWg6L0GvbFgQ";
-
-    const sheetNames = [
-      "吉伊", "小八", "兔兔", "小桃", "師傅", "栗子", "獅薩", "古本", "其他角色"
-    ];
-
+    const sheetNames = ["吉伊", "小八", "兔兔", "小桃", "師傅", "栗子", "獅薩", "古本", "其他角色"];
     const colors = {
-      "吉伊": "#d77485",
-      "小八": "#6293b8",
-      "兔兔": "#f9be3c",
-      "小桃": "#838BC2",
-      "師傅": "#CCAFA5",
-      "栗子": "#94C973",
-      "獅薩": "#FBAA60",
-      "古本": "#eb9e97",
-      "其他角色": "#45818e"
+      "吉伊": "#d77485", "小八": "#6293b8", "兔兔": "#f9be3c", "小桃": "#838BC2",
+      "師傅": "#CCAFA5", "栗子": "#94C973", "獅薩": "#FBAA60", "古本": "#eb9e97", "其他角色": "#45818e"
     };
-
     const tabsContainer = document.getElementById("tabs");
     const cardContainer = document.getElementById("card-container");
     let collected = JSON.parse(localStorage.getItem("collectedDolls")) || [];
 
-    function createTab(sheetName, index) {
+    function createTab(sheetName) {
       const tab = document.createElement("div");
       tab.className = "tab";
       tab.textContent = sheetName;
       tab.style.setProperty("--tab-color", colors[sheetName] || "#999");
-
       tab.addEventListener("click", () => {
         document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
         tab.classList.add("active");
         document.documentElement.style.setProperty('--tab-color', colors[sheetName] || "#999");
-
-        // 設定網址參數
         const url = new URL(window.location);
         url.searchParams.set("tab", sheetName);
         window.history.replaceState(null, "", url);
-
         loadSheetData(sheetName);
       });
       tabsContainer.appendChild(tab);
@@ -202,8 +189,7 @@
 
     function renderCards(data, sheetName) {
       cardContainer.innerHTML = "";
-
-      let grouped = {};
+      const grouped = {};
       data.forEach(item => {
         const type = item.type || "無類型";
         if (!grouped[type]) grouped[type] = [];
@@ -211,33 +197,28 @@
       });
 
       Object.keys(grouped).forEach(type => {
-        // 類型標題
         const divider = document.createElement("div");
         divider.className = "type-divider";
         divider.innerHTML = `<span>${type}</span>`;
+        cardContainer.appendChild(divider);
 
-        // 外層置中容器
         const outerWrapper = document.createElement("div");
-        outerWrapper.style.textAlign = "center";
+        outerWrapper.className = "group-wrapper";
 
-        // 卡片容器：inline-flex讓容器寬度隨內容，卡片每行靠左排列
         const groupContainer = document.createElement("div");
-        groupContainer.style.display = "inline-flex";
+        groupContainer.style.display = "flex";
         groupContainer.style.flexWrap = "wrap";
         groupContainer.style.justifyContent = "flex-start";
         groupContainer.style.gap = "8px";
-        groupContainer.style.maxWidth = "100%";
 
         grouped[type].forEach(item => {
           const card = document.createElement("div");
           card.className = "card";
           card.style.borderColor = "#ccc";
-
           if (collected.includes(item.name)) {
             card.classList.add("collected");
             card.style.borderColor = colors[sheetName] || "#ccc";
           }
-
           card.innerHTML = `
             <div class="checkmark" style="background-color: ${colors[sheetName] || "#ccc"}">
               <svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
@@ -248,10 +229,8 @@
             <div class="name">${item.name}</div>
             <div class="size">${item.size}</div>
           `;
-
           const checkmark = card.querySelector(".checkmark");
           checkmark.style.display = collected.includes(item.name) ? "flex" : "none";
-
           card.addEventListener("click", () => {
             card.classList.toggle("collected");
             const isCollected = card.classList.contains("collected");
@@ -266,11 +245,9 @@
             }
             localStorage.setItem("collectedDolls", JSON.stringify(collected));
           });
-
           groupContainer.appendChild(card);
         });
 
-        outerWrapper.appendChild(divider);
         outerWrapper.appendChild(groupContainer);
         cardContainer.appendChild(outerWrapper);
       });
@@ -284,17 +261,15 @@
         .then(t => JSON.parse(t.substr(47).slice(0, -2)))
         .then(data => {
           let rows = data.table.rows || [];
-          if(sheetName !== "吉伊" && rows.length > 1){
+          if (sheetName !== "吉伊" && rows.length > 1) {
             rows = rows.slice(1);
           }
-
           const parsed = rows.map(row => ({
             type: row.c[0]?.v || "無類型",
             name: row.c[1]?.v || "",
             imgUrl: row.c[3]?.v || "",
             size: row.c[5]?.v || ""
           }));
-
           renderCards(parsed, sheetName);
         })
         .catch(err => {
@@ -306,22 +281,15 @@
     function getInitialSheet() {
       const urlParams = new URLSearchParams(window.location.search);
       const tab = urlParams.get("tab");
-      if (tab && sheetNames.includes(tab)) {
-        return tab;
-      }
-      return sheetNames[0];
+      return sheetNames.includes(tab) ? tab : sheetNames[0];
     }
 
-    // 初始化
     sheetNames.forEach(createTab);
     const initialSheet = getInitialSheet();
-
-    // 設定預設active tab和主題色
     document.querySelectorAll(".tab").forEach(t => {
       if (t.textContent === initialSheet) t.classList.add("active");
     });
     document.documentElement.style.setProperty('--tab-color', colors[initialSheet] || "#999");
-
     loadSheetData(initialSheet);
   </script>
 </body>
