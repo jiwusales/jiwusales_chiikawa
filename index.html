@@ -44,15 +44,17 @@
     .tab {
       background: #dcdcdc; /* 淺灰色 */
       color: #333333;
-      padding: 8px 12px;
-      border-radius: 15px; /* 倒圓角 */
+      padding: 6px 18px; /* 縮小高度，增加左右空間 */
+      border-radius: 20px; /* 橢圓形 */
       cursor: pointer;
       font-weight: bold;
       transition: background 0.3s, color 0.3s;
       user-select: none;
       border: none;
-      min-width: 60px;
+      min-width: 50px;
       text-align: center;
+      font-size: 14px;
+      line-height: 1.2;
     }
     .tab.active {
       background-color: var(--tab-color);
@@ -63,22 +65,26 @@
       align-items: center;
       margin: 20px 0 10px;
       color: #333333;
+      user-select: none;
     }
+    /* 左右實線 */
     .type-divider::before,
     .type-divider::after {
       content: "";
       flex: 1;
-      border-top: 1px solid #333333; /* 實線 */
+      border-top: 1px solid #333333;
     }
     .type-divider span {
-      margin: 0 10px;
+      margin: 0 15px;
       font-weight: bold;
+      text-align: center;
+      white-space: nowrap;
     }
     #card-container {
       padding: 10px;
       display: flex;
       flex-wrap: wrap;
-      justify-content: flex-start; /* 從左往右排列 */
+      justify-content: flex-start;
       gap: 8px;
     }
     .card {
@@ -93,7 +99,7 @@
       user-select: none;
     }
     .card.collected {
-      /* 點選後才會有邊框顏色，改成 inline style */
+      /* 點選後用 inline style 設定邊框色 */
     }
     .card img {
       width: 75px;
@@ -107,18 +113,28 @@
       font-size: 12px;
       word-wrap: break-word;
     }
+    /* 改成圓形色塊勾勾 */
     .card .checkmark {
       position: absolute;
-      top: 2px;
-      right: 2px;
-      font-size: 12px; /* 縮小勾勾 */
+      top: 3px;
+      right: 3px;
+      width: 16px;
+      height: 16px;
+      background-color: transparent;
+      border-radius: 50%;
       display: none;
       pointer-events: none;
       user-select: none;
+      align-items: center;
+      justify-content: center;
     }
     .card.collected .checkmark {
-      display: block;
-      /* 顏色改成 inline style */
+      display: flex;
+    }
+    .checkmark svg {
+      fill: white;
+      width: 10px;
+      height: 10px;
     }
   </style>
 </head>
@@ -221,23 +237,28 @@
           }
 
           card.innerHTML = `
-            <div class="checkmark" style="color: ${colors[sheetName] || "#ccc"}">✔</div>
+            <div class="checkmark" style="background-color: ${colors[sheetName] || "#ccc"}">
+              <svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+                <path d="M6 11.2L3.3 8.5l-1.4 1.4L6 14 14 6l-1.4-1.4z"/>
+              </svg>
+            </div>
             <img src="${item.imgUrl}" alt="${item.name}" />
             <div class="name">${item.name}</div>
             <div class="size">${item.size}</div>
           `;
 
-          card.querySelector(".checkmark").style.display = collected.includes(item.name) ? "block" : "none";
+          const checkmark = card.querySelector(".checkmark");
+          checkmark.style.display = collected.includes(item.name) ? "flex" : "none";
 
           card.addEventListener("click", () => {
             card.classList.toggle("collected");
             const isCollected = card.classList.contains("collected");
             if (isCollected) {
               card.style.borderColor = colors[sheetName] || "#ccc";
-              card.querySelector(".checkmark").style.display = "block";
+              checkmark.style.display = "flex";
             } else {
               card.style.borderColor = "#ccc";
-              card.querySelector(".checkmark").style.display = "none";
+              checkmark.style.display = "none";
             }
 
             if (isCollected) {
