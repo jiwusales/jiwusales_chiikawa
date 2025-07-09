@@ -184,14 +184,17 @@
       tab.className = "tab";
       tab.textContent = sheetName;
       tab.style.setProperty("--tab-color", colors[sheetName] || "#999");
-      if(index === 0){
-        tab.classList.add("active");
-        document.documentElement.style.setProperty('--tab-color', colors[sheetName] || "#999");
-      }
+
       tab.addEventListener("click", () => {
         document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
         tab.classList.add("active");
         document.documentElement.style.setProperty('--tab-color', colors[sheetName] || "#999");
+
+        // 設定網址參數
+        const url = new URL(window.location);
+        url.searchParams.set("tab", sheetName);
+        window.history.replaceState(null, "", url);
+
         loadSheetData(sheetName);
       });
       tabsContainer.appendChild(tab);
@@ -293,8 +296,26 @@
         });
     }
 
+    function getInitialSheet() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const tab = urlParams.get("tab");
+      if (tab && sheetNames.includes(tab)) {
+        return tab;
+      }
+      return sheetNames[0];
+    }
+
+    // 初始化
     sheetNames.forEach(createTab);
-    loadSheetData(sheetNames[0]);
+    const initialSheet = getInitialSheet();
+
+    // 設定預設active tab和主題色
+    document.querySelectorAll(".tab").forEach(t => {
+      if (t.textContent === initialSheet) t.classList.add("active");
+    });
+    document.documentElement.style.setProperty('--tab-color', colors[initialSheet] || "#999");
+
+    loadSheetData(initialSheet);
   </script>
 </body>
 </html>
