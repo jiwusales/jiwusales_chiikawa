@@ -219,9 +219,9 @@
         const groupContainer = document.createElement("div");
         groupContainer.style.display = "flex";
         groupContainer.style.flexWrap = "wrap";
-        groupContainer.style.justifyContent = "flex-start";
+        groupContainer.style.justifyContent = "center"; // 置中排列
         groupContainer.style.gap = "8px";
-        groupContainer.style.marginLeft = "8px";
+        // 移除 marginLeft
 
         grouped[type].forEach(item => {
           const card = document.createElement("div");
