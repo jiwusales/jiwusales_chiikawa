@@ -35,7 +35,7 @@
       user-select: none;
     }
     .tabs {
-      margin-top: 10px; /* 按鈕往下10px */
+      margin-top: 10px;
       margin-bottom: 15px;
       display: flex;
       justify-content: center;
@@ -52,11 +52,10 @@
       transition: background 0.3s, color 0.3s;
       user-select: none;
       border: none;
-      display: inline-block; /* 依內容寬度縮短 */
+      display: inline-block;
       text-align: center;
       font-size: 14px;
       line-height: 1.2;
-      min-width: auto; /* 取消固定最小寬度 */
     }
     .tab.active {
       background-color: var(--tab-color);
@@ -83,7 +82,7 @@
     }
     #card-container {
       padding: 10px;
-      padding-left: 10px; /* 商品卡往右10px */
+      padding-left: 10px;
       display: flex;
       flex-wrap: wrap;
       justify-content: flex-start;
@@ -100,27 +99,20 @@
       text-align: center;
       user-select: none;
     }
-    .card.collected {
-    }
     .card img {
       width: 75px;
       margin-top: 5px;
       object-fit: contain;
     }
-    .card .name {
+    .card .name, .card .size {
       width: 75px;
       max-width: 75px;
       margin: 2px auto;
-      font-size: 12px; /* 會由 JS 動態改 */
+      font-size: 12px; /* 預設最大字級 */
       white-space: nowrap;
       overflow: hidden;
       text-overflow: clip;
       box-sizing: border-box;
-    }
-    .card .size {
-      width: 75px;
-      margin: 2px auto;
-      font-size: 12px;
     }
     .card .checkmark {
       position: absolute;
@@ -161,15 +153,7 @@
     const SHEET_ID = "17gH9HZKvW_6fMCWYLyqnzMHj40rA7PiwWg6L0GvbFgQ";
 
     const sheetNames = [
-      "吉伊",
-      "小八",
-      "兔兔",
-      "小桃",
-      "師傅",
-      "栗子",
-      "獅薩",
-      "古本",
-      "其他角色"
+      "吉伊", "小八", "兔兔", "小桃", "師傅", "栗子", "獅薩", "古本", "其他角色"
     ];
 
     const colors = {
@@ -263,7 +247,9 @@
           `;
 
           const nameEl = card.querySelector(".name");
+          const sizeEl = card.querySelector(".size");
           fitTextToWidth(nameEl, 75, 8, 12);
+          fitTextToWidth(sizeEl, 75, 8, 12);
 
           const checkmark = card.querySelector(".checkmark");
           checkmark.style.display = collected.includes(item.name) ? "flex" : "none";
