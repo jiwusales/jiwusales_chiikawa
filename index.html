@@ -16,7 +16,7 @@
       text-align: center;
     }
     .top-bar {
-      background: #dac7b7;
+      background-color: rgba(218, 199, 183, 0.95);
       color: #fff;
       padding: 10px 0;
       position: fixed;
@@ -31,15 +31,24 @@
       font-weight: bold;
       font-size: 16px;
     }
+    .header-container {
+      background-color: #f9f9f9;
+      padding-top: 60px;
+      padding-bottom: 10px;
+      padding-left: 10px;
+      padding-right: 10px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+      position: sticky;
+      top: 40px;
+      z-index: 998;
+    }
     h1 {
-      margin: 60px 0 10px;
+      margin: 0 0 10px;
       font-size: 18px;
       color: #333333;
       user-select: none;
     }
     .tabs {
-      margin-top: 20px;
-      margin-bottom: 15px;
       display: flex;
       justify-content: center;
       gap: 10px;
@@ -116,12 +125,7 @@
       margin: 2px auto;
       font-size: 10px;
       line-height: 1.2;
-      white-space: normal;
       word-break: break-word;
-      overflow-wrap: break-word;
-      box-sizing: border-box;
-      overflow: visible;
-      text-overflow: clip;
       min-height: 16px;
       color: #333333 !important;
     }
@@ -181,12 +185,14 @@
 </head>
 <body>
   <div class="top-bar">
-    如資料有誤或有缺可私訊 ⮕ <a href="https://portaly.cc/jiwusales?fbclid=PAZXh0bgNhZW0CMTEAAacZE2VmLbS9E3S68kFA-ozxF2GupCqwGGHlWeJ6cxe6CHpgBBnYiGgKZms_fw_aem_vzWk5B1N5cah6MV48WZNgg" target="_blank" rel="noopener noreferrer">JIWU吉物販售</a>
+    如資料有誤或有缺可私訊 ⮕ <a href="https://portaly.cc/jiwusales" target="_blank" rel="noopener noreferrer">JIWU吉物販售</a>
   </div>
 
-  <h1>JIWU吉物販售．吉伊卡哇寶寶圖鑑</h1>
+  <div class="header-container">
+    <h1>JIWU吉物販售．吉伊卡哇寶寶圖鑑</h1>
+    <div class="tabs" id="tabs"></div>
+  </div>
 
-  <div class="tabs" id="tabs"></div>
   <div id="card-container"></div>
 
   <script>
@@ -310,8 +316,6 @@
         .then(t => JSON.parse(t.substr(47).slice(0, -2)))
         .then(data => {
           let rows = data.table.rows || [];
-
-          // ✅ 無論哪一頁都跳過第一列（通常是表頭）
           if (rows.length > 1) {
             rows = rows.slice(1);
           }
