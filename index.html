@@ -89,7 +89,7 @@
       gap: 20px;
     }
     .card {
-      width: 80px;
+      width: 85px; /* 調整卡片寬度 */
       border: 2px solid #ccc;
       border-radius: 8px;
       background: #fff;
@@ -100,19 +100,23 @@
       user-select: none;
     }
     .card img {
-      width: 75px;
+      width: 80px; /* 調整圖片寬度 */
       margin-top: 5px;
       object-fit: contain;
     }
     .card .name, .card .size {
-      width: 75px;
-      max-width: 75px;
+      width: 80px; /* 調整文字區寬度 */
+      max-width: 80px;
       margin: 2px auto;
-      font-size: 5px;
-      white-space: nowrap;
+      font-size: 8px;
+      line-height: 1.2;
+      white-space: normal;       /* 允許換行 */
+      word-break: break-word;    /* 必要時換行斷字 */
+      overflow-wrap: break-word;
       box-sizing: border-box;
-      overflow: hidden;
+      overflow: visible;
       text-overflow: clip;
+      min-height: 16px;
     }
     .card .checkmark {
       position: absolute;
@@ -172,19 +176,6 @@
     const cardContainer = document.getElementById("card-container");
     let collected = JSON.parse(localStorage.getItem("collectedDolls")) || [];
 
-    function fitTextToWidth(element, maxWidth, minFontSize=8, maxFontSize=12) {
-      function adjust() {
-        let fontSize = maxFontSize;
-        element.style.fontSize = fontSize + "px";
-        element.style.whiteSpace = "nowrap";
-        while (element.getBoundingClientRect().width > maxWidth && fontSize > minFontSize) {
-          fontSize -= 0.5;
-          element.style.fontSize = fontSize + "px";
-        }
-      }
-      requestAnimationFrame(adjust);
-    }
-
     function createTab(sheetName, index) {
       const tab = document.createElement("div");
       tab.className = "tab";
@@ -224,7 +215,7 @@
         groupContainer.style.flexWrap = "wrap";
         groupContainer.style.justifyContent = "flex-start";
         groupContainer.style.gap = "8px";
-        groupContainer.style.marginLeft = "10px"; // ✅ 改成10px
+        groupContainer.style.marginLeft = "10px";
 
         grouped[type].forEach(item => {
           const card = document.createElement("div");
@@ -246,15 +237,6 @@
             <div class="name">${item.name}</div>
             <div class="size">${item.size}</div>
           `;
-
-          const nameEl = card.querySelector(".name");
-          const sizeEl = card.querySelector(".size");
-          const imgEl = card.querySelector("img");
-
-          imgEl.onload = () => {
-            fitTextToWidth(nameEl, 75, 8, 12);
-            fitTextToWidth(sizeEl, 75, 8, 12);
-          };
 
           const checkmark = card.querySelector(".checkmark");
           checkmark.style.display = collected.includes(item.name) ? "flex" : "none";
