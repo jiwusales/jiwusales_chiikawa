@@ -108,7 +108,7 @@
       width: 75px;
       max-width: 75px;
       margin: 2px auto;
-      font-size: 12px;
+      font-size: 13.33px; /* 10pt */
       white-space: nowrap;
       box-sizing: border-box;
       overflow: hidden;
@@ -224,7 +224,7 @@
         groupContainer.style.flexWrap = "wrap";
         groupContainer.style.justifyContent = "flex-start";
         groupContainer.style.gap = "8px";
-        groupContainer.style.marginLeft = "12.5px"; // ✅ 調整此行向右偏移 12.5px
+        groupContainer.style.marginLeft = "10px"; // ✅ 改成10px
 
         grouped[type].forEach(item => {
           const card = document.createElement("div");
