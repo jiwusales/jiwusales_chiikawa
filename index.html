@@ -29,12 +29,13 @@
       font-size: 16px;
     }
     h1 {
-      margin: 60px 0 10px; /* 下方留空給分頁按鈕 */
+      margin: 60px 0 10px;
       font-size: 18px;
       color: #333333;
       user-select: none;
     }
     .tabs {
+      margin-top: 10px; /* 按鈕往下10px */
       margin-bottom: 15px;
       display: flex;
       justify-content: center;
@@ -42,19 +43,20 @@
       flex-wrap: wrap;
     }
     .tab {
-      background: #dcdcdc; /* 淺灰色 */
+      background: #dcdcdc;
       color: #333333;
-      padding: 6px 18px; /* 縮小高度，增加左右空間 */
-      border-radius: 20px; /* 橢圓形 */
+      padding: 6px 18px;
+      border-radius: 20px;
       cursor: pointer;
       font-weight: bold;
       transition: background 0.3s, color 0.3s;
       user-select: none;
       border: none;
-      min-width: 50px;
+      display: inline-block; /* 依內容寬度縮短 */
       text-align: center;
       font-size: 14px;
       line-height: 1.2;
+      min-width: auto; /* 取消固定最小寬度 */
     }
     .tab.active {
       background-color: var(--tab-color);
@@ -67,7 +69,6 @@
       color: #333333;
       user-select: none;
     }
-    /* 左右實線 */
     .type-divider::before,
     .type-divider::after {
       content: "";
@@ -82,6 +83,7 @@
     }
     #card-container {
       padding: 10px;
+      padding-left: 10px; /* 商品卡往右10px */
       display: flex;
       flex-wrap: wrap;
       justify-content: flex-start;
@@ -89,7 +91,7 @@
     }
     .card {
       width: 80px;
-      border: 2px solid #ccc; /* 預設灰色匡線 */
+      border: 2px solid #ccc;
       border-radius: 8px;
       background: #fff;
       position: relative;
@@ -99,7 +101,6 @@
       user-select: none;
     }
     .card.collected {
-      /* 點選後用 inline style 設定邊框色 */
     }
     .card img {
       width: 75px;
@@ -113,7 +114,6 @@
       font-size: 12px;
       word-wrap: break-word;
     }
-    /* 改成圓形色塊勾勾 */
     .card .checkmark {
       position: absolute;
       top: 3px;
@@ -180,7 +180,6 @@
     const cardContainer = document.getElementById("card-container");
     let collected = JSON.parse(localStorage.getItem("collectedDolls")) || [];
 
-    // 建立分頁按鈕，並動態設定active顏色
     function createTab(sheetName, index) {
       const tab = document.createElement("div");
       tab.className = "tab";
@@ -202,7 +201,6 @@
     function renderCards(data, sheetName) {
       cardContainer.innerHTML = "";
 
-      // 分組：根據「類型」欄位
       let grouped = {};
       data.forEach(item => {
         const type = item.type || "無類型";
@@ -211,13 +209,11 @@
       });
 
       Object.keys(grouped).forEach(type => {
-        // 類型標題分隔線，左右加實線
         const divider = document.createElement("div");
         divider.className = "type-divider";
         divider.innerHTML = `<span>${type}</span>`;
         cardContainer.appendChild(divider);
 
-        // 類型卡片容器
         const groupContainer = document.createElement("div");
         groupContainer.style.display = "flex";
         groupContainer.style.flexWrap = "wrap";
@@ -227,8 +223,6 @@
         grouped[type].forEach(item => {
           const card = document.createElement("div");
           card.className = "card";
-
-          // 預設灰色邊框，點選後才用對應顏色
           card.style.borderColor = "#ccc";
 
           if (collected.includes(item.name)) {
@@ -276,7 +270,6 @@
       });
     }
 
-    // 載入分頁資料，除了「吉伊」分頁，其他分頁排除第一列資料
     function loadSheetData(sheetName) {
       cardContainer.innerHTML = "載入中...";
       const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(sheetName)}`;
@@ -286,7 +279,7 @@
         .then(data => {
           let rows = data.table.rows || [];
           if(sheetName !== "吉伊" && rows.length > 1){
-            rows = rows.slice(1); // 去除第一列
+            rows = rows.slice(1);
           }
 
           const parsed = rows.map(row => ({
@@ -304,7 +297,6 @@
         });
     }
 
-    // 初始化分頁按鈕與預設載入
     sheetNames.forEach(createTab);
     loadSheetData(sheetNames[0]);
   </script>
