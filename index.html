@@ -20,6 +20,7 @@
       top: 0; left: 0;
       width: 100%;
       z-index: 999;
+      user-select: none;
     }
     .top-bar a {
       color: #fff;
@@ -27,30 +28,35 @@
       font-weight: bold;
       font-size: 16px;
     }
+    h1 {
+      margin: 60px 0 10px; /* 下方留空給分頁按鈕 */
+      font-size: 18px;
+      color: #333333;
+      user-select: none;
+    }
     .tabs {
-      margin-top: 50px;
+      margin-bottom: 15px;
       display: flex;
       justify-content: center;
       gap: 10px;
       flex-wrap: wrap;
     }
     .tab {
-      background: #dac7b7;
-      color: white;
+      background: #dcdcdc; /* 淺灰色 */
+      color: #333333;
       padding: 8px 12px;
-      border-radius: 5px;
+      border-radius: 15px; /* 倒圓角 */
       cursor: pointer;
       font-weight: bold;
-      transition: background 0.3s;
+      transition: background 0.3s, color 0.3s;
       user-select: none;
+      border: none;
+      min-width: 60px;
+      text-align: center;
     }
     .tab.active {
-      background: #b59f91;
-    }
-    h1 {
-      margin: 15px 0;
-      font-size: 18px;
-      color: #333333;
+      background-color: var(--tab-color);
+      color: white;
     }
     .type-divider {
       display: flex;
@@ -62,7 +68,7 @@
     .type-divider::after {
       content: "";
       flex: 1;
-      border-top: 1px solid #333333;
+      border-top: 1px solid #333333; /* 實線 */
     }
     .type-divider span {
       margin: 0 10px;
@@ -72,12 +78,12 @@
       padding: 10px;
       display: flex;
       flex-wrap: wrap;
-      justify-content: center;
+      justify-content: flex-start; /* 從左往右排列 */
       gap: 8px;
     }
     .card {
       width: 80px;
-      border: 2px solid #ccc;
+      border: 2px solid #ccc; /* 預設灰色匡線 */
       border-radius: 8px;
       background: #fff;
       position: relative;
@@ -85,6 +91,9 @@
       transition: border-color 0.3s;
       text-align: center;
       user-select: none;
+    }
+    .card.collected {
+      /* 點選後才會有邊框顏色，改成 inline style */
     }
     .card img {
       width: 75px;
@@ -102,26 +111,25 @@
       position: absolute;
       top: 2px;
       right: 2px;
-      font-size: 16px;
+      font-size: 12px; /* 縮小勾勾 */
       display: none;
       pointer-events: none;
       user-select: none;
     }
     .card.collected .checkmark {
       display: block;
+      /* 顏色改成 inline style */
     }
   </style>
 </head>
 <body>
   <div class="top-bar">
-    <a href="https://portaly.cc/jiwusales?fbclid=PAZXh0bgNhZW0CMTEAAacZE2VmLbS9E3S68kFA-ozxF2GupCqwGGHlWeJ6cxe6CHpgBBnYiGgKZms_fw_aem_vzWk5B1N5cah6MV48WZNgg" target="_blank" rel="noopener noreferrer">
-      JIWU吉物販售
-    </a>
+    如資料有誤或有缺可私訊 ⮕ <a href="https://portaly.cc/jiwusales?fbclid=PAZXh0bgNhZW0CMTEAAacZE2VmLbS9E3S68kFA-ozxF2GupCqwGGHlWeJ6cxe6CHpgBBnYiGgKZms_fw_aem_vzWk5B1N5cah6MV48WZNgg" target="_blank" rel="noopener noreferrer">JIWU吉物販售</a>
   </div>
 
-  <div class="tabs" id="tabs"></div>
-
   <h1>JIWU吉物販售．吉伊卡哇寶寶圖鑑</h1>
+
+  <div class="tabs" id="tabs"></div>
 
   <div id="card-container"></div>
 
@@ -156,18 +164,20 @@
     const cardContainer = document.getElementById("card-container");
     let collected = JSON.parse(localStorage.getItem("collectedDolls")) || [];
 
-    function buildSheetURL(sheetName) {
-      return `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(sheetName)}`;
-    }
-
+    // 建立分頁按鈕，並動態設定active顏色
     function createTab(sheetName, index) {
       const tab = document.createElement("div");
       tab.className = "tab";
-      if (index === 0) tab.classList.add("active");
       tab.textContent = sheetName;
+      tab.style.setProperty("--tab-color", colors[sheetName] || "#999");
+      if(index === 0){
+        tab.classList.add("active");
+        document.documentElement.style.setProperty('--tab-color', colors[sheetName] || "#999");
+      }
       tab.addEventListener("click", () => {
         document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
         tab.classList.add("active");
+        document.documentElement.style.setProperty('--tab-color', colors[sheetName] || "#999");
         loadSheetData(sheetName);
       });
       tabsContainer.appendChild(tab);
@@ -176,7 +186,7 @@
     function renderCards(data, sheetName) {
       cardContainer.innerHTML = "";
 
-      // 按「類型」欄位分類
+      // 分組：根據「類型」欄位
       let grouped = {};
       data.forEach(item => {
         const type = item.type || "無類型";
@@ -185,7 +195,7 @@
       });
 
       Object.keys(grouped).forEach(type => {
-        // 類型標題分隔線
+        // 類型標題分隔線，左右加實線
         const divider = document.createElement("div");
         divider.className = "type-divider";
         divider.innerHTML = `<span>${type}</span>`;
@@ -195,29 +205,42 @@
         const groupContainer = document.createElement("div");
         groupContainer.style.display = "flex";
         groupContainer.style.flexWrap = "wrap";
-        groupContainer.style.justifyContent = "center";
+        groupContainer.style.justifyContent = "flex-start";
         groupContainer.style.gap = "8px";
 
         grouped[type].forEach(item => {
           const card = document.createElement("div");
           card.className = "card";
-          const borderColor = colors[sheetName] || "#ccc";
+
+          // 預設灰色邊框，點選後才用對應顏色
+          card.style.borderColor = "#ccc";
 
           if (collected.includes(item.name)) {
             card.classList.add("collected");
+            card.style.borderColor = colors[sheetName] || "#ccc";
           }
-          card.style.borderColor = borderColor;
 
           card.innerHTML = `
-            <div class="checkmark" style="color: ${borderColor}">✔</div>
+            <div class="checkmark" style="color: ${colors[sheetName] || "#ccc"}">✔</div>
             <img src="${item.imgUrl}" alt="${item.name}" />
             <div class="name">${item.name}</div>
             <div class="size">${item.size}</div>
           `;
 
+          card.querySelector(".checkmark").style.display = collected.includes(item.name) ? "block" : "none";
+
           card.addEventListener("click", () => {
             card.classList.toggle("collected");
-            if (card.classList.contains("collected")) {
+            const isCollected = card.classList.contains("collected");
+            if (isCollected) {
+              card.style.borderColor = colors[sheetName] || "#ccc";
+              card.querySelector(".checkmark").style.display = "block";
+            } else {
+              card.style.borderColor = "#ccc";
+              card.querySelector(".checkmark").style.display = "none";
+            }
+
+            if (isCollected) {
               collected.push(item.name);
             } else {
               collected = collected.filter(n => n !== item.name);
@@ -232,23 +255,25 @@
       });
     }
 
+    // 載入分頁資料，除了「吉伊」分頁，其他分頁排除第一列資料
     function loadSheetData(sheetName) {
       cardContainer.innerHTML = "載入中...";
-      fetch(buildSheetURL(sheetName))
+      const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(sheetName)}`;
+      fetch(url)
         .then(res => res.text())
         .then(t => JSON.parse(t.substr(47).slice(0, -2)))
         .then(data => {
-          const rows = data.table.rows || [];
+          let rows = data.table.rows || [];
+          if(sheetName !== "吉伊" && rows.length > 1){
+            rows = rows.slice(1); // 去除第一列
+          }
 
-          // 解析成陣列格式 {type, name, imgUrl, size}
-          let parsed = rows.map(row => {
-            return {
-              type: row.c[0]?.v || "無類型",
-              name: row.c[1]?.v || "",
-              imgUrl: row.c[3]?.v || "",
-              size: row.c[5]?.v || ""
-            };
-          });
+          const parsed = rows.map(row => ({
+            type: row.c[0]?.v || "無類型",
+            name: row.c[1]?.v || "",
+            imgUrl: row.c[3]?.v || "",
+            size: row.c[5]?.v || ""
+          }));
 
           renderCards(parsed, sheetName);
         })
@@ -258,9 +283,8 @@
         });
     }
 
-    // 初始化分頁按鈕
+    // 初始化分頁按鈕與預設載入
     sheetNames.forEach(createTab);
-    // 預設載入第一分頁
     loadSheetData(sheetNames[0]);
   </script>
 </body>
