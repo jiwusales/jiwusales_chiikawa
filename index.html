@@ -35,7 +35,7 @@
       user-select: none;
     }
     .tabs {
-      margin-top: 20px;
+      margin-top: 20px;  /* 調整間距增加10px */
       margin-bottom: 15px;
       display: flex;
       justify-content: center;
@@ -89,10 +89,10 @@
       gap: 20px;
     }
     .card {
-      width: 82px; /* 調整卡片寬度 */
+      width: 82px; /* 手機版卡片寬度 */
       border: 2px solid #ccc;
       border-radius: 8px;
-      background: #fff;
+      background: #ffffff !important; /* 白底 */
       position: relative;
       cursor: pointer;
       transition: border-color 0.3s;
@@ -100,18 +100,18 @@
       user-select: none;
     }
     .card img {
-      width: 80px; /* 調整圖片寬度 */
+      width: 80px; /* 手機版圖片寬度 */
       margin-top: 5px;
       object-fit: contain;
     }
     .card .name, .card .size {
-      width: 80px; /* 調整文字區寬度 */
+      width: 80px;
       max-width: 80px;
       margin: 2px auto;
       font-size: 10px;
       line-height: 1.2;
-      white-space: normal;       /* 允許換行 */
-      word-break: break-word;    /* 必要時換行斷字 */
+      white-space: normal;
+      word-break: break-word;
       overflow-wrap: break-word;
       box-sizing: border-box;
       overflow: visible;
@@ -142,6 +142,22 @@
       fill: white;
       width: 10px;
       height: 10px;
+    }
+
+    /* 電腦版調整：放大卡片尺寸與文字 */
+    @media (min-width: 768px) {
+      .card {
+        width: 120px;
+      }
+      .card img {
+        width: 116px;
+      }
+      .card .name,
+      .card .size {
+        width: 116px;
+        max-width: 116px;
+        font-size: 12px;
+      }
     }
   </style>
 </head>
