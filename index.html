@@ -16,12 +16,14 @@
       text-align: center;
     }
     .top-bar {
-      position: static; /* 不固定，跟著頁面滾動 */
+      /* 不固定，隨頁面滾動 */
+      position: static;
       background-color: rgba(218, 199, 183, 0.95);
       color: #fff;
       padding: 10px 0;
       width: 100%;
       user-select: none;
+      z-index: 1000;
     }
     .top-bar a {
       color: #fff;
@@ -30,15 +32,18 @@
       font-size: 16px;
     }
     .header-container {
+      /* 固定在頂部，不跟著滾動 */
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
       background-color: #f9f9f9;
       padding-top: 20px;
       padding-bottom: 10px;
       padding-left: 10px;
       padding-right: 10px;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-      position: sticky;
-      top: 0;
-      z-index: 998;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+      z-index: 999;
     }
     h1 {
       margin: 0 0 10px;
@@ -94,7 +99,8 @@
     }
     #card-container {
       padding: 10px;
-      padding-top: 90px; /* 避開 sticky header 高度 */
+      /* 往下推 header-container 高度(約 110px) 避免被固定標題擋住 */
+      padding-top: 110px;
       display: flex;
       flex-direction: column;
       gap: 20px;
@@ -315,7 +321,8 @@
         .then(t => JSON.parse(t.substr(47).slice(0, -2)))
         .then(data => {
           let rows = data.table.rows || [];
-          if(sheetName !== "吉伊" && rows.length > 1){
+          // 全部分頁皆跳過第一列標題
+          if (rows.length > 1) {
             rows = rows.slice(1);
           }
 
