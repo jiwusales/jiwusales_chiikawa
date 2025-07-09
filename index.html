@@ -16,14 +16,20 @@
       text-align: center;
     }
     .top-bar {
-      /* 不固定，隨頁面滾動 */
-      position: static;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 40px;
       background-color: rgba(218, 199, 183, 0.95);
       color: #fff;
       padding: 10px 0;
-      width: 100%;
       user-select: none;
-      z-index: 1000;
+      z-index: 1100;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-sizing: border-box;
     }
     .top-bar a {
       color: #fff;
@@ -32,9 +38,8 @@
       font-size: 16px;
     }
     .header-container {
-      /* 固定頂部，純色背景，不加底紋 */
       position: fixed;
-      top: 0;
+      top: 40px; /* 放在 top-bar 正下方 */
       left: 0;
       width: 100%;
       background-color: #f9f9f9; /* 純色背景，不透底紋 */
@@ -42,7 +47,8 @@
       padding-bottom: 10px;
       padding-left: 10px;
       padding-right: 10px;
-      z-index: 999;
+      z-index: 1000;
+      box-sizing: border-box;
     }
     h1 {
       margin: 0 0 10px;
@@ -98,11 +104,11 @@
     }
     #card-container {
       padding: 10px;
-      /* 往下推 header-container 高度避免遮擋 */
-      padding-top: 110px;
+      padding-top: 140px; /* 推開上面兩個固定區 (40 + ~100) */
       display: flex;
       flex-direction: column;
       gap: 20px;
+      box-sizing: border-box;
     }
     .card {
       width: 82px;
@@ -320,9 +326,8 @@
         .then(t => JSON.parse(t.substr(47).slice(0, -2)))
         .then(data => {
           let rows = data.table.rows || [];
-          // 所有分頁皆跳過標題列
           if (rows.length > 1) {
-            rows = rows.slice(1);
+            rows = rows.slice(1); // 跳過標題列
           }
 
           const parsed = rows.map(row => ({
