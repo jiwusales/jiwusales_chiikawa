@@ -8,7 +8,8 @@
     body {
       font-family: Arial, sans-serif;
       background: #f9f9f9;
-      margin: 0; padding: 0;
+      margin: 0;
+      padding: 0;
       color: #333333;
       text-align: center;
     }
@@ -17,7 +18,8 @@
       color: #fff;
       padding: 10px 0;
       position: fixed;
-      top: 0; left: 0;
+      top: 0;
+      left: 0;
       width: 100%;
       z-index: 999;
       user-select: none;
@@ -87,10 +89,6 @@
       display: flex;
       flex-direction: column;
       gap: 20px;
-      background-image: url('https://i.postimg.cc/Kj8V5YMg/2.png');
-      background-repeat: repeat;
-      background-size: 135px;
-       background-position: 0 120px;
     }
     .card {
       width: 82px;
@@ -111,7 +109,8 @@
       margin-top: 5px;
       object-fit: contain;
     }
-    .card .name, .card .size {
+    .card .name,
+    .card .size {
       width: 80px;
       max-width: 80px;
       margin: 2px auto;
@@ -232,12 +231,20 @@
         divider.className = "type-divider";
         divider.innerHTML = `<span>${type}</span>`;
         cardContainer.appendChild(divider);
+
         const groupContainer = document.createElement("div");
         groupContainer.style.display = "flex";
         groupContainer.style.flexWrap = "wrap";
         groupContainer.style.justifyContent = "flex-start";
         groupContainer.style.gap = "8px";
         groupContainer.style.marginLeft = "8px";
+
+        // 🔽 這裡加上背景圖樣
+        groupContainer.style.backgroundImage = "url('https://i.postimg.cc/Kj8V5YMg/2.png')";
+        groupContainer.style.backgroundRepeat = "repeat";
+        groupContainer.style.backgroundSize = "135px";
+        groupContainer.style.backgroundPosition = "0 30px";
+
         grouped[type].forEach(item => {
           const card = document.createElement("div");
           card.className = "card";
