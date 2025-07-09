@@ -108,7 +108,7 @@
       width: 75px;
       max-width: 75px;
       margin: 2px auto;
-      font-size: 12px; /* 預設最大字級 */
+      font-size: 12px; /* 最大字級 */
       white-space: nowrap;
       overflow: hidden;
       text-overflow: clip;
@@ -173,16 +173,19 @@
     let collected = JSON.parse(localStorage.getItem("collectedDolls")) || [];
 
     function fitTextToWidth(element, maxWidth, minFontSize=8, maxFontSize=12) {
-      let fontSize = maxFontSize;
-      element.style.fontSize = fontSize + "px";
-      element.style.whiteSpace = "nowrap";
-      element.style.overflow = "hidden";
-      element.style.textOverflow = "clip";
-
-      while (element.getBoundingClientRect().width > maxWidth && fontSize > minFontSize) {
-        fontSize -= 0.5;
+      function adjust() {
+        let fontSize = maxFontSize;
         element.style.fontSize = fontSize + "px";
+        element.style.whiteSpace = "nowrap";
+        element.style.overflow = "hidden";
+        element.style.textOverflow = "clip";
+
+        while (element.getBoundingClientRect().width > maxWidth && fontSize > minFontSize) {
+          fontSize -= 0.5;
+          element.style.fontSize = fontSize + "px";
+        }
       }
+      requestAnimationFrame(adjust);
     }
 
     function createTab(sheetName, index) {
