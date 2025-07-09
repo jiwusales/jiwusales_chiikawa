@@ -64,10 +64,10 @@
     .type-divider {
       display: flex;
       align-items: center;
+      justify-content: center;
       margin: 20px 0 10px;
       color: #333333;
       user-select: none;
-      justify-content: center;
     }
     .type-divider::before,
     .type-divider::after {
@@ -111,6 +111,8 @@
       font-size: 12px;
       white-space: nowrap;
       box-sizing: border-box;
+      overflow: hidden;
+      text-overflow: clip;
     }
     .card .checkmark {
       position: absolute;
@@ -222,7 +224,7 @@
         groupContainer.style.flexWrap = "wrap";
         groupContainer.style.justifyContent = "flex-start";
         groupContainer.style.gap = "8px";
-        groupContainer.style.marginLeft = "15px"; // 卡片右移
+        groupContainer.style.marginLeft = "12.5px"; // ✅ 調整此行向右偏移 12.5px
 
         grouped[type].forEach(item => {
           const card = document.createElement("div");
@@ -247,8 +249,12 @@
 
           const nameEl = card.querySelector(".name");
           const sizeEl = card.querySelector(".size");
-          fitTextToWidth(nameEl, 75, 8, 12);
-          fitTextToWidth(sizeEl, 75, 8, 12);
+          const imgEl = card.querySelector("img");
+
+          imgEl.onload = () => {
+            fitTextToWidth(nameEl, 75, 8, 12);
+            fitTextToWidth(sizeEl, 75, 8, 12);
+          };
 
           const checkmark = card.querySelector(".checkmark");
           checkmark.style.display = collected.includes(item.name) ? "flex" : "none";
