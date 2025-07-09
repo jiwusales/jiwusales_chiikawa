@@ -67,12 +67,14 @@
       margin: 20px 0 10px;
       color: #333333;
       user-select: none;
+      justify-content: center;
     }
     .type-divider::before,
     .type-divider::after {
       content: "";
       flex: 1;
       border-top: 1px solid #333333;
+      margin: 0 10px;
     }
     .type-divider span {
       margin: 0 15px;
@@ -82,11 +84,9 @@
     }
     #card-container {
       padding: 10px;
-      padding-left: 10px;
       display: flex;
-      flex-wrap: wrap;
-      justify-content: flex-start;
-      gap: 8px;
+      flex-direction: column;
+      gap: 20px;
     }
     .card {
       width: 80px;
@@ -108,10 +108,8 @@
       width: 75px;
       max-width: 75px;
       margin: 2px auto;
-      font-size: 12px; /* 最大字級 */
+      font-size: 12px;
       white-space: nowrap;
-      overflow: hidden;
-      text-overflow: clip;
       box-sizing: border-box;
     }
     .card .checkmark {
@@ -177,9 +175,6 @@
         let fontSize = maxFontSize;
         element.style.fontSize = fontSize + "px";
         element.style.whiteSpace = "nowrap";
-        element.style.overflow = "hidden";
-        element.style.textOverflow = "clip";
-
         while (element.getBoundingClientRect().width > maxWidth && fontSize > minFontSize) {
           fontSize -= 0.5;
           element.style.fontSize = fontSize + "px";
@@ -227,6 +222,7 @@
         groupContainer.style.flexWrap = "wrap";
         groupContainer.style.justifyContent = "flex-start";
         groupContainer.style.gap = "8px";
+        groupContainer.style.marginLeft = "15px"; // 卡片右移
 
         grouped[type].forEach(item => {
           const card = document.createElement("div");
@@ -263,14 +259,10 @@
             if (isCollected) {
               card.style.borderColor = colors[sheetName] || "#ccc";
               checkmark.style.display = "flex";
+              collected.push(item.name);
             } else {
               card.style.borderColor = "#ccc";
               checkmark.style.display = "none";
-            }
-
-            if (isCollected) {
-              collected.push(item.name);
-            } else {
               collected = collected.filter(n => n !== item.name);
             }
             localStorage.setItem("collectedDolls", JSON.stringify(collected));
