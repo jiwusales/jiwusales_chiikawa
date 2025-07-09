@@ -37,15 +37,15 @@
       font-weight: bold;
       font-size: 16px;
     }
-     .header-container {
-        margin-top: 40px;   
-        background-color: #f9f9f9; /* 純色背景，不透底紋 */
-        padding-top: 20px;
-        padding-bottom: 10px;
-        padding-left: 10px;
-        padding-right: 10px;
-        box-sizing: border-box;
-}
+    .header-container {
+      margin-top: 40px; /* 推開固定 top-bar */
+      background-color: #f9f9f9; /* 純色背景，不壓底紋 */
+      padding-top: 20px;
+      padding-bottom: 5px; /* 縮小底部空間 */
+      padding-left: 10px;
+      padding-right: 10px;
+      box-sizing: border-box;
+    }
     h1 {
       margin: 0 0 10px;
       font-size: 18px;
@@ -57,7 +57,7 @@
       justify-content: center;
       gap: 10px;
       flex-wrap: wrap;
-      margin-bottom: 5px;  /* 新增這行，縮小底部間距 */
+      margin-bottom: 0; /* 去除底部多餘間距 */
     }
     .tab {
       background: #dcdcdc;
@@ -82,7 +82,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      margin: 5px 0 10px;  /* 將上方間距從20px改成5px */
+      margin: 2px 0 10px; /* 縮小上方間距 */
       color: #333333;
       user-select: none;
     }
@@ -101,7 +101,7 @@
     }
     #card-container {
       padding: 10px;
-      padding-top: 140px; /* 推開上面兩個固定區 (40 + ~100) */
+      padding-top: 80px; /* 避開固定 top-bar 和 header-container */
       display: flex;
       flex-direction: column;
       gap: 20px;
@@ -297,69 +297,4 @@
             card.classList.toggle("collected");
             const isCollected = card.classList.contains("collected");
             if (isCollected) {
-              card.style.borderColor = colors[sheetName] || "#ccc";
-              checkmark.style.display = "flex";
-              collected.push(item.name);
-            } else {
-              card.style.borderColor = "#ccc";
-              checkmark.style.display = "none";
-              collected = collected.filter(n => n !== item.name);
-            }
-            localStorage.setItem("collectedDolls", JSON.stringify(collected));
-          });
-
-          groupContainer.appendChild(card);
-        });
-
-        cardContainer.appendChild(groupContainer);
-      });
-    }
-
-    function loadSheetData(sheetName) {
-      cardContainer.innerHTML = "載入中...";
-      const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(sheetName)}`;
-      fetch(url)
-        .then(res => res.text())
-        .then(t => JSON.parse(t.substr(47).slice(0, -2)))
-        .then(data => {
-          let rows = data.table.rows || [];
-          if (rows.length > 1) {
-            rows = rows.slice(1); // 跳過標題列
-          }
-
-          const parsed = rows.map(row => ({
-            type: row.c[0]?.v || "無類型",
-            name: row.c[1]?.v || "",
-            imgUrl: row.c[3]?.v || "",
-            size: row.c[5]?.v || ""
-          }));
-
-          renderCards(parsed, sheetName);
-        })
-        .catch(err => {
-          cardContainer.innerHTML = "載入資料失敗，請稍後再試。";
-          console.error(err);
-        });
-    }
-
-    function getInitialSheet() {
-      const urlParams = new URLSearchParams(window.location.search);
-      const tab = urlParams.get("tab");
-      if (tab && sheetNames.includes(tab)) {
-        return tab;
-      }
-      return sheetNames[0];
-    }
-
-    sheetNames.forEach(createTab);
-    const initialSheet = getInitialSheet();
-
-    document.querySelectorAll(".tab").forEach(t => {
-      if (t.textContent === initialSheet) t.classList.add("active");
-    });
-    document.documentElement.style.setProperty('--tab-color', colors[initialSheet] || "#999");
-
-    loadSheetData(initialSheet);
-  </script>
-</body>
-</html>
+              card.style.borderColor = col
