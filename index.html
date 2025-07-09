@@ -89,7 +89,7 @@
       gap: 20px;
     }
     .card {
-      width: 82px; /* 調整卡片寬度 */
+      width: 82px; /* 卡片寬度 */
       border: 2px solid #ccc;
       border-radius: 8px;
       background: #fff;
@@ -100,18 +100,18 @@
       user-select: none;
     }
     .card img {
-      width: 80px; /* 調整圖片寬度 */
+      width: 80px; /* 圖片寬度 */
       margin-top: 5px;
       object-fit: contain;
     }
     .card .name, .card .size {
-      width: 80px; /* 調整文字區寬度 */
+      width: 80px; /* 文字區寬度 */
       max-width: 80px;
       margin: 2px auto;
       font-size: 10px;
       line-height: 1.2;
-      white-space: normal;       /* 允許換行 */
-      word-break: break-word;    /* 必要時換行斷字 */
+      white-space: normal;
+      word-break: break-word;
       overflow-wrap: break-word;
       box-sizing: border-box;
       overflow: visible;
@@ -211,17 +211,22 @@
       });
 
       Object.keys(grouped).forEach(type => {
+        // 類型標題
         const divider = document.createElement("div");
         divider.className = "type-divider";
         divider.innerHTML = `<span>${type}</span>`;
-        cardContainer.appendChild(divider);
 
+        // 外層置中容器
+        const outerWrapper = document.createElement("div");
+        outerWrapper.style.textAlign = "center";
+
+        // 卡片容器：inline-flex讓容器寬度隨內容，卡片每行靠左排列
         const groupContainer = document.createElement("div");
-        groupContainer.style.display = "flex";
+        groupContainer.style.display = "inline-flex";
         groupContainer.style.flexWrap = "wrap";
-        groupContainer.style.justifyContent = "center"; // 置中排列
+        groupContainer.style.justifyContent = "flex-start";
         groupContainer.style.gap = "8px";
-        // 移除 marginLeft
+        groupContainer.style.maxWidth = "100%";
 
         grouped[type].forEach(item => {
           const card = document.createElement("div");
@@ -265,7 +270,9 @@
           groupContainer.appendChild(card);
         });
 
-        cardContainer.appendChild(groupContainer);
+        outerWrapper.appendChild(divider);
+        outerWrapper.appendChild(groupContainer);
+        cardContainer.appendChild(outerWrapper);
       });
     }
 
