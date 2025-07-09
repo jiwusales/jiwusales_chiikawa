@@ -16,48 +16,34 @@
       text-align: center;
     }
     .top-bar {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 40px;
-      background-color: rgba(218, 199, 183, 0.95);
+      background: #dac7b7;
       color: #fff;
       padding: 10px 0;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%;
+      z-index: 999;
       user-select: none;
-      z-index: 1100;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-sizing: border-box;
     }
     .top-bar a {
-      color: #ffffff;
+      color: #fff;
       text-decoration: none;
       font-weight: bold;
       font-size: 16px;
     }
-    .header-container {
-      margin-top: 40px; /* 推開固定 top-bar */
-      background-color: #f9f9f9; /* 純色背景，不壓底紋 */
-      padding-top: 20px;
-      padding-bottom: 5px; /* 縮小底部空間 */
-      padding-left: 10px;
-      padding-right: 10px;
-      box-sizing: border-box;
-    }
     h1 {
-      margin: 0 0 10px;
+      margin: 60px 0 10px;
       font-size: 18px;
       color: #333333;
       user-select: none;
     }
     .tabs {
+      margin-top: 20px;
+      margin-bottom: 15px;
       display: flex;
       justify-content: center;
       gap: 10px;
       flex-wrap: wrap;
-      margin-bottom: 0; /* 去除底部多餘間距 */
     }
     .tab {
       background: #dcdcdc;
@@ -82,7 +68,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      margin: 2px 0 10px; /* 縮小上方間距 */
+      margin: 20px 0 10px;
       color: #333333;
       user-select: none;
     }
@@ -101,11 +87,9 @@
     }
     #card-container {
       padding: 10px;
-      padding-top: 80px; /* 避開固定 top-bar 和 header-container */
       display: flex;
       flex-direction: column;
       gap: 20px;
-      box-sizing: border-box;
     }
     .card {
       width: 82px;
@@ -132,7 +116,12 @@
       margin: 2px auto;
       font-size: 10px;
       line-height: 1.2;
+      white-space: normal;
       word-break: break-word;
+      overflow-wrap: break-word;
+      box-sizing: border-box;
+      overflow: visible;
+      text-overflow: clip;
       min-height: 16px;
       color: #333333 !important;
     }
@@ -192,14 +181,12 @@
 </head>
 <body>
   <div class="top-bar">
-    如資料有誤或有缺可私訊 ⮕ <a href="https://portaly.cc/jiwusales" target="_blank" rel="noopener noreferrer">JIWU吉物販售</a>
+    如資料有誤或有缺可私訊 ⮕ <a href="https://portaly.cc/jiwusales?fbclid=PAZXh0bgNhZW0CMTEAAacZE2VmLbS9E3S68kFA-ozxF2GupCqwGGHlWeJ6cxe6CHpgBBnYiGgKZms_fw_aem_vzWk5B1N5cah6MV48WZNgg" target="_blank" rel="noopener noreferrer">JIWU吉物販售</a>
   </div>
 
-  <div class="header-container">
-    <h1>JIWU吉物販售．吉伊卡哇寶寶圖鑑</h1>
-    <div class="tabs" id="tabs"></div>
-  </div>
+  <h1>JIWU吉物販售．吉伊卡哇寶寶圖鑑</h1>
 
+  <div class="tabs" id="tabs"></div>
   <div id="card-container"></div>
 
   <script>
@@ -297,4 +284,69 @@
             card.classList.toggle("collected");
             const isCollected = card.classList.contains("collected");
             if (isCollected) {
-              card.style.borderColor = col
+              card.style.borderColor = colors[sheetName] || "#ccc";
+              checkmark.style.display = "flex";
+              collected.push(item.name);
+            } else {
+              card.style.borderColor = "#ccc";
+              checkmark.style.display = "none";
+              collected = collected.filter(n => n !== item.name);
+            }
+            localStorage.setItem("collectedDolls", JSON.stringify(collected));
+          });
+
+          groupContainer.appendChild(card);
+        });
+
+        cardContainer.appendChild(groupContainer);
+      });
+    }
+
+    function loadSheetData(sheetName) {
+      cardContainer.innerHTML = "載入中...";
+      const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(sheetName)}`;
+      fetch(url)
+        .then(res => res.text())
+        .then(t => JSON.parse(t.substr(47).slice(0, -2)))
+        .then(data => {
+          let rows = data.table.rows || [];
+
+          // ✅ 無論哪一頁都跳過第一列（通常是表頭）
+          if (rows.length > 1) {
+            rows = rows.slice(1);
+          }
+
+          const parsed = rows.map(row => ({
+            type: row.c[0]?.v || "無類型",
+            name: row.c[1]?.v || "",
+            imgUrl: row.c[3]?.v || "",
+            size: row.c[5]?.v || ""
+          }));
+
+          renderCards(parsed, sheetName);
+        })
+        .catch(err => {
+          cardContainer.innerHTML = "載入資料失敗，請稍後再試。";
+          console.error(err);
+        });
+    }
+
+    function getInitialSheet() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const tab = urlParams.get("tab");
+      if (tab && sheetNames.includes(tab)) {
+        return tab;
+      }
+      return sheetNames[0];
+    }
+
+    sheetNames.forEach(createTab);
+    const initialSheet = getInitialSheet();
+    document.querySelectorAll(".tab").forEach(t => {
+      if (t.textContent === initialSheet) t.classList.add("active");
+    });
+    document.documentElement.style.setProperty('--tab-color', colors[initialSheet] || "#999");
+    loadSheetData(initialSheet);
+  </script>
+</body>
+</html>
