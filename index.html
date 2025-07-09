@@ -107,12 +107,18 @@
       margin-top: 5px;
       object-fit: contain;
     }
-    .card .name,
+    .card .name {
+      width: 75px;
+      margin: 2px auto;
+      font-size: 12px; /* 會由 JS 動態改 */
+      white-space: nowrap;
+      overflow: visible;
+      text-overflow: clip;
+    }
     .card .size {
       width: 75px;
       margin: 2px auto;
       font-size: 12px;
-      word-wrap: break-word;
     }
     .card .checkmark {
       position: absolute;
@@ -180,6 +186,19 @@
     const cardContainer = document.getElementById("card-container");
     let collected = JSON.parse(localStorage.getItem("collectedDolls")) || [];
 
+    function fitTextToWidth(element, maxWidth, minFontSize=8, maxFontSize=12) {
+      let fontSize = maxFontSize;
+      element.style.fontSize = fontSize + "px";
+      element.style.whiteSpace = "nowrap";
+      element.style.overflow = "visible";
+      element.style.textOverflow = "clip";
+
+      while (element.scrollWidth > maxWidth && fontSize > minFontSize) {
+        fontSize -= 0.5;
+        element.style.fontSize = fontSize + "px";
+      }
+    }
+
     function createTab(sheetName, index) {
       const tab = document.createElement("div");
       tab.className = "tab";
@@ -240,6 +259,9 @@
             <div class="name">${item.name}</div>
             <div class="size">${item.size}</div>
           `;
+
+          const nameEl = card.querySelector(".name");
+          fitTextToWidth(nameEl, 75, 8, 12);
 
           const checkmark = card.querySelector(".checkmark");
           checkmark.style.display = collected.includes(item.name) ? "flex" : "none";
