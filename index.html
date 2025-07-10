@@ -168,6 +168,14 @@
       color: #fff;
       text-decoration: underline;
     }
+    hr.divider-line {
+      border: none;
+      border-top: 1px solid #333333;
+      margin: 10px 0;
+      width: 90%;
+      max-width: 600px;
+      user-select: none;
+    }
     @media (min-width: 768px) {
       .card {
         width: 120px;
@@ -201,9 +209,12 @@
   </div>
 
   <h1>JIWU吉物販售．吉伊卡哇寶寶圖鑑</h1>
+  
   <div class="tabs" id="tabs"></div>
+  <hr class="divider-line" /> <!-- 新增：分頁按鈕下方分隔線 -->
 
   <!-- 這裡是新增顯示已擁有數量的區塊 -->
+  <hr class="divider-line" /> <!-- 新增：已擁有寶寶上方分隔線 -->
   <div id="owned-count"></div>
 
   <div id="card-container"></div>
@@ -246,7 +257,7 @@
     function updateOwnedCount(data) {
       const totalCount = data.length;
       const ownedCount = data.filter(item => collected.includes(item.name)).length;
-      ownedCountDiv.textContent = `(｡˃́⌔˂̀｡)已擁有寶寶（${ownedCount} / ${totalCount}）`;
+      ownedCountDiv.textContent = `(｡˃́⌔˂̀｡) 已擁有寶寶（${ownedCount} / ${totalCount}）`;
     }
 
     function renderCards(data, sheetName) {
