@@ -87,7 +87,8 @@
     }
     #owned-count {
       font-weight: bold;
-      margin-bottom: 8px;
+      margin-top: 15px;     /* 上方間距 */
+      margin-bottom: 5px;  /* 下方間距 */
       color: #333333;
       user-select: none;
     }
@@ -245,7 +246,7 @@
     function updateOwnedCount(data) {
       const totalCount = data.length;
       const ownedCount = data.filter(item => collected.includes(item.name)).length;
-      ownedCountDiv.textContent = `已擁有ㄉ寶寶（${ownedCount} / ${totalCount}）`;
+      ownedCountDiv.textContent = `(｡˃́⌔˂̀｡)已擁有寶寶（${ownedCount} / ${totalCount}）`;
     }
 
     function renderCards(data, sheetName) {
