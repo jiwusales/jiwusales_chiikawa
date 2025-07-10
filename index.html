@@ -170,9 +170,10 @@
     }
     /* 分頁按鈕下面的置中細線 */
     .center-divider {
-      width: 100px;                  /* 線的長度 */
+      width: 90vw;                  /* 線的長度 */
+      max-width: 1200px;            /* 最大寬度上限，避免太長 */
       border-top: 1px solid #333;   /* 線的顏色 */
-      margin: 10px auto 0;           /* 上方間距 + 置中，下方間距0 */
+      margin: 10px auto 0;          /* 上方間距 + 置中，下方間距0 */
       user-select: none;
     }
     @media (min-width: 768px) {
