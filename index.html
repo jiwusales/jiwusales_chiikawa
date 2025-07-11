@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+  <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
   <meta charset="UTF-8" />
@@ -15,35 +15,37 @@
   <meta name="apple-mobile-web-app-capable" content="yes" />
   
   <style>
+    /* 🔹 固定左上角的重新整理按鈕樣式 */
     .control-btn {
-  position: fixed;
-  top: 60px;
-  left: 10px;
-  width: 35px;
-  height: 35px;
-  border: none;
-  border-radius: 50%;
-  background-color: #E7D4C0;
-  opacity: 0.5;
-  box-shadow: 0 0 6px rgba(0, 0, 0, 0.25);
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 999;
-  transition: opacity 0.2s, transform 0.2s;
-  padding: 0;
+      position: fixed;
+      top: 60px;
+      left: 10px;
+      width: 35px;
+      height: 35px;
+      border: none;
+      border-radius: 50%;
+      background-color: #E7D4C0;
+      opacity: 0.5;
+      box-shadow: 0 0 6px rgba(0, 0, 0, 0.25);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 999;
+      transition: opacity 0.2s, transform 0.2s;
+      padding: 0;
+ }
+    .control-btn img {
+      width: 60%;
+      height: 60%;
+      pointer-events: none;
+      user-select: none;
 }
-.control-btn img {
-  width: 60%;
-  height: 60%;
-  pointer-events: none;
-  user-select: none;
+     .control-btn:hover {
+      opacity: 0.8;
+      transform: scale(1.05);
 }
-.control-btn:hover {
-  opacity: 0.8;
-  transform: scale(1.05);
-}
+    /* 🔹 網頁基本樣式：字體、背景、顏色 */
     body {
       font-family: Arial, sans-serif;
       background-color: #f9f9f9;
@@ -55,6 +57,7 @@
       color: #333333;
       text-align: center;
     }
+    /* 🔹 頂部提示列（包含聯絡連結） */
     .top-bar {
       background: #dac7b7;
       color: #fff;
@@ -72,12 +75,14 @@
       font-weight: bold;
       font-size: 16px;
     }
+    /* 🔹 頁面主標題 */
     h1 {
       margin: 60px 0 10px;
       font-size: 18px;
       color: #333333;
       user-select: none;
     }
+     /* 🔹 分頁按鈕區（角色選單） */
     .tabs {
       margin-top: 20px;
       margin-bottom: 15px;
@@ -103,6 +108,7 @@
       background-color: var(--tab-color);
       color: white;
     }
+    /* 🔹 分類分隔線（寶寶類型標題） */
     .type-divider {
       display: flex;
       align-items: center;
@@ -124,6 +130,7 @@
       text-align: center;
       white-space: nowrap;
     }
+    /* 🔹 已擁有寶寶數量顯示 */
     #owned-count {
       font-weight: bold;
       margin-top: 20px;     /* 上方間距 */
@@ -131,12 +138,14 @@
       color: #333333;
       user-select: none;
     }
+    /* 🔹 卡片容器（放寶寶卡片） */
     #card-container {
       padding: 10px;
       display: flex;
       flex-direction: column;
       gap: 20px;
     }
+    /* 🔹 單張寶寶卡片樣式 */
     .card {
       width: 82px;
       border: 2px solid #ccc;
@@ -173,6 +182,7 @@
     .card .name {
       font-weight: bold;
     }
+    /* 🔹 卡片右上角的已收集勾勾 */
     .card .checkmark {
       position: absolute;
       top: 3px;
@@ -193,6 +203,7 @@
       width: 10px;
       height: 10px;
     }
+    /* 🔹 頁面底部提示區 */
     .bottom-bar {
       background-color: #dac7b7;
       color: #fff;
@@ -207,7 +218,7 @@
       color: #fff;
       text-decoration: underline;
     }
-    /* 分頁按鈕下面的置中細線 */
+    /* 🔹 分頁按鈕下方的細分隔線 */
     .center-divider {
       width: 90vw;                  /* 線的長度 */
       max-width: 1200px;            /* 最大寬度上限，避免太長 */
@@ -215,6 +226,7 @@
       margin: 10px auto 0;          /* 上方間距 + 置中，下方間距0 */
       user-select: none;
     }
+    /* 🔹 桌面版樣式調整 */
     @media (min-width: 768px) {
       .card {
         width: 120px;
@@ -227,6 +239,7 @@
         font-size: 12px;
       }
     }
+    /* 🔹 深色模式調整 */
     @media (prefers-color-scheme: dark) {
       .card {
         background-color: #ffffff !important;
@@ -242,31 +255,40 @@
     }
   </style>
 </head>
-<body>
+<body
+  <!-- 🔹 頂部提示列 -->
   <div class="top-bar">
     如資料有誤或有缺可私訊 ⮕ <a href="https://lin.ee/X6FUFI9" target="_blank">JIWU吉物販售</a>
   </div>
-
+  <!-- 🔹 網頁標題 -->
   <h1>JIWU吉物販售．吉伊卡哇寶寶圖鑑</h1>
-
+  
+  <!-- 🔹 分頁按鈕區 -->
   <div class="tabs" id="tabs"></div>
-  <div class="center-divider"></div>  <!-- 只有分頁按鈕下面的分隔線 -->
+  
+  <!-- 🔹 分頁按鈕下方分隔線 -->
+  <div class="center-divider"></div>  
 
-  <!-- 這裡是新增顯示已擁有數量的區塊 -->
+  <!-- 🔹 顯示已擁有寶寶數量 -->
   <div id="owned-count"></div>
 
+  <!-- 🔹 寶寶卡片容器 -->
   <div id="card-container"></div>
 
+  <!-- 🔹 頁面底部提示區 -->
   <div class="bottom-bar">
     <a href="https://portaly.cc/jiwusales" target="_blank">歡迎追蹤按讚 (ෆ꒳´ෆ) JIWU吉物販售</a>
   </div>
 
-  <!--  重新整理 按鈕 -->
+  <!-- 🔹 左上角重新整理按鈕 -->
   <button id="refreshBtn" class="control-btn" onclick="location.reload()" aria-label="重新整理" title="重新整理">
   <img src="https://i.postimg.cc/gkpnr8RJ/re.png" alt="Refresh" />
   </button>
   
   <script>
+    // =========================
+    // 🔥 主要變數 & 顏色設定
+    // =========================
     const SHEET_ID = "17gH9HZKvW_6fMCWYLyqnzMHj40rA7PiwWg6L0GvbFgQ";
     const sheetNames = ["吉伊", "小八", "兔兔", "小桃", "師傅", "栗子", "獅薩", "古本", "其他角色"];
     const colors = {
@@ -280,6 +302,9 @@
     const ownedCountDiv = document.getElementById("owned-count");
     let collected = JSON.parse(localStorage.getItem("collectedDolls")) || [];
 
+    // =========================
+    // 🔹 建立分頁按鈕
+    // =========================
     function createTab(sheetName) {
       const tab = document.createElement("div");
       tab.className = "tab";
@@ -297,12 +322,18 @@
       tabsContainer.appendChild(tab);
     }
 
+    // =========================
+    // 🔹 更新已擁有寶寶數量
+    // =========================
     function updateOwnedCount(data) {
       const totalCount = data.length;
       const ownedCount = data.filter(item => collected.includes(item.name)).length;
       ownedCountDiv.textContent = `(｡˃́⌔˂̀｡)已擁有寶寶（${ownedCount} / ${totalCount}）`;
     }
 
+    // =========================
+    // 🔹 渲染卡片（依類型分類）
+    // =========================
     function renderCards(data, sheetName) {
       cardContainer.innerHTML = "";
       let grouped = {};
@@ -374,6 +405,9 @@
       });
     }
 
+    // =========================
+    // 🔹 載入 Google Sheets 資料
+    // =========================
     function loadSheetData(sheetName) {
       cardContainer.innerHTML = "載入中...";
       ownedCountDiv.textContent = "";
@@ -388,7 +422,7 @@
             type: row.c[0]?.v || "無類型",
             name: row.c[1]?.v || "",
             imgUrl: row.c[3]?.v || "",
-            size: row.c[5]?.v || ""
+            size: row.c[5]?.v || ""ㄋ 
           }));
           renderCards(parsed, sheetName);
         })
@@ -398,12 +432,18 @@
         });
     }
 
+    // =========================
+    // 🔹 取得初始分頁（URL ?tab=）
+    // =========================
     function getInitialSheet() {
       const urlParams = new URLSearchParams(window.location.search);
       const tab = urlParams.get("tab");
       return sheetNames.includes(tab) ? tab : sheetNames[0];
     }
 
+    // =========================
+    // 🔹 初始化：建立分頁 & 載入資料
+    // =========================
     sheetNames.forEach(createTab);
     const initialSheet = getInitialSheet();
     document.querySelectorAll(".tab").forEach(t => {
