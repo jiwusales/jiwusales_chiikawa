@@ -386,7 +386,7 @@ const images = {
   "栗子": "https://i.postimg.cc/FzGMK8bS/icon.png",
   "獅薩": "https://i.postimg.cc/660Jz4sQ/icon.png",
   "古本": "https://i.postimg.cc/nh5t7yyY/icon.png",
-  "其他角色": "https://i.postimg.cc/63xJbd58/icon.png"
+  "其他角色": "https://i.postimg.cc/63xJbd58/icon.png",
   "重置圖鑑": "https://i.postimg.cc/d3qMwwCv/icon.png"
 };
 
@@ -592,24 +592,6 @@ const initialSheet = getInitialSheet();
 tabElements[initialSheet].classList.add("active");
 document.documentElement.style.setProperty('--tab-color', colors[initialSheet] || "#999");
 loadSheetData(initialSheet);
-
-  resetTab.addEventListener("click", () => {
-    if (confirm("確定要重置圖鑑嗎？\n（會清除所有收藏紀錄）")) {
-      localStorage.removeItem("collectedDolls");
-      collected = [];
-      // 重新載入目前分頁資料並更新頁籤
-      const activeTab = Object.keys(tabElements).find(name => tabElements[name].classList.contains("active")) || sheetNames[0];
-      loadSheetData(activeTab);
-      sheetNames.forEach(updateTabCount);
-      alert("已重置圖鑑收藏。");
-    }
-  });
-
-  tabsContainer.appendChild(resetTab);
-}
-
-// 新增重置按鈕
-createResetTab();
 
 </script>
 </body>
