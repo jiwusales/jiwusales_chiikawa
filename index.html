@@ -76,42 +76,34 @@ body {
 
 /* ✅ 擁有數量按鈕 */
 #owned-count {
-  top: 110px;
-  left: 10px;
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  background-color: rgba(231, 212, 192, 0.9);
-  color: #333333;
-  font-weight: bold;
-  font-size: 12px;
-  line-height: 1.1;
-  text-align: center;
-  user-select: none;
-  text-align: center;
-  user-select: none;
-  padding: 0;
-  cursor: default;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 0 6px rgba(0, 0, 0, 0.25);
-  z-index: 998;
-  pointer-events: none;
-  position: fixed;
-  gap: 0.5px;
+  gap: 1px; /* 控制行間距 */
+  height: auto; /* 高度自適應 */
+  padding: 2px 0;
+  width: 40px;
 }
-  #owned-count strong {
+#owned-count strong {
+  font-size: 10px;
+  margin: 0;
+  padding: 0;
+  line-height: 1;
+}
+#owned-count .divider {
   font-size: 10px;
   line-height: 1;
+  color: #555;
   margin: 0;
   padding: 0;
 }
 #owned-count small {
   font-size: 10px;
   color: #555;
-  margin-top: -4px;
+  margin: 0;
+  padding: 0;
+  line-height: 1;
 }
 
 .top-bar {
@@ -366,10 +358,10 @@ function updateOwnedCount(data) {
   const ownedCount = data.filter(item => collected.includes(item.name)).length;
   const ownedCountBtn = document.getElementById("owned-count");
   ownedCountBtn.innerHTML = `
-    <strong>${ownedCount}</strong><br>
-    —<br>
-    <small>${totalCount}</small>
-  `;
+  <strong>${ownedCount}</strong>
+  <div class="divider">—</div>
+  <small>${totalCount}</small>
+`;
 }
     
     function renderCards(data, sheetName) {
