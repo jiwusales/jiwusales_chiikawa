@@ -46,7 +46,7 @@ body {
   height: 40px;
   border: none;
   border-radius: 50%;
-  background-color: #E7D4C0;
+  background-color: rgba(231, 212, 192, 0.9)
   opacity: 0.5;
   box-shadow: 0 0 6px rgba(0, 0, 0, 0.25);
   cursor: pointer;
@@ -81,11 +81,11 @@ body {
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background-color: rgba(231, 212, 192, 0.8);
+  background-color: rgba(231, 212, 192, 0.9);
   color: #333333;
   font-weight: bold;
   font-size: 12px;
-  line-height: 40px;
+  line-height: 1.1;
   text-align: center;
   user-select: none;
   text-align: center;
@@ -99,6 +99,17 @@ body {
   z-index: 998;
   pointer-events: none;
   position: fixed;
+  gap: 1px;
+}
+  #owned-count strong {
+  font-size: 16px;
+  line-height: 1.2;
+  margin: 0;
+}
+#owned-count small {
+  font-size: 10px;
+  color: #555;
+  margin-top: -4px;
 }
 
 .top-bar {
@@ -349,9 +360,14 @@ h1 {
     }
 
 function updateOwnedCount(data) {
+  const totalCount = data.length;
   const ownedCount = data.filter(item => collected.includes(item.name)).length;
   const ownedCountBtn = document.getElementById("owned-count");
-  ownedCountBtn.textContent = ownedCount;
+  ownedCountBtn.innerHTML = `
+    <strong>${ownedCount}</strong><br>
+    —<br>
+    <small>${totalCount}</small>
+  `;
 }
     
     function renderCards(data, sheetName) {
