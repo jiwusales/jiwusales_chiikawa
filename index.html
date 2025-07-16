@@ -13,9 +13,8 @@
   <meta property="og:type" content="website" />
   <meta name="twitter:card" content="summary_large_image" />
   
-    <!-- 分頁小圖（favicon）-->
+  <!-- 分頁小圖（favicon）-->
   <link rel="icon" href="https://i.postimg.cc/3R7nNT0k/icon.png" type="image/png" />
-
   <!-- 桌面/手機主畫面捷徑圖示 -->
   <link rel="apple-touch-icon" href="https://i.postimg.cc/dV18mp5f/image.png" />
   <meta name="theme-color" content="#dac7b7" />
@@ -39,7 +38,7 @@ body {
   text-align: center;
 }
 
-/* 🔘 控制按鈕共用樣式（圓形按鈕） */
+/* 🔘 控制按鈕共用樣式 */
 .control-btn {
   position: fixed;
   width: 40px;
@@ -120,7 +119,7 @@ h1 {
 .tab {
   position: relative;
   width: 80px;
-  height: 100px;
+  height: 110px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -143,6 +142,16 @@ h1 {
   left: 0;
   transform: rotate(-90deg);
 }
+.tab-circle img {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 50px;
+  height: 50px;
+  object-fit: contain;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+}
 .tab-label {
   margin-top: 8px;
   font-size: 14px;
@@ -159,10 +168,6 @@ h1 {
   user-select: none;
   text-align: left;
   font-size: 18px;
-}
-.type-divider::before,
-.type-divider::after {
-  content: none;
 }
 .type-divider span {
   margin: 0 15px;
@@ -203,7 +208,6 @@ h1 {
   font-size: 10px;
   line-height: 1.2;
   word-break: break-word;
-  overflow-wrap: break-word;
   min-height: 16px;
   color: #333333 !important;
   display: block;
@@ -285,10 +289,10 @@ h1 {
     如資料有誤或有缺可私訊 ⮕ <a href="https://lin.ee/X6FUFI9" target="_blank">JIWU吉物販售</a>
   </div>
 
-<!-- LOGO -->
-<div class="logo-container">
-  <img src="https://i.postimg.cc/CLBFxHs3/logo-banner.png" alt="JIWU LOGO" />
-</div>
+  <!-- LOGO -->
+  <div class="logo-container">
+    <img src="https://i.postimg.cc/CLBFxHs3/logo-banner.png" alt="JIWU LOGO" />
+  </div>
   
   <h1>吉伊卡哇寶寶圖鑑</h1>
 
@@ -300,18 +304,29 @@ h1 {
     <a href="https://portaly.cc/jiwusales" target="_blank">歡迎追蹤按讚 d(`･∀･)b JIWU吉物販售</a>
   </div>
 
-  <!--  重新整理 按鈕 -->
+  <!-- 重新整理 按鈕 -->
   <button id="refreshBtn" class="control-btn" onclick="location.reload()" aria-label="重新整理" title="重新整理">
-  <img src="https://i.postimg.cc/gkpnr8RJ/re.png" alt="Refresh" />
+    <img src="https://i.postimg.cc/gkpnr8RJ/re.png" alt="Refresh" />
   </button>
-  
-  <script>
+
+<script>
 const SHEET_ID = "17gH9HZKvW_6fMCWYLyqnzMHj40rA7PiwWg6L0GvbFgQ";
 const sheetNames = ["吉伊", "小八", "兔兔", "小桃", "師傅", "栗子", "獅薩", "古本", "其他角色"];
 const colors = {
   "吉伊": "#d77485", "小八": "#6293b8", "兔兔": "#f9be3c",
   "小桃": "#838BC2", "師傅": "#CCAFA5", "栗子": "#94C973",
   "獅薩": "#FBAA60", "古本": "#eb9e97", "其他角色": "#45818e"
+};
+const images = {
+  "吉伊": "https://i.postimg.cc/85hPKX1f/image.png",
+  "小八": "https://i.postimg.cc/tT04zGHH/image.png",
+  "兔兔": "https://i.postimg.cc/BvPvDQkg/image.png",
+  "小桃": "https://i.postimg.cc/cLbHr89C/image.png",
+  "師傅": "https://i.postimg.cc/g2JjzKK1/image.png",
+  "栗子": "https://i.postimg.cc/CLwdt0nh/image.png",
+  "獅薩": "https://i.postimg.cc/HWwVBnxv/image.png",
+  "古本": "https://i.postimg.cc/bNLdf51Q/image.png",
+  "其他角色": "https://i.postimg.cc/Fz8CBvhh/image.png"
 };
 
 const tabsContainer = document.getElementById("tabs");
@@ -365,16 +380,10 @@ function updateTabCount(sheetName) {
             stroke-dashoffset="${offset}"
             stroke-linecap="round"
           ></circle>
-          <text
-            x="50%" y="50%" text-anchor="middle"
-            dominant-baseline="middle"
-            font-size="12" fill="#333333" font-weight="bold"
-          >
-            ${ownedCount}/${totalCount}
-          </text>
         </svg>
+        <img src="${images[sheetName]}" alt="${sheetName}">
       </div>
-      <div class="tab-label">${sheetName}</div>
+      <div class="tab-label">${sheetName}<br>${ownedCount}/${totalCount}</div>
     `;
   }
 }
@@ -505,8 +514,7 @@ function getInitialSheet() {
 
 // 初始化
 sheetNames.forEach(createTab);
-preloadAllSheets(); // 預載入所有資料顯示正確數量
-
+preloadAllSheets();
 const initialSheet = getInitialSheet();
 tabElements[initialSheet].classList.add("active");
 document.documentElement.style.setProperty('--tab-color', colors[initialSheet] || "#999");
