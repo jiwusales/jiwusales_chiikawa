@@ -81,19 +81,20 @@ body {
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background-color: rgba(231, 212, 192, 0.7); /* ← 這裡改掉 */
+  background-color: rgba(231, 212, 192, 0.8);
   color: #333333;
   font-weight: bold;
   font-size: 12px;
-  line-height: 1.2;
+  line-height: 40px;
   text-align: center;
   user-select: none;
-  padding: 8px 4px;
+  text-align: center;
+  user-select: none;
+  padding: 0;
   cursor: default;
   display: flex;
-  flex-direction: column;
+  align-items: center;
   justify-content: center;
-  gap: 2px;
   box-shadow: 0 0 6px rgba(0, 0, 0, 0.25);
   z-index: 998;
   pointer-events: none;
@@ -347,16 +348,10 @@ h1 {
       tabsContainer.appendChild(tab);
     }
 
-    function updateOwnedCount(data) {
-  const totalCount = data.length;
+function updateOwnedCount(data) {
   const ownedCount = data.filter(item => collected.includes(item.name)).length;
   const ownedCountBtn = document.getElementById("owned-count");
-  ownedCountBtn.innerHTML = `
-    已擁有<br>
-    ${ownedCount}<br>
-    －<br>
-    ${totalCount}
-  `;
+  ownedCountBtn.textContent = ownedCount;
 }
     
     function renderCards(data, sheetName) {
