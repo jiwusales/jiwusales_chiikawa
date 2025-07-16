@@ -131,8 +131,8 @@ h1 {
 }
 .tab-circle {
   position: relative;
-  width: 56px; /* 70px * 0.8 */
-  height: 56px;
+  width: 40px;
+  height: 40px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -152,8 +152,8 @@ h1 {
   position: absolute;
   top: 0;
   left: 0;
-  width: 56px;
-  height: 56px;
+  width: 40px;
+  height: 40px;
   transform: rotate(-90deg);
   transform-origin: center;
   pointer-events: none;
@@ -371,7 +371,7 @@ h1 {
 
 <script>
 const SHEET_ID = "17gH9HZKvW_6fMCWYLyqnzMHj40rA7PiwWg6L0GvbFgQ";
-const sheetNames = ["吉伊", "小八", "兔兔", "小桃", "師傅", "栗子", "獅薩", "古本", "其他角色"];
+const sheetNames = ["吉伊", "小八", "兔兔", "小桃", "師傅", "栗子", "獅薩", "古本", "其他角色", "重置圖鑑"];
 const colors = {
   "吉伊": "#d77485", "小八": "#6293b8", "兔兔": "#f9be3c",
   "小桃": "#838BC2", "師傅": "#CCAFA5", "栗子": "#94C973",
@@ -387,6 +387,7 @@ const images = {
   "獅薩": "https://i.postimg.cc/660Jz4sQ/icon.png",
   "古本": "https://i.postimg.cc/nh5t7yyY/icon.png",
   "其他角色": "https://i.postimg.cc/63xJbd58/icon.png"
+  "重置圖鑑": "https://i.postimg.cc/d3qMwwCv/icon.png"
 };
 
 const tabsContainer = document.getElementById("tabs");
@@ -400,15 +401,27 @@ function createTab(sheetName) {
   tab.className = "tab";
   tab.style.setProperty("--tab-color", colors[sheetName] || "#999");
 
-  tab.addEventListener("click", () => {
-    document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
-    tab.classList.add("active");
-    document.documentElement.style.setProperty('--tab-color', colors[sheetName] || "#999");
-    const url = new URL(window.location);
-    url.searchParams.set("tab", sheetName);
-    window.history.replaceState(null, "", url);
-    loadSheetData(sheetName);
-  });
+ tab.addEventListener("click", () => {
+  if (sheetName === "重置圖鑑") {
+    if (confirm("確定要重置圖鑑嗎？\n（會清除所有收藏紀錄）")) {
+      localStorage.removeItem("collectedDolls");
+      collected = [];
+      const activeTab = Object.keys(tabElements).find(name => tabElements[name].classList.contains("active")) || sheetNames[0];
+      loadSheetData(activeTab);
+      sheetNames.forEach(updateTabCount);
+      alert("已重置圖鑑收藏。");
+    }
+    return;
+  }
+
+  document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+  tab.classList.add("active");
+  document.documentElement.style.setProperty('--tab-color', colors[sheetName] || "#999");
+  const url = new URL(window.location);
+  url.searchParams.set("tab", sheetName);
+  window.history.replaceState(null, "", url);
+  loadSheetData(sheetName);
+});
 
   tabsContainer.appendChild(tab);
   tabElements[sheetName] = tab;
@@ -420,7 +433,7 @@ function updateTabCount(sheetName) {
   const totalCount = data.length;
   const percent = totalCount ? ownedCount / totalCount : 0;
 
-  const radius = 30;
+  const radius = 18;
   const circumference = 2 * Math.PI * radius;
   const offset = circumference * (1 - percent);
 
@@ -579,15 +592,6 @@ const initialSheet = getInitialSheet();
 tabElements[initialSheet].classList.add("active");
 document.documentElement.style.setProperty('--tab-color', colors[initialSheet] || "#999");
 loadSheetData(initialSheet);
-
-  // 建立重置按鈕，放在 tabs 容器最後
-function createResetTab() {
-  const resetTab = document.createElement("div");
-  resetTab.className = "tab-reset";
-  resetTab.innerHTML = `
-    <img src="https://i.postimg.cc/d3qMwwCv/icon.png" alt="重置圖鑑" />
-    <div class="tab-name">重置圖鑑</div>
-  `;
 
   resetTab.addEventListener("click", () => {
     if (confirm("確定要重置圖鑑嗎？\n（會清除所有收藏紀錄）")) {
