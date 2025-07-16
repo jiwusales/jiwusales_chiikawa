@@ -23,238 +23,264 @@
   <meta name="apple-mobile-web-app-capable" content="yes" />
 
   <style>
-    .control-btn {
-  position: fixed;
-  top: 60px;
-  left: 10px;
-  width: 35px;
-  height: 35px;
-  border: none;
-  border-radius: 50%;
-  background-color: #E7D4C0;
-  opacity: 0.5;
-  box-shadow: 0 0 6px rgba(0, 0, 0, 0.25);
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 999;
-  transition: opacity 0.2s, transform 0.2s;
-  padding: 0;
-}
-.control-btn img {
-  width: 60%;
-  height: 60%;
-  pointer-events: none;
-  user-select: none;
-}
-.control-btn:hover {
-  opacity: 0.8;
-  transform: scale(1.05);
-}
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #f9f9f9;
-      background-image: url('https://i.postimg.cc/Kj8V5YMg/2.png');
-      background-repeat: repeat;
-      background-size: 135px;
-      margin: 0;
-      padding: 0;
-      color: #333333;
-      text-align: center;
-    }
-    .top-bar {
-      background: #dac7b7;
-      color: #fff;
-      padding: 10px 0;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      z-index: 999;
-      user-select: none;
-    }
-    .top-bar a {
-      color: #fff;
-      text-decoration: none;
-      font-weight: bold;
-      font-size: 16px;
-    }
-    h1 {
-      margin: 60px 0 10px;
-      font-size: 18px;
-      color: #333333;
-      user-select: none;
-    }
-    .tabs {
-      margin-top: 20px;
-      margin-bottom: 15px;
-      display: flex;
-      justify-content: center;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-    .tab {
-      background: #dcdcdc;
-      color: #333333;
-      padding: 6px 18px;
-      border-radius: 20px;
-      cursor: pointer;
-      font-weight: bold;
-      transition: background 0.3s, color 0.3s;
-      user-select: none;
-      border: none;
-      font-size: 14px;
-      line-height: 1.2;
-    }
-    .tab.active {
-      background-color: var(--tab-color);
-      color: white;
-    }
-    .type-divider {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin: 8px 0 8px;
-      color: #333333;
-      user-select: none;
-    }
-    .type-divider::before,
-    .type-divider::after {
-      content: "";
-      flex: 1;
-      border-top: 1px solid #333333;
-      margin: 0 10px;
-    }
-    .type-divider span {
-      margin: 0 15px;
-      font-weight: bold;
-      text-align: center;
-      white-space: nowrap;
-    }
-    #owned-count {
-      font-weight: bold;
-      margin-top: 20px;     /* 上方間距 */
-      margin-bottom: 0px;   /* 下方間距 */
-      color: #333333;
-      user-select: none;
-    }
-    #card-container {
-      padding: 10px;
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
-    }
+  .control-btn {
+    position: fixed;
+    top: 60px;
+    left: 10px;
+    width: 35px;
+    height: 35px;
+    border: none;
+    border-radius: 50%;
+    background-color: #E7D4C0;
+    opacity: 0.5;
+    box-shadow: 0 0 6px rgba(0, 0, 0, 0.25);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 999;
+    transition: opacity 0.2s, transform 0.2s;
+    padding: 0;
+  }
+  .control-btn img {
+    width: 60%;
+    height: 60%;
+    pointer-events: none;
+    user-select: none;
+  }
+  .control-btn:hover {
+    opacity: 0.8;
+    transform: scale(1.05);
+  }
+
+  body {
+    font-family: Arial, sans-serif;
+    background-color: #f9f9f9;
+    background-image: url('https://i.postimg.cc/Kj8V5YMg/2.png');
+    background-repeat: repeat;
+    background-size: 135px;
+    margin: 0;
+    padding: 0;
+    color: #333333;
+    text-align: center;
+  }
+
+  .top-bar {
+    background: #dac7b7;
+    color: #fff;
+    padding: 10px 0;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 999;
+    user-select: none;
+  }
+  .top-bar a {
+    color: #fff;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 16px;
+  }
+
+  .logo-container {
+    text-align: center;
+    margin-top: 70px;
+  }
+  .logo-container img {
+    width: 160px;
+    height: auto;
+  }
+
+  h1 {
+    margin: 10px 0;
+    font-size: 18px;
+    color: #333333;
+    user-select: none;
+  }
+
+  .tabs {
+    margin-top: 20px;
+    margin-bottom: 15px;
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .tab {
+    background: #dcdcdc;
+    color: #333333;
+    padding: 6px 18px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background 0.3s, color 0.3s;
+    user-select: none;
+    border: none;
+    font-size: 14px;
+    line-height: 1.2;
+  }
+  .tab.active {
+    background-color: var(--tab-color);
+    color: white;
+  }
+
+  .type-divider {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 8px 0;
+    color: #333333;
+    user-select: none;
+  }
+  .type-divider::before,
+  .type-divider::after {
+    content: "";
+    flex: 1;
+    border-top: 1px solid #333333;
+    margin: 0 10px;
+  }
+  .type-divider span {
+    margin: 0 15px;
+    font-weight: bold;
+    text-align: center;
+    white-space: nowrap;
+  }
+
+  #owned-count {
+    font-weight: bold;
+    margin-top: 20px;
+    margin-bottom: 0px;
+    color: #333333;
+    user-select: none;
+  }
+
+  #card-container {
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .card {
+    width: 82px;
+    border: 2px solid #ccc;
+    border-radius: 8px;
+    background-color: #ffffff !important;
+    opacity: 1 !important;
+    position: relative;
+    cursor: pointer;
+    transition: border-color 0.3s;
+    text-align: center;
+    user-select: none;
+    color: #333333;
+    box-shadow: none !important;
+  }
+  .card img {
+    width: 80px;
+    margin-top: 5px;
+    object-fit: contain;
+  }
+  .card .name,
+  .card .size {
+    margin: 2px auto;
+    font-size: 10px;
+    line-height: 1.2;
+    word-break: break-word;
+    overflow-wrap: break-word;
+    min-height: 16px;
+    color: #333333 !important;
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+  .card .name {
+    font-weight: bold;
+  }
+  .card .checkmark {
+    position: absolute;
+    top: 3px;
+    right: 3px;
+    width: 16px;
+    height: 16px;
+    background-color: transparent;
+    border-radius: 50%;
+    display: none;
+    align-items: center;
+    justify-content: center;
+  }
+  .card.collected .checkmark {
+    display: flex;
+  }
+  .checkmark svg {
+    fill: white;
+    width: 10px;
+    height: 10px;
+  }
+
+  .bottom-bar {
+    background-color: #dac7b7;
+    color: #fff;
+    text-align: center;
+    padding: 10px 0;
+    font-weight: bold;
+    font-size: 14px;
+    margin-top: 30px;
+    user-select: none;
+  }
+  .bottom-bar a {
+    color: #fff;
+    text-decoration: underline;
+  }
+
+  .center-divider {
+    width: 90vw;
+    max-width: 1200px;
+    border-top: 1px solid #333;
+    margin: 10px auto 0;
+    user-select: none;
+  }
+
+  @media (min-width: 768px) {
     .card {
-      width: 82px;
-      border: 2px solid #ccc;
-      border-radius: 8px;
-      background-color: #ffffff !important;
-      opacity: 1 !important;
-      position: relative;
-      cursor: pointer;
-      transition: border-color 0.3s;
-      text-align: center;
-      user-select: none;
-      color: #333333;
-      box-shadow: none !important;
+      width: 120px;
     }
     .card img {
-      width: 80px;
-      margin-top: 5px;
-      object-fit: contain;
+      width: 116px;
     }
     .card .name,
     .card .size {
-      margin: 2px auto;
-      font-size: 10px;
-      line-height: 1.2;
-      word-break: break-word;
-      overflow-wrap: break-word;
-      min-height: 16px;
+      font-size: 12px;
+    }
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .card {
+      background-color: #ffffff !important;
       color: #333333 !important;
-      display: block;
-      width: 100%;
-      max-width: 100%;
-      box-sizing: border-box;
+      border-color: #ccc !important;
+      box-shadow: none !important;
+      opacity: 1 !important;
     }
-    .card .name {
-      font-weight: bold;
+    .card .name,
+    .card .size {
+      color: #333333 !important;
     }
-    .card .checkmark {
-      position: absolute;
-      top: 3px;
-      right: 3px;
-      width: 16px;
-      height: 16px;
-      background-color: transparent;
-      border-radius: 50%;
-      display: none;
-      align-items: center;
-      justify-content: center;
-    }
-    .card.collected .checkmark {
-      display: flex;
-    }
-    .checkmark svg {
-      fill: white;
-      width: 10px;
-      height: 10px;
-    }
-    .bottom-bar {
-      background-color: #dac7b7;
-      color: #fff;
-      text-align: center;
-      padding: 10px 0;
-      font-weight: bold;
-      font-size: 14px;
-      margin-top: 30px;
-      user-select: none;
-    }
-    .bottom-bar a {
-      color: #fff;
-      text-decoration: underline;
-    }
-    /* 分頁按鈕下面的置中細線 */
-    .center-divider {
-      width: 90vw;                  /* 線的長度 */
-      max-width: 1200px;            /* 最大寬度上限，避免太長 */
-      border-top: 1px solid #333;   /* 線的顏色 */
-      margin: 10px auto 0;          /* 上方間距 + 置中，下方間距0 */
-      user-select: none;
-    }
-    @media (min-width: 768px) {
-      .card {
-        width: 120px;
-      }
-      .card img {
-        width: 116px;
-      }
-      .card .name,
-      .card .size {
-        font-size: 12px;
-      }
-    }
-    @media (prefers-color-scheme: dark) {
-      .card {
-        background-color: #ffffff !important;
-        color: #333333 !important;
-        border-color: #ccc !important;
-        box-shadow: none !important;
-        opacity: 1 !important;
-      }
-      .card .name,
-      .card .size {
-        color: #333333 !important;
-      }
-    }
-  </style>
+  }
+</style>
 </head>
 <body>
   <div class="top-bar">
     如資料有誤或有缺可私訊 ⮕ <a href="https://lin.ee/X6FUFI9" target="_blank">JIWU吉物販售</a>
   </div>
 
+<!-- LOGO -->
+<div class="logo-container">
+  <img src="https://i.postimg.cc/CLBFxHs3/logo-banner.png" alt="JIWU LOGO" />
+</div>
+  
   <h1>JIWU吉物販售．吉伊卡哇寶寶圖鑑</h1>
 
   <div class="tabs" id="tabs"></div>
