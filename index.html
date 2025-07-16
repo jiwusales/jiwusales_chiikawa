@@ -127,21 +127,16 @@
   }
 
   .type-divider {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin: 10px auto;
+  font-weight: bold;
+  margin: 10px 8px 5px;
   color: #333333;
   user-select: none;
-  width: 96%;
-  max-width: 1200px;
-  }
-  .type-divider::before,
+  text-align: left;
+  font-size: 18px;
+}
+.type-divider::before,
 .type-divider::after {
-  content: "";
-  flex: 1;
-  border-top: 1px solid #333333;
-  margin: 0 12px;
+  content: none; 
 }
   .type-divider span {
     margin: 0 15px;
