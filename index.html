@@ -22,7 +22,7 @@
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
 
-  <style>
+<style>
 :root {
   --tab-color: #dac7b7;
 }
@@ -108,30 +108,48 @@ h1 {
   user-select: none;
 }
 
+/* 📦 分頁按鈕樣式 */
 .tabs {
   margin-top: 20px;
   margin-bottom: 15px;
   display: flex;
   justify-content: center;
-  gap: 10px;
+  gap: 15px;
   flex-wrap: wrap;
 }
 .tab {
-  background: #dcdcdc;
-  color: #333333;
-  padding: 6px 18px;
-  border-radius: 20px;
+  position: relative;
+  width: 80px;
+  height: 100px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   cursor: pointer;
-  font-weight: bold;
-  transition: background 0.3s, color 0.3s;
   user-select: none;
-  border: none;
-  font-size: 14px;
-  line-height: 1.2;
+  transition: transform 0.3s;
 }
-.tab.active {
-  background-color: var(--tab-color);
-  color: white;
+.tab:hover {
+  transform: scale(1.05);
+}
+.tab-circle {
+  position: relative;
+  width: 70px;
+  height: 70px;
+}
+.tab-circle svg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform: rotate(-90deg);
+}
+.tab-label {
+  margin-top: 8px;
+  font-size: 14px;
+  font-weight: bold;
+  color: #333333;
+  text-align: center;
+  user-select: none;
 }
 
 .type-divider {
@@ -305,7 +323,6 @@ let currentData = {};
 function createTab(sheetName) {
   const tab = document.createElement("div");
   tab.className = "tab";
-  tab.textContent = `${sheetName}（載入中）`;
   tab.style.setProperty("--tab-color", colors[sheetName] || "#999");
 
   tab.addEventListener("click", () => {
@@ -326,8 +343,39 @@ function updateTabCount(sheetName) {
   const data = currentData[sheetName] || [];
   const ownedCount = data.filter(item => collected.includes(item.name)).length;
   const totalCount = data.length;
+  const percent = totalCount ? ownedCount / totalCount : 0;
+
+  const radius = 30;
+  const circumference = 2 * Math.PI * radius;
+  const offset = circumference * (1 - percent);
+
   if (tabElements[sheetName]) {
-    tabElements[sheetName].textContent = `${sheetName}（${ownedCount}/${totalCount}）`;
+    tabElements[sheetName].innerHTML = `
+      <div class="tab-circle">
+        <svg width="70" height="70">
+          <circle
+            cx="35" cy="35" r="${radius}"
+            stroke="#e0e0e0" stroke-width="5" fill="none"
+          ></circle>
+          <circle
+            cx="35" cy="35" r="${radius}"
+            stroke="${colors[sheetName] || '#999'}"
+            stroke-width="5" fill="none"
+            stroke-dasharray="${circumference}"
+            stroke-dashoffset="${offset}"
+            stroke-linecap="round"
+          ></circle>
+          <text
+            x="50%" y="50%" text-anchor="middle"
+            dominant-baseline="middle"
+            font-size="12" fill="#333333" font-weight="bold"
+          >
+            ${ownedCount}/${totalCount}
+          </text>
+        </svg>
+      </div>
+      <div class="tab-label">${sheetName}</div>
+    `;
   }
 }
 
