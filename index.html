@@ -146,8 +146,8 @@ h1 {
   position: absolute;
   top: 0;
   left: 0;
-  width: 100%;
-  height: 100%;
+  width: 95%;
+  height: 95%;
   object-fit: cover;
   border-radius: 50%;
 }
@@ -159,6 +159,19 @@ h1 {
   user-select: none;
 }
 
+.tab-name {
+  font-size: 14px;
+  font-weight: bold; /* 名稱加粗 */
+  color: #333333;
+}
+
+.tab-count {
+  font-size: 12px;
+  font-weight: normal; /* 數字細字 */
+  color: #666666; /* 或換成其他顏色 */
+}
+
+  
 .type-divider {
   font-weight: bold;
   margin: 10px 5px 0px;
@@ -381,7 +394,11 @@ function updateTabCount(sheetName) {
       ></circle>
     </svg>
   </div>
-  <div class="tab-label">${sheetName}<br>${ownedCount}/${totalCount}</div>
+  <div class="tab-label">
+  <div class="tab-name">${sheetName}</div>
+  <div class="tab-count">${ownedCount}/${totalCount}</div>
+</div>
+
 `;
   }
 }
