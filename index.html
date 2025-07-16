@@ -67,14 +67,14 @@ body {
   transform: scale(1.05);
 }
 
-/* 🔃 重新整理按鈕位置 */
+/* 🔃 重新整理 按鈕位置 */
 #refreshBtn {
   top: 60px;
   left: 10px;
 }
 
 .top-bar {
-  background: #dac7b7;
+  background: var(--tab-color);
   color: #fff;
   padding: 10px 0;
   position: fixed;
@@ -131,7 +131,7 @@ h1 {
 .tab:hover {
   transform: scale(1.05);
 }
-  .tab-circle svg {
+.tab-circle svg {
   position: absolute;
   top: 0;
   left: 0;
@@ -141,38 +141,43 @@ h1 {
   position: relative;
   width: 70px;
   height: 70px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .tab-circle img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+  transform: scale(0.95); /* 縮小95% */
+  transform-origin: center center;
+  pointer-events: none;
+}
+
+.tab-circle svg {
   position: absolute;
   top: 0;
   left: 0;
-  width: 95%;
-  height: 95%;
-  object-fit: cover;
-  border-radius: 50%;
+  width: 70px;
+  height: 70px;
+  transform: rotate(-90deg);
+  transform-origin: center;
+  pointer-events: none;
 }
-.tab-label {
-  margin-top: 8px;
-  font-size: 12px;
-  color: #333333;
-  text-align: center;
-  user-select: none;
-}
-
+  
 .tab-name {
   font-size: 14px;
-  font-weight: bold; /* 名稱加粗 */
+  font-weight: bold;
   color: #333333;
 }
-
 .tab-count {
   font-size: 12px;
-  font-weight: normal; /* 數字細字 */
-  color: #666666; /* 或換成其他顏色 */
+  font-weight: normal;
+  color: #666666;
 }
 
-  
 .type-divider {
   font-weight: bold;
   margin: 10px 5px 0px;
@@ -188,11 +193,27 @@ h1 {
   white-space: nowrap;
 }
 
+/* 卡片區容器 */
 #card-container {
   padding: 10px;
   display: flex;
   flex-direction: column;
   gap: 20px;
+}
+
+/* 分組內使用 CSS Grid 排版 */
+.group-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+  gap: 8px;
+  justify-content: start;
+}
+
+/* 小螢幕調整為 4 欄 */
+@media (max-width: 480px) {
+  .group-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
 }
 
 .card {
@@ -252,7 +273,7 @@ h1 {
 }
 
 .bottom-bar {
-  background-color: #dac7b7;
+  background-color: var(--tab-color);
   color: #fff;
   text-align: center;
   padding: 10px 0;
@@ -282,6 +303,9 @@ h1 {
 
 /* ✅ 強制淺色模式一致化外觀 */
 @media (prefers-color-scheme: dark) {
+  body {
+    background-color: #f9f9f9;
+  }
   .card {
     background-color: #ffffff !important;
     color: #333333 !important;
@@ -420,11 +444,7 @@ function renderCards(data, sheetName) {
     cardContainer.appendChild(divider);
 
     const groupContainer = document.createElement("div");
-    groupContainer.style.display = "flex";
-    groupContainer.style.flexWrap = "wrap";
-    groupContainer.style.justifyContent = "flex-start";
-    groupContainer.style.gap = "8px";
-    groupContainer.style.marginLeft = "8px";
+    groupContainer.className = "group-grid";  // 這行必須加，改用 CSS Grid 排版
 
     grouped[type].forEach(item => {
       const card = document.createElement("div");
