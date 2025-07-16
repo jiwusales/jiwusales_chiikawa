@@ -23,10 +23,25 @@
   <meta name="apple-mobile-web-app-capable" content="yes" />
 
   <style>
+:root {
+  --tab-color: #dac7b7;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f9f9f9;
+  background-image: url('https://i.postimg.cc/Kj8V5YMg/2.png');
+  background-repeat: repeat;
+  background-size: 135px;
+  margin: 0;
+  padding: 0;
+  color: #333333;
+  text-align: center;
+}
+
+/* 🔘 控制按鈕共用樣式（圓形按鈕） */
 .control-btn {
   position: fixed;
-  top: 60px;
-  left: 10px;
   width: 35px;
   height: 35px;
   border: none;
@@ -53,16 +68,36 @@
   transform: scale(1.05);
 }
 
-body {
-  font-family: Arial, sans-serif;
-  background-color: #f9f9f9;
-  background-image: url('https://i.postimg.cc/Kj8V5YMg/2.png');
-  background-repeat: repeat;
-  background-size: 135px;
-  margin: 0;
-  padding: 0;
+/* 🔃 重新整理按鈕位置 */
+#refreshBtn {
+  top: 60px;
+  left: 10px;
+}
+
+/* ✅ 擁有數量按鈕（右下） */
+#owned-count {
+  bottom: 10px;
+  right: 10px;
+  width: 60px;
+  height: 60px;
+  border-radius: 80%;
+  background-color: #E7D4C0;
   color: #333333;
+  font-weight: bold;
+  font-size: 12px;
+  line-height: 1.2;
   text-align: center;
+  user-select: none;
+  padding: 8px 4px;
+  cursor: default;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 2px;
+  box-shadow: 0 0 6px rgba(0, 0, 0, 0.25);
+  z-index: 998;
+  pointer-events: none;
+  position: fixed;
 }
 
 .top-bar {
@@ -107,7 +142,6 @@ h1 {
   gap: 10px;
   flex-wrap: wrap;
 }
-
 .tab {
   background: #dcdcdc;
   color: #333333;
@@ -136,38 +170,13 @@ h1 {
 }
 .type-divider::before,
 .type-divider::after {
-  content: none; 
+  content: none;
 }
 .type-divider span {
   margin: 0 15px;
   font-weight: bold;
   text-align: center;
   white-space: nowrap;
-}
-
-#owned-count {
-  position: fixed;
-  bottom: 10px;       /* 頁面最下方 */
-  right: 10px;        /* 頁面最右側 */
-  width: 60px;
-  height: 60px;
-  border-radius: 80%;
-  background-color: #E7D4C0; /* 與 .control-btn 相同顏色 */
-  color: #333333;
-  font-weight: bold;
-  font-size: 12px;
-  line-height: 1.2;
-  text-align: center;
-  user-select: none;
-  padding: 8px 4px;
-  cursor: default;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  gap: 2px;
-  box-shadow: 0 0 6px rgba(0, 0, 0, 0.25);
-  z-index: 998; /* 比 control-btn 稍低，避免擋到 */
-  pointer-events: none; /* 不要讓點擊事件誤觸 */
 }
 
 #card-container {
@@ -249,6 +258,7 @@ h1 {
   text-decoration: underline;
 }
 
+/* ✅ 電腦版放大卡片大小 */
 @media (min-width: 768px) {
   .card {
     width: 120px;
@@ -262,6 +272,7 @@ h1 {
   }
 }
 
+/* ✅ 強制淺色模式一致化外觀 */
 @media (prefers-color-scheme: dark) {
   .card {
     background-color: #ffffff !important;
