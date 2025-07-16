@@ -57,10 +57,11 @@ body {
 .tabs {
   margin-top: 20px;
   margin-bottom: 15px;
-  display: flex;
-  justify-content: center;
-  gap: 5px;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);  /* 一排五個 */
+  gap: 5px;  /* 間距5px */
+  justify-items: center;
+  align-items: center;
 }
 .tab {
   position: relative;
