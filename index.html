@@ -107,15 +107,14 @@ h1 {
 .tabs {
   margin-top: 20px;
   margin-bottom: 15px;
-  display: flex;
-  justify-content: center;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
   gap: 5px;
-  flex-wrap: wrap;
+  justify-content: center;
 }
 .tab {
-  position: relative;
-  width: 80px;
-  height: 110px;
+  width: 64px;  /* 80px * 0.8 */
+  height: 88px; /* 110px * 0.8 */
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -123,9 +122,6 @@ h1 {
   cursor: pointer;
   user-select: none;
   transition: transform 0.3s;
-}
-.tab:hover {
-  transform: scale(1.05);
 }
 .tab-circle svg {
   position: absolute;
@@ -135,16 +131,16 @@ h1 {
 }
 .tab-circle {
   position: relative;
-  width: 70px;
-  height: 70px;
+  width: 56px; /* 70px * 0.8 */
+  height: 56px;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
 .tab-circle img {
-  width: 100%;
-  height: 100%;
+  width: 56px;
+  height: 56px;
   object-fit: cover;
   border-radius: 50%;
   transform: scale(0.95); /* 縮小95% */
@@ -156,11 +152,41 @@ h1 {
   position: absolute;
   top: 0;
   left: 0;
-  width: 70px;
-  height: 70px;
+  width: 56px;
+  height: 56px;
   transform: rotate(-90deg);
   transform-origin: center;
   pointer-events: none;
+}
+
+/* 新增重置按鈕樣式，跟 tab 同型 */
+.tab-reset {
+  width: 64px;
+  height: 88px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  user-select: none;
+  background-color: #e0e0e0;
+  border-radius: 8px;
+  box-shadow: inset 0 0 5px #bbb;
+  transition: background-color 0.3s;
+}
+.tab-reset:hover {
+  background-color: #d4c0b0;
+}
+.tab-reset img {
+  width: 40px;
+  height: 40px;
+  margin-bottom: 6px;
+  pointer-events: none;
+}
+.tab-reset .tab-name {
+  font-size: 12px;
+  color: #333;
+  font-weight: bold;
 }
   
 .tab-name {
@@ -272,13 +298,13 @@ h1 {
   background-color: #dac7b7;
   color: #fff;
   text-align: center;
-  padding: 20px 0;
+  padding: 10px 0 0 0;
   font-weight: bold;
   font-size: 14px;
   margin-top: 30px;
   user-select: none;
-  height: 60px;  /* 直接設定高度 */
-  line-height: 60px; /* 文字垂直置中 */
+  height: 40px;  /* 直接設定高度 */
+  line-height: normal;
 }
 .bottom-bar a {
   color: #fff;
@@ -553,6 +579,34 @@ const initialSheet = getInitialSheet();
 tabElements[initialSheet].classList.add("active");
 document.documentElement.style.setProperty('--tab-color', colors[initialSheet] || "#999");
 loadSheetData(initialSheet);
+
+  // 建立重置按鈕，放在 tabs 容器最後
+function createResetTab() {
+  const resetTab = document.createElement("div");
+  resetTab.className = "tab-reset";
+  resetTab.innerHTML = `
+    <img src="https://i.postimg.cc/d3qMwwCv/icon.png" alt="重置圖鑑" />
+    <div class="tab-name">重置圖鑑</div>
+  `;
+
+  resetTab.addEventListener("click", () => {
+    if (confirm("確定要重置圖鑑嗎？\n（會清除所有收藏紀錄）")) {
+      localStorage.removeItem("collectedDolls");
+      collected = [];
+      // 重新載入目前分頁資料並更新頁籤
+      const activeTab = Object.keys(tabElements).find(name => tabElements[name].classList.contains("active")) || sheetNames[0];
+      loadSheetData(activeTab);
+      sheetNames.forEach(updateTabCount);
+      alert("已重置圖鑑收藏。");
+    }
+  });
+
+  tabsContainer.appendChild(resetTab);
+}
+
+// 新增重置按鈕
+createResetTab();
+
 </script>
 </body>
 </html>
