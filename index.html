@@ -147,27 +147,27 @@ h1 {
 
 #owned-count {
   position: fixed;
-  bottom: 60px;  /* 與重新整理按鈕錯開 */
-  right: 10px;
+  bottom: 10px;       /* 頁面最下方 */
+  right: 10px;        /* 頁面最右側 */
   width: 60px;
   height: 60px;
-  border-radius: 50%;
-  background-color: #E7D4C0; /* 與 .control-btn 同色 */
+  border-radius: 80%;
+  background-color: #E7D4C0; /* 與 .control-btn 相同顏色 */
   color: #333333;
   font-weight: bold;
   font-size: 12px;
   line-height: 1.2;
   text-align: center;
   user-select: none;
-  padding: 8px 4px 8px 4px;
+  padding: 8px 4px;
   cursor: default;
   display: flex;
   flex-direction: column;
   justify-content: center;
   gap: 2px;
   box-shadow: 0 0 6px rgba(0, 0, 0, 0.25);
-  z-index: 999;
-  pointer-events: none; /* 避免誤點 */
+  z-index: 998; /* 比 control-btn 稍低，避免擋到 */
+  pointer-events: none; /* 不要讓點擊事件誤觸 */
 }
 
 #card-container {
