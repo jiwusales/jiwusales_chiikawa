@@ -132,34 +132,31 @@ h1 {
 }
 .tab-circle {
   position: relative;
-  width: 40px;
-  height: 40px;
+  width: 56px;  /* 讓容器跟圖片一樣大 */
+  height: 56px;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
 .tab-circle img {
-  width: 56px;
-  height: 56px;
+  width: 100%;  /* 讓圖片填滿容器 */
+  height: 100%;
   object-fit: cover;
   border-radius: 50%;
-  transform: scale(0.95); /* 縮小95% */
-  transform-origin: center center;
-  pointer-events: none;
+  transform: none; /* 移除 scale(0.95) */
 }
 
 .tab-circle svg {
   position: absolute;
   top: 0;
   left: 0;
-  width: 40px;
-  height: 40px;
+  width: 100%; /* svg 同步圖片大小 */
+  height: 100%;
   transform: rotate(-90deg);
-  transform-origin: center;
   pointer-events: none;
 }
-
+  
 /* 新增重置按鈕樣式，跟 tab 同型 */
 .tab-reset {
   width: 64px;
