@@ -40,28 +40,77 @@ body {
 
 /* 🔘 控制按鈕共用樣式 */
 .control-btn {
+  position: fixed;
+  width: 40px;
+  height: 40px;
   border: none;
+  border-radius: 50%;
+  background-color: rgba(231, 212, 192, 0.9);
+  opacity: 0.8;
+  box-shadow: 0 0 6px rgba(0, 0, 0, 0.25);
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+  transition: opacity 0.2s, transform 0.2s;
   padding: 0;
-  outline: none;
-  background-color: transparent;
 }
 .control-btn img {
+  width: 60%;
+  height: 60%;
   pointer-events: none;
   user-select: none;
-  display: block;
-  margin: 0 auto;
 }
 
-/* 🔘 分頁按鈕 */
+/* 🔃 重新整理 按鈕位置 */
+#refreshBtn {
+  top: 60px;
+  left: 10px;
+}
+
+.top-bar {
+  background: #dac7b7;
+  color: #fff;
+  padding: 10px 0;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 999;
+  user-select: none;
+}
+.top-bar a {
+  color: #fff;
+  text-decoration: none;
+  font-weight: bold;
+  font-size: 16px;
+}
+
+.logo-container {
+  text-align: center;
+  margin-top: 70px;
+}
+.logo-container img {
+  width: 160px;
+  height: auto;
+}
+
+h1 {
+  margin: 10px 0;
+  font-size: 18px;
+  color: #333333;
+  user-select: none;
+}
+
+/* 📦 分頁按鈕樣式 */
 .tabs {
   margin-top: 20px;
   margin-bottom: 15px;
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);  /* 一排五個 */
-  gap: 5px;  /* 間距5px */
-  justify-items: center;
-  align-items: center;
+  display: flex;
+  justify-content: center;
+  gap: 5px;
+  flex-wrap: wrap;
 }
 .tab {
   position: relative;
@@ -74,18 +123,16 @@ body {
   cursor: pointer;
   user-select: none;
   transition: transform 0.3s;
-  border-radius: 8px;
-  background-color: white;
-  box-shadow: 0 0 4px rgba(0,0,0,0.1);
 }
-.tab:hover:not(.control-btn) {
+.tab:hover {
   transform: scale(1.05);
 }
-.tab.active {
-  box-shadow: 0 0 10px var(--tab-color);
-  border: 2px solid var(--tab-color);
+.tab-circle svg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform: rotate(-90deg);
 }
-
 .tab-circle {
   position: relative;
   width: 70px;
@@ -93,16 +140,16 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 50%;
-  overflow: hidden;
-  background-color: #fff;
 }
+
 .tab-circle img {
   width: 100%;
   height: 100%;
   object-fit: cover;
   border-radius: 50%;
-  transform: scale(0.95);
+  transform: scale(0.95); /* 縮小95% */
+  transform-origin: center center;
+  pointer-events: none;
 }
 
 .tab-circle svg {
@@ -115,24 +162,15 @@ body {
   transform-origin: center;
   pointer-events: none;
 }
-
-.tab-label {
-  margin-top: 5px;
-  user-select: none;
-  color: #333;
-  font-weight: bold;
+  
+.tab-name {
   font-size: 14px;
-  line-height: 1.2;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  width: 100%;
-  text-align: center;
+  font-weight: bold;
+  color: #333333;
 }
-
 .tab-count {
-  font-weight: normal;
   font-size: 12px;
+  font-weight: normal;
   color: #666666;
 }
 
@@ -278,23 +316,6 @@ body {
     color: #333333 !important;
   }
 }
-
-/* 重置按鈕特殊樣式 */
-#resetBtn {
-  width: 70px;
-  height: 70px;
-  border-radius: 50%;
-  background-color: rgba(218, 199, 183, 0.8);
-  box-shadow: 0 0 8px rgba(0,0,0,0.15);
-  display: flex !important;
-  align-items: center;
-  justify-content: center;
-  transition: background-color 0.2s, transform 0.2s;
-}
-#resetBtn:hover {
-  background-color: rgba(218, 199, 183, 1);
-  transform: scale(1.1);
-}
 </style>
 </head>
 <body>
@@ -307,15 +328,9 @@ body {
     <img src="https://i.postimg.cc/CLBFxHs3/logo-banner.png" alt="JIWU LOGO" />
   </div>
   
-  <h1>寶寶收集圖鑑</h1>
+  <h1>吉伊卡哇寶寶圖鑑</h1>
 
-  <div class="tabs" id="tabs">
-    <!-- JS 會動態建立 tab -->
-    <!-- 重置按鈕放最後面 -->
-    <button id="resetBtn" class="control-btn" aria-label="重置圖鑑" title="重置圖鑑">
-      <img src="https://i.postimg.cc/d3qMwwCv/icon.png" alt="Reset" style="width: 60%; height: 60%;" />
-    </button>
-  </div>
+  <div class="tabs" id="tabs"></div>
 
   <div id="card-container"></div>
 
@@ -324,8 +339,8 @@ body {
   </div>
 
   <!-- 重新整理 按鈕 -->
-  <button id="refreshBtn" class="control-btn" onclick="location.reload()" aria-label="重新整理" title="重新整理" style="top:60px; left:10px; position: fixed; width:40px; height:40px; border-radius:50%; background-color: rgba(231,212,192,0.9); opacity:0.8; box-shadow: 0 0 6px rgba(0,0,0,0.25);">
-    <img src="https://i.postimg.cc/gkpnr8RJ/re.png" alt="Refresh" style="width: 60%; height: 60%;" />
+  <button id="refreshBtn" class="control-btn" onclick="location.reload()" aria-label="重新整理" title="重新整理">
+    <img src="https://i.postimg.cc/gkpnr8RJ/re.png" alt="Refresh" />
   </button>
 
 <script>
@@ -369,7 +384,7 @@ function createTab(sheetName) {
     loadSheetData(sheetName);
   });
 
-  tabsContainer.insertBefore(tab, document.getElementById("resetBtn")); // 放在重置按鈕前面
+  tabsContainer.appendChild(tab);
   tabElements[sheetName] = tab;
 }
 
@@ -482,54 +497,62 @@ function loadSheetData(sheetName) {
   fetch(url)
     .then(res => res.text())
     .then(t => JSON.parse(t.substr(47).slice(0, -2)))
-    .then(json => {
-      const rows = json.table.rows;
-      let data = rows.map(r => {
-        const c = r.c;
-        return {
-          name: c[0]?.v || "",
-          type: c[1]?.v || "",
-          size: c[2]?.v || "",
-          imgUrl: c[3]?.v || ""
-        };
-      });
-      currentData[sheetName] = data;
-      renderCards(data, sheetName);
+    .then(data => {
+      let rows = data.table.rows || [];
+      if (rows.length > 1) rows = rows.slice(1);
+      const parsed = rows.map(row => ({
+        type: row.c[0]?.v || "無類型",
+        name: row.c[1]?.v || "",
+        imgUrl: row.c[3]?.v || "",
+        size: row.c[5]?.v || ""
+      }));
+      currentData[sheetName] = parsed;
+      renderCards(parsed, sheetName);
       updateTabCount(sheetName);
     })
-    .catch(() => {
-      cardContainer.innerHTML = "載入失敗，請稍後再試。";
+    .catch(err => {
+      cardContainer.innerHTML = "載入資料失敗，請稍後再試。";
+      console.error(err);
     });
 }
 
-// 建立所有分頁按鈕
-sheetNames.forEach(createTab);
-
-// 讀網址 ?tab=，預設選第一個分頁
-const urlParams = new URLSearchParams(window.location.search);
-let initialTab = urlParams.get("tab") || sheetNames[0];
-
-// 預設選中並載入
-if (tabElements[initialTab]) {
-  tabElements[initialTab].classList.add("active");
-  loadSheetData(initialTab);
-} else {
-  tabElements[sheetNames[0]].classList.add("active");
-  loadSheetData(sheetNames[0]);
+function preloadAllSheets() {
+  sheetNames.forEach(sheetName => {
+    const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(sheetName)}`;
+    fetch(url)
+      .then(res => res.text())
+      .then(t => JSON.parse(t.substr(47).slice(0, -2)))
+      .then(data => {
+        let rows = data.table.rows || [];
+        if (rows.length > 1) rows = rows.slice(1);
+        const parsed = rows.map(row => ({
+          type: row.c[0]?.v || "無類型",
+          name: row.c[1]?.v || "",
+          imgUrl: row.c[3]?.v || "",
+          size: row.c[5]?.v || ""
+        }));
+        currentData[sheetName] = parsed;
+        updateTabCount(sheetName);
+      })
+      .catch(err => {
+        console.error(`載入 ${sheetName} 資料失敗`, err);
+      });
+  });
 }
 
-// 重置按鈕功能
-const resetBtn = document.getElementById("resetBtn");
-resetBtn.addEventListener("click", () => {
-  if (confirm("確定要重置所有收藏的卡片嗎？")) {
-    collected = [];
-    localStorage.removeItem("collectedDolls");
-    // 找目前 active 分頁名稱
-    const sheetName = Object.keys(tabElements).find(name => tabElements[name].classList.contains("active")) || sheetNames[0];
-    renderCards(currentData[sheetName] || [], sheetName);
-    updateTabCount(sheetName);
-  }
-});
+function getInitialSheet() {
+  const urlParams = new URLSearchParams(window.location.search);
+  const tab = urlParams.get("tab");
+  return sheetNames.includes(tab) ? tab : sheetNames[0];
+}
+
+// 初始化
+sheetNames.forEach(createTab);
+preloadAllSheets();
+const initialSheet = getInitialSheet();
+tabElements[initialSheet].classList.add("active");
+document.documentElement.style.setProperty('--tab-color', colors[initialSheet] || "#999");
+loadSheetData(initialSheet);
 </script>
 </body>
 </html>
