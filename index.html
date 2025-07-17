@@ -201,8 +201,14 @@ h1 {
 .group-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
-  gap: 12px;
-  justify-content: start;
+  row-gap: 8px;      /* 上下間距維持 */
+  column-gap: 8px;   /* 預設手機也用 8px */
+}
+
+@media (min-width: 768px) {
+  .group-grid {
+    column-gap: 20px; /* 💻 電腦版左右間距變大 */
+  }
 }
 
 /* 小螢幕調整為 4 欄 */
