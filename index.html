@@ -199,16 +199,8 @@ h1 {
 /* 分組內使用 CSS Grid 排版 */
 .group-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
-  row-gap: 8px;      /* 上下間距維持 */
-  column-gap: 8px;   /* 預設手機也用 8px */
-}
-
-@media (min-width: 768px) {
-  .group-grid {
-    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-    column-gap: 20px;
-  }
+  grid-template-columns: repeat(auto-fill, 120px);
+  gap: 20px;
 }
 
 /* 小螢幕調整為 4 欄 */
