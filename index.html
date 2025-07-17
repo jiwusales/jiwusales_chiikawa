@@ -114,8 +114,8 @@ h1 {
 }
 .tab {
   position: relative;
-  width: 60px;
-  height: 90px;
+  width: 60px;   /* 原本 80px → 縮小 */
+  height: 90px;  /* 原本 110px → 縮小 */
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -132,32 +132,32 @@ h1 {
 }
 .tab-circle {
   position: relative;
-  width: 64px;
-  height: 64px;
+  width: 50px;  /* 原本 70px → 縮小 */
+  height: 50px; /* 原本 70px → 縮小 */
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .tab-circle img {
-  width: 55px;
-  height: 55px;
-  display: block;
-  margin: 0 auto;
-  position: relative;
-  z-index: 2;
-  user-select: none;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+  transform: scale(0.95);
+  transform-origin: center center;
+  pointer-events: none;
 }
 
 .tab-circle svg {
   position: absolute;
   top: 0;
   left: 0;
-  width: 64px;
-  height: 64px;
-  border-radius: 50%;
-  object-fit: cover;
-  pointer-events: none;
-  user-select: none;
-  z-index: 1;
+  width: 50px;  /* 原本 70px → 縮小 */
+  height: 50px;
   transform: rotate(-90deg);
+  transform-origin: center;
+  pointer-events: none;
 }
   
 .tab-name {
