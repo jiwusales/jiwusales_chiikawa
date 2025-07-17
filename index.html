@@ -191,6 +191,9 @@ h1 {
 
 /* 卡片區容器 */
 #card-container {
+  width: 100%;
+  max-width: 1200px; /* 或視需求 */
+  margin: 0 auto;
   padding: 10px;
   display: flex;
   flex-direction: column;
@@ -200,7 +203,7 @@ h1 {
 /* 分組內使用 CSS Grid 排版 */
 .group-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(82px, 82px));
   gap: 8px;
   justify-content: start;
 }
