@@ -191,10 +191,9 @@ h1 {
 
 /* 卡片區容器 */
 #card-container {
-  padding: 10px;
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
 }
 
 /* 分組內使用 CSS Grid 排版 */
@@ -207,7 +206,8 @@ h1 {
 
 @media (min-width: 768px) {
   .group-grid {
-    column-gap: 20px; /* 💻 電腦版左右間距變大 */
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    column-gap: 20px;
   }
 }
 
