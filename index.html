@@ -135,11 +135,16 @@ h1 {
   height: 64px;
 }
 
-.tab-circle img,
+.tab-circle img {
   width: 55px;
   height: 55px;
-  }
-  
+  display: block;
+  margin: 0 auto;
+  position: relative;
+  z-index: 2;
+  user-select: none;
+}
+
 .tab-circle svg {
   position: absolute;
   top: 0;
@@ -150,6 +155,8 @@ h1 {
   object-fit: cover;
   pointer-events: none;
   user-select: none;
+  z-index: 1;
+  transform: rotate(-90deg);
 }
 
 .tab-circle svg {
