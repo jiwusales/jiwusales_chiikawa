@@ -546,35 +546,8 @@ function getInitialSheet() {
   return sheetNames.includes(tab) ? tab : sheetNames[0];
 }
 
-// ✅ 在分頁區新增「重置圖鑑」按鈕
-function createResetTab() {
-  const tab = document.createElement("div");
-  tab.className = "tab";
-  tab.style.setProperty("--tab-color", "#999");
-
-  tab.innerHTML = `
-    <div class="tab-circle">
-      <img src="https://i.postimg.cc/d3qMwwCv/icon.png" alt="重置" />
-    </div>
-    <div class="tab-label">
-      <div class="tab-name">重置</div>
-      <div class="tab-count"></div>
-    </div>
-  `;
-
-  tab.addEventListener("click", () => {
-    if (confirm("確定要重置圖鑑嗎？\n這會清除所有已收藏的紀錄。")) {
-      localStorage.removeItem("collectedDolls");
-      location.reload();
-    }
-  });
-
-  tabsContainer.appendChild(tab);
-}
-
 // 初始化
 sheetNames.forEach(createTab);
-createResetTab(); // ✅ 新增重置按鈕
 preloadAllSheets();
 const initialSheet = getInitialSheet();
 tabElements[initialSheet].classList.add("active");
