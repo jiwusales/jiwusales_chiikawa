@@ -132,31 +132,32 @@ h1 {
 }
 .tab-circle {
   position: relative;
-  width: 60px;  /* ✅ 改成 60px */
-  height: 60px; /* ✅ 改成 60px */
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  width: 64px;
+  height: 64px;
 }
+
 .tab-circle img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  border-radius: 50%;
-  transform: scale(0.95);
-  transform-origin: center center;
-  pointer-events: none;
+  width: 55px;
+  height: 55px;
+  display: block;
+  margin: 0 auto;
+  position: relative;
+  z-index: 2;
+  user-select: none;
 }
 
 .tab-circle svg {
   position: absolute;
   top: 0;
   left: 0;
-  width: 60px;  /* ✅ 跟著改成 60px */
-  height: 60px; /* ✅ 跟著改成 60px */
-  transform: rotate(-90deg);
-  transform-origin: center;
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  object-fit: cover;
   pointer-events: none;
+  user-select: none;
+  z-index: 1;
+  transform: rotate(-90deg);
 }
   
 .tab-name {
