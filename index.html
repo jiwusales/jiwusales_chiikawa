@@ -199,8 +199,8 @@ h1 {
 /* 分組內使用 CSS Grid 排版 */
 .group-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(82px, 1fr));
-  gap: 10px;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 15px;
 }
 
 /* 小螢幕調整為 4 欄 */
@@ -211,7 +211,8 @@ h1 {
 }
 
 .card {
-  width: 82px;
+  width: 100%;         /* 自適應父層 grid 欄寬 */
+  max-width: 150px;    /* （可選）限制最大寬度，避免太大 */
   border: 2px solid #ccc;
   border-radius: 8px;
   background-color: #ffffff !important;
