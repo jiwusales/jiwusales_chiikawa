@@ -90,7 +90,6 @@ body {
 .logo-container {
   text-align: center;
   margin-top: 70px;
-  margin-bottom: 10px;
 }
 .logo-container img {
   width: 160px;
@@ -98,8 +97,8 @@ body {
 }
 
 h1 {
-  margin: 10px 0 20px;
-  font-size: 14px;
+  margin: 10px 0;
+  font-size: 18px;
   color: #333333;
   user-select: none;
 }
@@ -108,109 +107,73 @@ h1 {
 .tabs {
   margin-top: 20px;
   margin-bottom: 15px;
-  padding: 0 10px; /* 上下 0，左右 10px */
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 15px 3px; /* 10px 是上下間距，5px 是左右間距 */
+  display: flex;
   justify-content: center;
+  gap: 5px;
+  flex-wrap: wrap;
 }
 .tab {
-  width: 64px;
-  height: 88px;
+  position: relative;
+  width: 80px;
+  height: 110px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: flex-start;
+  justify-content: center;
   cursor: pointer;
   user-select: none;
-  position: relative;
-  padding-top: 4px;
   transition: transform 0.3s;
 }
-
-/* 調整圈圈容器及圖片大小，讓圖片與svg重疊且對齊 */
+.tab:hover {
+  transform: scale(1.05);
+}
+.tab-circle svg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform: rotate(-90deg);
+}
 .tab-circle {
   position: relative;
-  width: 64px;
-  height: 64px;
+  width: 70px;
+  height: 70px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .tab-circle img {
-  width: 55px;
-  height: 55px;
-  display: block;
-  margin: 0 auto;
-  position: relative;
-  z-index: 2;
-  user-select: none;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+  transform: scale(0.95); /* 縮小95% */
+  transform-origin: center center;
+  pointer-events: none;
 }
 
 .tab-circle svg {
   position: absolute;
   top: 0;
   left: 0;
-  width: 64px;
-  height: 64px;
-  border-radius: 50%;
-  object-fit: cover;
+  width: 70px;
+  height: 70px;
+  transform: rotate(-90deg);
+  transform-origin: center;
   pointer-events: none;
-  user-select: none;
-  z-index: 1;
-  transform: rotate(-90deg);
 }
-
-.tab-circle svg {
-  transform: rotate(-90deg);
-}
-
-/* 分頁底下文字區域 */
-.tab-label {
-  margin-top: 68px;
-  text-align: center;
-  user-select: none;
-}
-
+  
 .tab-name {
   font-size: 14px;
   font-weight: bold;
   color: #333333;
 }
-
 .tab-count {
   font-size: 12px;
+  font-weight: normal;
   color: #666666;
 }
 
-/* 新增重置按鈕樣式，跟 tab 同型 */
-.tab-reset {
-  width: 64px;
-  height: 88px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  user-select: none;
-  background-color: #e0e0e0;
-  border-radius: 8px;
-  box-shadow: inset 0 0 5px #bbb;
-  transition: background-color 0.3s;
-}
-.tab-reset:hover {
-  background-color: #d4c0b0;
-}
-.tab-reset img {
-  width: 40px;
-  height: 40px;
-  margin-bottom: 6px;
-  pointer-events: none;
-}
-.tab-reset .tab-name {
-  font-size: 12px;
-  color: #333;
-  font-weight: bold;
-}
-  
 .type-divider {
   font-weight: bold;
   margin: 10px 5px 0px;
@@ -309,13 +272,13 @@ h1 {
   background-color: #dac7b7;
   color: #fff;
   text-align: center;
-  padding: 10px 0 0 0;
+  padding: 20px 0;
   font-weight: bold;
   font-size: 14px;
   margin-top: 30px;
   user-select: none;
-  height: 40px;
-  line-height: normal;
+  height: 60px;  /* 直接設定高度 */
+  line-height: 60px; /* 文字垂直置中 */
 }
 .bottom-bar a {
   color: #fff;
@@ -353,7 +316,6 @@ h1 {
     color: #333333 !important;
   }
 }
-
 </style>
 </head>
 <body>
@@ -383,7 +345,7 @@ h1 {
 
 <script>
 const SHEET_ID = "17gH9HZKvW_6fMCWYLyqnzMHj40rA7PiwWg6L0GvbFgQ";
-const sheetNames = ["吉伊", "小八", "兔兔", "小桃", "師傅", "栗子", "獅薩", "古本", "其他角色", "重置圖鑑"];
+const sheetNames = ["吉伊", "小八", "兔兔", "小桃", "師傅", "栗子", "獅薩", "古本", "其他角色"];
 const colors = {
   "吉伊": "#d77485", "小八": "#6293b8", "兔兔": "#f9be3c",
   "小桃": "#838BC2", "師傅": "#CCAFA5", "栗子": "#94C973",
@@ -398,8 +360,7 @@ const images = {
   "栗子": "https://i.postimg.cc/FzGMK8bS/icon.png",
   "獅薩": "https://i.postimg.cc/660Jz4sQ/icon.png",
   "古本": "https://i.postimg.cc/nh5t7yyY/icon.png",
-  "其他角色": "https://i.postimg.cc/63xJbd58/icon.png",
-  "重置圖鑑": "https://i.postimg.cc/d3qMwwCv/icon.png"
+  "其他角色": "https://i.postimg.cc/63xJbd58/icon.png"
 };
 
 const tabsContainer = document.getElementById("tabs");
@@ -414,18 +375,6 @@ function createTab(sheetName) {
   tab.style.setProperty("--tab-color", colors[sheetName] || "#999");
 
   tab.addEventListener("click", () => {
-    if (sheetName === "重置圖鑑") {
-      if (confirm("確定要重置圖鑑嗎？\n（會清除所有收藏紀錄）")) {
-        localStorage.removeItem("collectedDolls");
-        collected = [];
-        const activeTab = Object.keys(tabElements).find(name => tabElements[name].classList.contains("active")) || sheetNames[0];
-        loadSheetData(activeTab);
-        sheetNames.forEach(updateTabCount);
-        alert("已重置圖鑑收藏。");
-      }
-      return;
-    }
-
     document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
     tab.classList.add("active");
     document.documentElement.style.setProperty('--tab-color', colors[sheetName] || "#999");
@@ -445,34 +394,35 @@ function updateTabCount(sheetName) {
   const totalCount = data.length;
   const percent = totalCount ? ownedCount / totalCount : 0;
 
-  const radius = 28;
+  const radius = 30;
   const circumference = 2 * Math.PI * radius;
   const offset = circumference * (1 - percent);
 
   if (tabElements[sheetName]) {
     tabElements[sheetName].innerHTML = `
-      <div class="tab-circle">
-        <img src="${images[sheetName]}" alt="${sheetName}" />
-        <svg width="64" height="64" >
-          <circle
-            cx="32" cy="32" r="${radius}"
-            stroke="#e0e0e0" stroke-width="5" fill="none"
-          ></circle>
-          <circle
-            cx="32" cy="32" r="${radius}"
-            stroke="${colors[sheetName] || '#999'}"
-            stroke-width="5" fill="none"
-            stroke-dasharray="${circumference}"
-            stroke-dashoffset="${offset}"
-            stroke-linecap="round"
-          ></circle>
-        </svg>
-      </div>
-      <div class="tab-label">
-        <div class="tab-name">${sheetName}</div>
-        <div class="tab-count">${ownedCount}/${totalCount}</div>
-      </div>
-    `;
+  <div class="tab-circle">
+    <img src="${images[sheetName]}" alt="${sheetName}">
+    <svg width="70" height="70">
+      <circle
+        cx="35" cy="35" r="${radius}"
+        stroke="#e0e0e0" stroke-width="5" fill="none"
+      ></circle>
+      <circle
+        cx="35" cy="35" r="${radius}"
+        stroke="${colors[sheetName] || '#999'}"
+        stroke-width="5" fill="none"
+        stroke-dasharray="${circumference}"
+        stroke-dashoffset="${offset}"
+        stroke-linecap="round"
+      ></circle>
+    </svg>
+  </div>
+  <div class="tab-label">
+  <div class="tab-name">${sheetName}</div>
+  <div class="tab-count">${ownedCount}/${totalCount}</div>
+</div>
+
+`;
   }
 }
 
@@ -492,7 +442,7 @@ function renderCards(data, sheetName) {
     cardContainer.appendChild(divider);
 
     const groupContainer = document.createElement("div");
-    groupContainer.className = "group-grid";
+    groupContainer.className = "group-grid";  // 這行必須加，改用 CSS Grid 排版
 
     grouped[type].forEach(item => {
       const card = document.createElement("div");
@@ -603,7 +553,6 @@ const initialSheet = getInitialSheet();
 tabElements[initialSheet].classList.add("active");
 document.documentElement.style.setProperty('--tab-color', colors[initialSheet] || "#999");
 loadSheetData(initialSheet);
-  
 </script>
 </body>
 </html>
