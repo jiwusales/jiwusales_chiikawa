@@ -90,6 +90,7 @@ body {
 .logo-container {
   text-align: center;
   margin-top: 70px;
+  margin-bottom: 10px;
 }
 .logo-container img {
   width: 160px;
@@ -97,39 +98,37 @@ body {
 }
 
 h1 {
-  margin: 10px 0;
-  font-size: 18px;
+  margin: 10px 0 20px;
+  font-size: 14px;
   color: #333333;
   user-select: none;
 }
 
 /* 📦 分頁按鈕樣式 */
 .tabs {
-  margin-top: 20px;
-  margin-bottom: 15px;
-  display: flex;
+  margin: 20px auto 15px auto;
+  padding: 0 15px; /* 左右留白，避免貼邊 */
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 15px 5px; /* 15px 上下間距，5px 左右間距 */
   justify-content: center;
-  gap: 5px;
-  flex-wrap: wrap;
 }
+
 .tab {
-  position: relative;
-  width: 60px;
-  height: 90px;
+  width: 64px;
+  height: 88px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   cursor: pointer;
   user-select: none;
+  position: relative;
+  padding-top: 4px;
   transition: transform 0.3s;
 }
-.tab-circle svg {
-  position: absolute;
-  top: 0;
-  left: 0;
-  transform: rotate(-90deg);
-}
+
+/* 調整圈圈容器及圖片大小，讓圖片與svg重疊且對齊 */
 .tab-circle {
   position: relative;
   width: 64px;
@@ -159,17 +158,53 @@ h1 {
   z-index: 1;
   transform: rotate(-90deg);
 }
-  
+
+/* 分頁底下文字區域 */
+.tab-label {
+  margin-top: 68px;
+  text-align: center;
+  user-select: none;
+}
+
 .tab-name {
-  font-size: 12px; /* 原本 14px → 縮小 */
+  font-size: 14px;
   font-weight: bold;
   color: #333333;
-  text-align: center;
 }
+
 .tab-count {
-  font-size: 10px; /* 原本 12px → 縮小 */
-  font-weight: normal;
+  font-size: 12px;
   color: #666666;
+}
+
+/* 新增重置按鈕樣式，跟 tab 同型 */
+.tab-reset {
+  width: 64px;
+  height: 88px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  user-select: none;
+  background-color: #e0e0e0;
+  border-radius: 8px;
+  box-shadow: inset 0 0 5px #bbb;
+  transition: background-color 0.3s;
+}
+.tab-reset:hover {
+  background-color: #d4c0b0;
+}
+.tab-reset img {
+  width: 40px;
+  height: 40px;
+  margin-bottom: 6px;
+  pointer-events: none;
+}
+.tab-reset .tab-name {
+  font-size: 12px;
+  color: #333;
+  font-weight: bold;
 }
 
 .type-divider {
@@ -270,13 +305,13 @@ h1 {
   background-color: #dac7b7;
   color: #fff;
   text-align: center;
-  padding: 20px 0;
+  padding: 10px 0 0 0;
   font-weight: bold;
   font-size: 14px;
   margin-top: 30px;
   user-select: none;
-  height: 60px;  /* 直接設定高度 */
-  line-height: 60px; /* 文字垂直置中 */
+  height: 40px;
+  line-height: normal;
 }
 .bottom-bar a {
   color: #fff;
