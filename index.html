@@ -114,8 +114,8 @@ h1 {
 }
 .tab {
   position: relative;
-  width: 60px;   /* 原本 80px → 縮小 */
-  height: 90px;  /* 原本 110px → 縮小 */
+  width: 60px;
+  height: 90px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -132,13 +132,12 @@ h1 {
 }
 .tab-circle {
   position: relative;
-  width: 50px;  /* 原本 70px → 縮小 */
-  height: 50px; /* 原本 70px → 縮小 */
+  width: 60px;  /* ✅ 改成 60px */
+  height: 60px; /* ✅ 改成 60px */
   display: flex;
   align-items: center;
   justify-content: center;
 }
-
 .tab-circle img {
   width: 100%;
   height: 100%;
@@ -153,8 +152,8 @@ h1 {
   position: absolute;
   top: 0;
   left: 0;
-  width: 50px;  /* 原本 70px → 縮小 */
-  height: 50px;
+  width: 60px;  /* ✅ 跟著改成 60px */
+  height: 60px; /* ✅ 跟著改成 60px */
   transform: rotate(-90deg);
   transform-origin: center;
   pointer-events: none;
