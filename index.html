@@ -90,6 +90,7 @@ body {
 .logo-container {
   text-align: center;
   margin-top: 70px;
+  margin-bottom: 10px;
 }
 .logo-container img {
   width: 160px;
@@ -97,81 +98,113 @@ body {
 }
 
 h1 {
-  margin: 10px 0;
-  font-size: 18px;
+  margin: 10px 0 20px;
+  font-size: 14px;
   color: #333333;
   user-select: none;
 }
 
 /* 📦 分頁按鈕樣式 */
 .tabs {
-  margin-top: 20px;
-  margin-bottom: 15px;
-  display: flex;
+  margin: 20px auto 15px auto;
+  padding: 0 15px; /* 左右留白，避免貼邊 */
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 15px 5px; /* 15px 上下間距，5px 左右間距 */
   justify-content: center;
-  gap: 5px;
-  flex-wrap: wrap;
 }
+
 .tab {
+  width: 64px;
+  height: 88px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  cursor: pointer;
+  user-select: none;
   position: relative;
-  width: 80px;
-  height: 110px;
+  padding-top: 4px;
+  transition: transform 0.3s;
+}
+
+/* 調整圈圈容器及圖片大小，讓圖片與svg重疊且對齊 */
+.tab-circle {
+  position: relative;
+  width: 64px;
+  height: 64px;
+}
+
+.tab-circle img {
+  width: 55px;
+  height: 55px;
+  display: block;
+  margin: 0 auto;
+  position: relative;
+  z-index: 2;
+  user-select: none;
+}
+
+.tab-circle svg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  object-fit: cover;
+  pointer-events: none;
+  user-select: none;
+  z-index: 1;
+  transform: rotate(-90deg);
+}
+
+/* 分頁底下文字區域 */
+.tab-label {
+  margin-top: 68px;
+  text-align: center;
+  user-select: none;
+}
+
+.tab-name {
+  font-size: 14px;
+  font-weight: bold;
+  color: #333333;
+}
+
+.tab-count {
+  font-size: 12px;
+  color: #666666;
+}
+
+/* 新增重置按鈕樣式，跟 tab 同型 */
+.tab-reset {
+  width: 64px;
+  height: 88px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   user-select: none;
-  transition: transform 0.3s;
+  background-color: #e0e0e0;
+  border-radius: 8px;
+  box-shadow: inset 0 0 5px #bbb;
+  transition: background-color 0.3s;
 }
-.tab:hover {
-  transform: scale(1.05);
+.tab-reset:hover {
+  background-color: #d4c0b0;
 }
-.tab-circle svg {
-  position: absolute;
-  top: 0;
-  left: 0;
-  transform: rotate(-90deg);
-}
-.tab-circle {
-  position: relative;
-  width: 70px;
-  height: 70px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.tab-circle img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  border-radius: 50%;
-  transform: scale(0.95); /* 縮小95% */
-  transform-origin: center center;
+.tab-reset img {
+  width: 40px;
+  height: 40px;
+  margin-bottom: 6px;
   pointer-events: none;
 }
-
-.tab-circle svg {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 70px;
-  height: 70px;
-  transform: rotate(-90deg);
-  transform-origin: center;
-  pointer-events: none;
-}
-  
-.tab-name {
-  font-size: 14px;
-  font-weight: bold;
-  color: #333333;
-}
-.tab-count {
+.tab-reset .tab-name {
   font-size: 12px;
-  font-weight: normal;
-  color: #666666;
+  color: #333;
+  font-weight: bold;
 }
 
 .type-divider {
@@ -191,9 +224,6 @@ h1 {
 
 /* 卡片區容器 */
 #card-container {
-  width: 100%;
-  max-width: 1200px; /* 或視需求 */
-  margin: 0 auto;
   padding: 10px;
   display: flex;
   flex-direction: column;
@@ -203,7 +233,7 @@ h1 {
 /* 分組內使用 CSS Grid 排版 */
 .group-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(82px, 82px));
+  grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
   gap: 8px;
   justify-content: start;
 }
@@ -275,13 +305,13 @@ h1 {
   background-color: #dac7b7;
   color: #fff;
   text-align: center;
-  padding: 20px 0;
+  padding: 10px 0 0 0;
   font-weight: bold;
   font-size: 14px;
   margin-top: 30px;
   user-select: none;
-  height: 60px;  /* 直接設定高度 */
-  line-height: 60px; /* 文字垂直置中 */
+  height: 40px;
+  line-height: normal;
 }
 .bottom-bar a {
   color: #fff;
@@ -389,58 +419,6 @@ function createTab(sheetName) {
 
   tabsContainer.appendChild(tab);
   tabElements[sheetName] = tab;
-}
-
-  function createResetTab() {
-  const tab = document.createElement("div");
-  tab.className = "tab";
-
-  const radius = 30;
-  const circumference = 2 * Math.PI * radius;
-
-  tab.innerHTML = `
-    <div class="tab-circle">
-      <img src="https://i.postimg.cc/d3qMwwCv/icon.png" alt="圖鑑重置" />
-      <svg width="70" height="70">
-        <circle
-          cx="35" cy="35" r="${radius}"
-          stroke="#e0e0e0" stroke-width="5" fill="none"
-        ></circle>
-        <circle
-          cx="35" cy="35" r="${radius}"
-          stroke="#e0e0e0"
-          stroke-width="5" fill="none"
-          stroke-dasharray="${circumference}"
-          stroke-dashoffset="0"
-          stroke-linecap="round"
-        ></circle>
-      </svg>
-    </div>
-    <div class="tab-label">
-      <div class="tab-name">圖鑑重置</div>
-      <div class="tab-count">&nbsp;</div>
-    </div>
-  `;
-
-  tab.addEventListener("click", () => {
-    if (confirm("確定要清除所有已收藏的圖鑑並重置嗎？")) {
-      collected = [];
-      localStorage.removeItem("collectedDolls");
-      // 重新載入目前分頁資料，更新狀態
-      const activeTab = document.querySelector(".tab.active");
-      if (activeTab && activeTab.textContent.trim() !== "圖鑑重置") {
-        const sheetName = activeTab.querySelector(".tab-name").textContent;
-        loadSheetData(sheetName);
-        updateTabCount(sheetName);
-      } else {
-        const initialSheet = getInitialSheet();
-        loadSheetData(initialSheet);
-        updateTabCount(initialSheet);
-      }
-    }
-  });
-
-  tabsContainer.appendChild(tab);
 }
 
 function updateTabCount(sheetName) {
@@ -603,12 +581,32 @@ function getInitialSheet() {
 
 // 初始化
 sheetNames.forEach(createTab);
-createResetTab();
 preloadAllSheets();
 const initialSheet = getInitialSheet();
 tabElements[initialSheet].classList.add("active");
 document.documentElement.style.setProperty('--tab-color', colors[initialSheet] || "#999");
 loadSheetData(initialSheet);
+
+  const resetTab = document.createElement("div");
+resetTab.className = "tab";
+resetTab.style.setProperty("--tab-color", "#999");
+resetTab.innerHTML = `
+  <div class="tab-circle">
+    <img src="https://i.postimg.cc/d3qMwwCv/icon.png" alt="重置圖鑑">
+  </div>
+  <div class="tab-label">
+    <div class="tab-name">重置</div>
+    <div class="tab-count">全部</div>
+  </div>
+`;
+resetTab.addEventListener("click", () => {
+  if (confirm("確定要重置所有圖鑑嗎？這會清除所有已收藏的紀錄。")) {
+    localStorage.removeItem("collectedDolls");
+    location.reload();
+  }
+});
+tabsContainer.appendChild(resetTab);
+  
 </script>
 </body>
 </html>
