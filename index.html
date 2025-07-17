@@ -114,8 +114,8 @@ h1 {
 }
 .tab {
   position: relative;
-  width: 60px;   /* 原本 80px → 縮小 */
-  height: 90px;  /* 原本 110px → 縮小 */
+  width: 80px;
+  height: 110px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -123,6 +123,9 @@ h1 {
   cursor: pointer;
   user-select: none;
   transition: transform 0.3s;
+}
+.tab:hover {
+  transform: scale(1.05);
 }
 .tab-circle svg {
   position: absolute;
@@ -132,8 +135,8 @@ h1 {
 }
 .tab-circle {
   position: relative;
-  width: 50px;  /* 原本 70px → 縮小 */
-  height: 50px; /* 原本 70px → 縮小 */
+  width: 70px;
+  height: 70px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -144,7 +147,7 @@ h1 {
   height: 100%;
   object-fit: cover;
   border-radius: 50%;
-  transform: scale(0.95);
+  transform: scale(0.95); /* 縮小95% */
   transform-origin: center center;
   pointer-events: none;
 }
@@ -153,21 +156,20 @@ h1 {
   position: absolute;
   top: 0;
   left: 0;
-  width: 50px;  /* 原本 70px → 縮小 */
-  height: 50px;
+  width: 70px;
+  height: 70px;
   transform: rotate(-90deg);
   transform-origin: center;
   pointer-events: none;
 }
   
 .tab-name {
-  font-size: 12px; /* 原本 14px → 縮小 */
+  font-size: 14px;
   font-weight: bold;
   color: #333333;
-  text-align: center;
 }
 .tab-count {
-  font-size: 10px; /* 原本 12px → 縮小 */
+  font-size: 12px;
   font-weight: normal;
   color: #666666;
 }
@@ -551,27 +553,6 @@ const initialSheet = getInitialSheet();
 tabElements[initialSheet].classList.add("active");
 document.documentElement.style.setProperty('--tab-color', colors[initialSheet] || "#999");
 loadSheetData(initialSheet);
-
-  const resetTab = document.createElement("div");
-resetTab.className = "tab";
-resetTab.style.setProperty("--tab-color", "#999");
-resetTab.innerHTML = `
-  <div class="tab-circle">
-    <img src="https://i.postimg.cc/d3qMwwCv/icon.png" alt="重置圖鑑">
-  </div>
-  <div class="tab-label">
-    <div class="tab-name">重置</div>
-    <div class="tab-count">全部</div>
-  </div>
-`;
-resetTab.addEventListener("click", () => {
-  if (confirm("確定要重置所有圖鑑嗎？這會清除所有已收藏的紀錄。")) {
-    localStorage.removeItem("collectedDolls");
-    location.reload();
-  }
-});
-tabsContainer.appendChild(resetTab);
-  
 </script>
 </body>
 </html>
