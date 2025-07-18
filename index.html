@@ -287,12 +287,21 @@ h1 {
 
 /* 電腦版卡片加寬 */
 @media (min-width: 768px) {
+  .group-grid {
+    grid-template-columns: repeat(auto-fit, 150px);
+  }
+  .card {
+    width: 150px;
+  }
+  .card img {
+    width: 140px;
+  }
+  .card .name,
+  .card .size {
+    font-size: 12px;
+  }
   .type-divider {
-    padding-left: 5px;  /* 保持左邊距 */
-    padding-right: 5px; /* 跟 .group-grid 一致 */
-    margin-left: 0;
-    max-width: calc(100% - 10px); /* 減去左右padding，避免超出 */
-    box-sizing: border-box;
+    padding-left: 5px; /* 保持和卡片對齊 */
   }
 }
 
