@@ -341,6 +341,14 @@ h1 {
     color: #333333 !important;
   }
 }
+  .tab-circle svg circle:nth-child(2) {
+  stroke: var(--tab-color, #999);
+}
+
+.reset-tab {
+  --tab-color: #F85C70 !important;
+}
+
 </style>
 </head>
 <body>
@@ -593,12 +601,24 @@ function createResetTab() {
 
   resetTab.innerHTML = `
     <div class="tab-circle">
-      <img src="https://i.postimg.cc/d3qMwwCv/icon.png" alt="Reset">
-    </div>
-    <div class="tab-label">
-      <div class="tab-name">重置圖鑑</div>
-      <div class="tab-count">ฅ(๑*д*๑)ฅ!!</div>
-    </div>
+  <img src="https://i.postimg.cc/d3qMwwCv/icon.png" alt="Reset">
+  <svg width="70" height="70">
+    <circle
+      cx="35" cy="35" r="28"
+      stroke="#e0e0e0" stroke-width="4" fill="none"
+    ></circle>
+    <circle
+      cx="35" cy="35" r="28"
+      stroke="var(--tab-color)"
+      stroke-width="4" fill="none"
+      stroke-linecap="round"
+    ></circle>
+  </svg>
+</div>
+<div class="tab-label">
+  <div class="tab-name">重置圖鑑</div>
+  <div class="tab-count">ฅ(๑*д*๑)ฅ!!</div>
+</div>
   `;
 
   resetTab.addEventListener("click", () => {
