@@ -114,7 +114,7 @@ h1 {
   width: 100%;
   max-width: 2400px;
   margin: 20px auto 15px auto; /* 保持上下外距，左右置中 */
-  padding: 0 8px;              /* 跟卡片容器左右內距一致 */
+  padding: 0 2px;              /* 跟卡片容器左右內距一致 */
   display: flex;
   justify-content: center;
   gap: 2px;
@@ -130,10 +130,27 @@ h1 {
 }
 @media (max-width: 767px) {
   .tabs {
-    width: 100%;
-    padding: 0 10px; /* 左右空間 */
-    box-sizing: border-box;
-    gap: 0px;
+    padding: 0 5px;
+    gap: 2px;
+  }
+  .tab {
+    flex: 0 0 60px;
+    max-width: 60px;
+    width: auto;  /* 取消原本的20% */
+  }
+  .tab-circle {
+    width: 55px;
+    height: 55px;
+  }
+  .tab-circle img {
+    width: 44px;
+    height: 44px;
+  }
+  .tab-name {
+    font-size: 10px;
+  }
+  .tab-count {
+    font-size: 8px;
   }
 }
 .tab {
@@ -597,7 +614,7 @@ function createResetTab() {
   resetTab.className = "tab reset-tab";
 
   // ✅ 設定紅色圈圈
-  resetTab.style.setProperty("--tab-color", "#F85C70");
+  resetTab.style.setProperty("--tab-color", "#F6C8CC");
 
   resetTab.innerHTML = `
     <div class="tab-circle">
@@ -617,7 +634,7 @@ function createResetTab() {
 </div>
 <div class="tab-label">
   <div class="tab-name">重置圖鑑</div>
-  <div class="tab-count">ฅ(๑*д*๑)ฅ!!</div>
+  <div class="tab-count">ฅ(๑*д*๑)ฅ</div>
 </div>
   `;
 
@@ -631,7 +648,7 @@ function createResetTab() {
       if (activeTab) {
         loadSheetData(activeTab.textContent);
       }
-      alert("✅ 乾淨的圖鑑回來ㄌ！");
+      alert("✨寶寶圖鑑打掃乾淨ㄌ！(˶ˆᗜˆ˵)");
     }
   });
 
