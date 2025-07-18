@@ -203,17 +203,16 @@ h1 {
 /* 卡片群組排版 */
 .group-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, 82px);
+  grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
   gap: 8px;
-  justify-content: start;
-  padding: 0 5px; /* 左右間距小一點 */
+  justify-content: center;
+  padding: 0 5px;
   box-sizing: border-box;
-  overflow-x: hidden; /* 防止左右滑動 */
 }
 
 /* 卡片樣式 (手機) */
 .card {
-  width: 82px;
+  width: 80px;
   border: 2px solid #ccc;
   border-radius: 8px;
   background-color: #ffffff !important;
@@ -227,7 +226,7 @@ h1 {
   box-shadow: none !important;
 }
 .card img {
-  width: 70px;
+  width: 75px;
   margin-top: 5px;
   object-fit: contain;
 }
