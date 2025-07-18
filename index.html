@@ -134,8 +134,8 @@ h1 {
   transform: scale(1.05);
 }
 .tab-circle {
-  width: 120px;
-  height: 120px;
+  width: 60px;
+  height: 60px;
   position: relative;
   display: flex;
   align-items: center;
@@ -160,12 +160,13 @@ h1 {
   pointer-events: none;
 }
 .tab-name {
-  font-size: 28px; /* 原本大約14px，放大2倍 */
+  font-size: 12px; /* 縮小 */
   font-weight: bold;
   color: #333333;
 }
+
 .tab-count {
-  font-size: 24px; /* 原本12px，放大2倍 */
+  font-size: 10px; /* 縮小 */
   font-weight: normal;
   color: #666666;
 }
@@ -399,9 +400,8 @@ function updateTabCount(sheetName) {
   const totalCount = data.length;
   const percent = totalCount ? ownedCount / totalCount : 0;
 
-  const radius = 30;
-  const radius = 60; // 由 30 改為 60
-  const circumference = 2 * Math.PI * radius; // 120π ≈ 376.99
+const radius = 30; // 半徑30px，直徑60px
+const circumference = 2 * Math.PI * radius; // 約188.5
 
   if (tabElements[sheetName]) {
     tabElements[sheetName].innerHTML = `
