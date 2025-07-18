@@ -30,6 +30,7 @@ html, body {
   margin: 0;
   padding: 0;
   width: 100%;
+  height: 100%;
   overflow-x: hidden; /* 防止左右滑動 */
   font-family: Arial, sans-serif;
   background-color: #f9f9f9;
@@ -41,6 +42,8 @@ html, body {
 }
 
 body {
+  display: flex;
+  flex-direction: column;
   /* 其他body特性留著 */
 }
 
@@ -236,6 +239,7 @@ h1 {
   padding: 0 15px;         /* 左右保留15px空間，避免貼邊 */
   box-sizing: border-box;
   overflow-x: hidden;
+  flex: 1;
 }
 
 /* 卡片群組排版 */
