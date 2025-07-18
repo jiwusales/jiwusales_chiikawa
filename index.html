@@ -138,7 +138,8 @@ h1 {
 }
 .tab {
   position: relative;
-  width: 80px;
+  width: 20%; /* 每排 5 個 */
+  max-width: 80px; /* 電腦版不超過 80px */
   height: 110px;
   display: flex;
   flex-direction: column;
@@ -581,28 +582,14 @@ loadSheetData(initialSheet);
 // 產生重置按鈕
 createResetTab();
 
-  function createResetTab() {
+function createResetTab() {
   const resetTab = document.createElement("div");
   resetTab.className = "tab";
-  resetTab.style.setProperty("--tab-color", "#e74c3c"); // 紅色
+  resetTab.style.setProperty("--tab-color", "#ccc"); // 初始淺灰
 
   resetTab.innerHTML = `
     <div class="tab-circle">
-      <svg width="70" height="70">
-        <circle
-          cx="35" cy="35" r="28"
-          stroke="#e0e0e0" stroke-width="4" fill="none"
-        ></circle>
-        <circle
-          cx="35" cy="35" r="28"
-          stroke="#e74c3c"
-          stroke-width="4" fill="none"
-          stroke-dasharray="${2 * Math.PI * 28}"
-          stroke-dashoffset="0"
-          stroke-linecap="round"
-          class="reset-circle"
-        ></circle>
-      </svg>
+      <img src="https://i.postimg.cc/d3qMwwCv/icon.png" alt="Reset">
     </div>
     <div class="tab-label">
       <div class="tab-name">重置</div>
@@ -611,11 +598,8 @@ createResetTab();
   `;
 
   resetTab.addEventListener("click", () => {
-    // 點擊後變紅色圈圈動畫
-    const circle = resetTab.querySelector(".reset-circle");
-    circle.style.strokeDashoffset = "44"; // 這裡用任意數字做動畫效果，你可以改
-
-    // 執行重置邏輯，比如清除已收藏
+    resetTab.style.setProperty("--tab-color", "#e74c3c"); // 按下變紅
+    // 清除已收藏
     collected = [];
     localStorage.setItem("collectedDolls", JSON.stringify(collected));
     // 更新所有 tab count 和卡片樣式
@@ -628,6 +612,7 @@ createResetTab();
 
   tabsContainer.appendChild(resetTab);
 }
+
 </script>
 </body>
 </html>
