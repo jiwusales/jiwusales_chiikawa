@@ -26,10 +26,6 @@
   --tab-color: #dac7b7;
 }
 
-html, body {
-  overflow-x: hidden;
-}
-
 body {
   font-family: Arial, sans-serif;
   background-color: #f9f9f9;
@@ -96,13 +92,13 @@ body {
   margin-top: 70px;
 }
 .logo-container img {
-  width: clamp(120px, 20vw, 200px);
+  width: 160px;
   height: auto;
 }
 
 h1 {
   margin: 10px 0;
-  font-size: clamp(16px, 4vw, 24px);
+  font-size: 18px;
   color: #333333;
   user-select: none;
 }
@@ -131,12 +127,6 @@ h1 {
 .tab:hover {
   transform: scale(1.05);
 }
-.tab-circle svg {
-  position: absolute;
-  top: 0;
-  left: 0;
-  transform: rotate(-90deg);
-}
 .tab-circle {
   position: relative;
   width: 70px;
@@ -145,7 +135,6 @@ h1 {
   align-items: center;
   justify-content: center;
 }
-
 .tab-circle img {
   width: 100%;
   height: 100%;
@@ -155,7 +144,6 @@ h1 {
   transform-origin: center center;
   pointer-events: none;
 }
-
 .tab-circle svg {
   position: absolute;
   top: 0;
@@ -166,7 +154,6 @@ h1 {
   transform-origin: center;
   pointer-events: none;
 }
-  
 .tab-name {
   font-size: 14px;
   font-weight: bold;
@@ -198,21 +185,19 @@ h1 {
   width: 100%;
   max-width: 2400px;
   margin: 0 auto;
-  padding: 0 10px;
+  padding: 0 5px;
 }
-
-/* 📦 使用 CSS Grid 自適應排版 */
 .group-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, 82px); /* ✅ 每張固定 82px */
+  grid-template-columns: repeat(auto-fit, 82px); /* 📱 手機卡片寬度 */
   gap: 8px;
-  justify-content: center; /* ✅ 讓多餘空間平均分配 */
-  padding: 0 10px;
+  justify-content: center;
+  padding: 0 5px;
 }
 
+/* 📱 卡片樣式 (手機) */
 .card {
-  width: 82px;          /* ✅ 固定寬度 */
-  height: auto;         /* 高度自適應內容 */
+  width: 82px;
   border: 2px solid #ccc;
   border-radius: 8px;
   background-color: #ffffff !important;
@@ -226,7 +211,7 @@ h1 {
   box-shadow: none !important;
 }
 .card img {
-  width: 80px;          /* ✅ 圖片也縮小一點 */
+  width: 70px;
   margin-top: 5px;
   object-fit: contain;
 }
@@ -281,6 +266,23 @@ h1 {
 .bottom-bar a {
   color: #fff;
   text-decoration: underline;
+}
+
+/* 🖥️ 電腦版放大卡片寬度 */
+@media (min-width: 768px) {
+  .group-grid {
+    grid-template-columns: repeat(auto-fit, 120px); /* 🖥️ 電腦卡片寬度 */
+  }
+  .card {
+    width: 120px;
+  }
+  .card img {
+    width: 100px;
+  }
+  .card .name,
+  .card .size {
+    font-size: 12px;
+  }
 }
 
 /* ✅ 強制淺色模式一致化外觀 */
