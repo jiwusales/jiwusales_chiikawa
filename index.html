@@ -204,14 +204,15 @@ h1 {
 /* 📦 使用 CSS Grid 自適應排版 */
 .group-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-  gap: 10px;
-  padding: 0 15px;
+  grid-template-columns: repeat(auto-fit, 82px); /* ✅ 每張固定 82px */
+  gap: 8px;
+  justify-content: center; /* ✅ 讓多餘空間平均分配 */
+  padding: 0 10px;
 }
 
 .card {
-  width: 100%;
-  max-width: 150px;
+  width: 82px;          /* ✅ 固定寬度 */
+  height: auto;         /* 高度自適應內容 */
   border: 2px solid #ccc;
   border-radius: 8px;
   background-color: #ffffff !important;
@@ -225,21 +226,20 @@ h1 {
   box-shadow: none !important;
 }
 .card img {
-  width: clamp(60px, 15vw, 120px);
+  width: 80px;          /* ✅ 圖片也縮小一點 */
   margin-top: 5px;
   object-fit: contain;
 }
 .card .name,
 .card .size {
   margin: 2px auto;
-  font-size: clamp(10px, 2vw, 14px);
+  font-size: 10px;
   line-height: 1.2;
   word-break: break-word;
   min-height: 16px;
   color: #333333 !important;
   display: block;
   width: 100%;
-  max-width: 100%;
   box-sizing: border-box;
 }
 .card .name {
