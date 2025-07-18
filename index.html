@@ -36,6 +36,7 @@ body {
   padding: 0;
   color: #333333;
   text-align: center;
+  overflow-x: hidden; /* 新增：禁止水平滾動 */
 }
 
 /* 🔘 控制按鈕共用樣式 */
@@ -195,6 +196,13 @@ h1 {
   max-width: 2400px; /* 可選，限制最大寬度 */
   margin: 0 auto;
   padding: 0 10px;
+  
+  @media (max-width: 480px) {
+  #card-container {
+    padding-left: 5px;  /* 從10px改成5px */
+    padding-right: 5px;
+  }
+}
 
 /* 分組內使用 CSS Grid 排版 */
 .group-grid {
