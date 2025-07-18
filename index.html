@@ -584,35 +584,42 @@ createResetTab();
 
 function createResetTab() {
   const resetTab = document.createElement("div");
-  resetTab.className = "tab";
-  resetTab.style.setProperty("--tab-color", "#ccc"); // 初始淺灰
+  resetTab.className = "tab reset-tab";
+  resetTab.style.setProperty("--tab-color", "#F85C70"); // 固定粉紅紅色
 
   resetTab.innerHTML = `
     <div class="tab-circle">
       <img src="https://i.postimg.cc/d3qMwwCv/icon.png" alt="Reset">
+      <svg width="70" height="70">
+        <circle
+          cx="35" cy="35" r="28"
+          stroke="#F85C70" stroke-width="4" fill="none"
+        ></circle>
+      </svg>
     </div>
     <div class="tab-label">
       <div class="tab-name">重置</div>
-      <div class="tab-count"></div>
     </div>
   `;
 
   resetTab.addEventListener("click", () => {
-    resetTab.style.setProperty("--tab-color", "#e74c3c"); // 按下變紅
-    // 清除已收藏
-    collected = [];
-    localStorage.setItem("collectedDolls", JSON.stringify(collected));
-    // 更新所有 tab count 和卡片樣式
-    Object.keys(currentData).forEach(sheet => updateTabCount(sheet));
-    const activeTab = document.querySelector(".tab.active");
-    if (activeTab) {
-      loadSheetData(activeTab.querySelector(".tab-name").textContent);
+    const confirmReset = confirm("⚠️ 確定要重置所有收藏嗎？\n這將清除目前已收藏的資料！");
+    if (confirmReset) {
+      // 清除已收藏
+      collected = [];
+      localStorage.setItem("collectedDolls", JSON.stringify(collected));
+      // 更新所有 tab count 和卡片樣式
+      Object.keys(currentData).forEach(sheet => updateTabCount(sheet));
+      const activeTab = document.querySelector(".tab.active");
+      if (activeTab) {
+        loadSheetData(activeTab.querySelector(".tab-name").textContent);
+      }
+      alert("✅ 已重置收藏！");
     }
   });
 
   tabsContainer.appendChild(resetTab);
 }
-
 </script>
 </body>
 </html>
