@@ -133,7 +133,7 @@ h1 {
     width: 100%;
     padding: 0 10px; /* 左右空間 */
     box-sizing: border-box;
-    gap: 3px;
+    gap: 1px;
   }
 }
 .tab {
@@ -444,8 +444,8 @@ tabElements[sheetName].innerHTML = `
     </svg>
   </div>
   <div class="tab-label">
-    <div class="tab-name">${sheetName}</div>
-    <div class="tab-count">${ownedCount}/${totalCount}</div>
+  <div class="tab-name">重置</div>
+  <div class="tab-count">&nbsp;</div> <!-- 加一個空白 -->
   </div>
 `;
   }
@@ -598,12 +598,12 @@ function createResetTab() {
       </svg>
     </div>
     <div class="tab-label">
-      <div class="tab-name">重置</div>
+      <div class="tab-name">圖鑑重置</div>
     </div>
   `;
 
   resetTab.addEventListener("click", () => {
-    const confirmReset = confirm("⚠️ 確定要重置所有收藏嗎？\n這將清除目前已收藏的資料！");
+    const confirmReset = confirm("⚠️ 確定要重置寶寶們嗎 ㅇㅅㅇ ！");
     if (confirmReset) {
       // 清除已收藏
       collected = [];
@@ -614,7 +614,7 @@ function createResetTab() {
       if (activeTab) {
         loadSheetData(activeTab.querySelector(".tab-name").textContent);
       }
-      alert("✅ 已重置收藏！");
+      alert("✅ 乾淨的圖鑑回來ㄌ！");
     }
   });
 
