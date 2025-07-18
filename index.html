@@ -201,11 +201,12 @@ h1 {
 }
 
 /* 卡片群組排版 */
+/* 手機版使用彈性欄寬，最小80px */
 .group-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, 150px);
+  grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
   gap: 8px;
-  justify-content: start; /* 改成左對齊 */
+  justify-content: start; /* 左對齊 */
   padding: 0 5px;
   box-sizing: border-box;
 }
@@ -284,7 +285,7 @@ h1 {
   text-decoration: underline;
 }
 
-/* 電腦版卡片加寬 */
+/* 電腦版卡片加寬，欄寬也固定為150px */
 @media (min-width: 768px) {
   .group-grid {
     grid-template-columns: repeat(auto-fit, 150px);
@@ -300,7 +301,7 @@ h1 {
     font-size: 12px;
   }
   .type-divider {
-    padding-left: 5px; /* 保持和卡片對齊 */
+    padding-left: 5px;
   }
 }
 
