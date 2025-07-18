@@ -22,6 +22,10 @@
   <meta name="apple-mobile-web-app-capable" content="yes" />
 
 <style>
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+  
 :root {
   --tab-color: #dac7b7;
 }
@@ -192,11 +196,12 @@ h1 {
 
 /* 卡片區容器 */
 #card-container {
-  width: 100%;
   max-width: 2400px;
   margin: 0 auto;
-  padding: 0 5px; /* 縮小 padding 避免偏移 */
-  box-sizing: border-box;
+  padding-left: 10px;
+  padding-right: 10px;
+  box-sizing: border-box; /* 確保 padding 在寬度內 */
+  width: 100%;
 }
 
 /* 分組內使用 CSS Grid 排版 */
@@ -322,9 +327,12 @@ h1 {
   }
 }
    html, body {
-    width: 100%;
-    overflow-x: hidden; /* 防止橫向捲動 */
-  }
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+  box-sizing: border-box; /* 這裡加上 */
+  width: 100%;
+}
 </style>
 </head>
 <body>
