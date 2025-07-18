@@ -153,8 +153,8 @@ h1 {
   position: absolute;
   top: 0;
   left: 0;
-  width: 70px;
-  height: 70px;
+  width: 60px;
+  height: 60px;
   transform: rotate(-90deg);
   transform-origin: center;
   pointer-events: none;
@@ -400,34 +400,34 @@ function updateTabCount(sheetName) {
   const totalCount = data.length;
   const percent = totalCount ? ownedCount / totalCount : 0;
 
-const radius = 30; // 半徑30px，直徑60px
-const circumference = 2 * Math.PI * radius; // 約188.5
+  const radius = 30; // 半徑30px，直徑60px
+  const circumference = 2 * Math.PI * radius; // 約188.5
+  const offset = circumference * (1 - percent);  // 計算stroke-dashoffset
 
   if (tabElements[sheetName]) {
     tabElements[sheetName].innerHTML = `
-  <div class="tab-circle">
-    <img src="${images[sheetName]}" alt="${sheetName}">
-    <svg width="70" height="70">
-      <circle
-        cx="35" cy="35" r="${radius}"
-        stroke="#e0e0e0" stroke-width="5" fill="none"
-      ></circle>
-      <circle
-        cx="35" cy="35" r="${radius}"
-        stroke="${colors[sheetName] || '#999'}"
-        stroke-width="5" fill="none"
-        stroke-dasharray="${circumference}"
-        stroke-dashoffset="${offset}"
-        stroke-linecap="round"
-      ></circle>
-    </svg>
-  </div>
-  <div class="tab-label">
-  <div class="tab-name">${sheetName}</div>
-  <div class="tab-count">${ownedCount}/${totalCount}</div>
-</div>
-
-`;
+      <div class="tab-circle">
+        <img src="${images[sheetName]}" alt="${sheetName}">
+        <svg width="70" height="70">
+          <circle
+            cx="35" cy="35" r="${radius}"
+            stroke="#e0e0e0" stroke-width="5" fill="none"
+          ></circle>
+          <circle
+            cx="35" cy="35" r="${radius}"
+            stroke="${colors[sheetName] || '#999'}"
+            stroke-width="5" fill="none"
+            stroke-dasharray="${circumference}"
+            stroke-dashoffset="${offset}"
+            stroke-linecap="round"
+          ></circle>
+        </svg>
+      </div>
+      <div class="tab-label">
+        <div class="tab-name">${sheetName}</div>
+        <div class="tab-count">${ownedCount}/${totalCount}</div>
+      </div>
+    `;
   }
 }
 
