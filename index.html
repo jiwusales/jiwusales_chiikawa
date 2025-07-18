@@ -111,12 +111,15 @@ h1 {
 
 /* 分頁按鈕樣式 */
 .tabs {
-  margin-top: 20px;
+  display: grid;                 /* 改用 grid 排版 */
+  grid-template-columns: repeat(5, 1fr); /* 固定一排 5 個 */
+  gap: 8px 6px;                 /* 上下間距 8px，左右間距 6px（可依需求調整） */
+  margin-top: 15px;             /* 上下距離也可調整 */
   margin-bottom: 15px;
-  display: flex;
-  justify-content: center;
-  gap: 5px;
-  flex-wrap: wrap;
+  justify-content: center;      /* 水平置中 */
+  max-width: 420px;             /* 限制寬度，避免按鈕太寬（82 * 5 + 間距約420） */
+  margin-left: auto;
+  margin-right: auto;
 }
 .tab {
   position: relative;
