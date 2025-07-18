@@ -115,9 +115,21 @@ h1 {
   margin-bottom: 15px;
   display: flex;
   justify-content: center;
-  gap: 5px;
+  gap: 2px;
   flex-wrap: wrap;
 }
+@media (min-width: 768px) {
+  .tabs {
+    gap: 15px; /* 調整電腦版分頁按鈕間距 */
+  }
+}
+@media (max-width: 767px) {
+  .tabs {
+    max-width: 320px; /* 或你想要的寬度 */
+    margin: 0 auto;
+    gap: 3px; /* 更小間距 */
+  }
+}  
 .tab {
   position: relative;
   width: 80px;
@@ -559,6 +571,57 @@ const initialSheet = getInitialSheet();
 tabElements[initialSheet].classList.add("active");
 document.documentElement.style.setProperty('--tab-color', colors[initialSheet] || "#999");
 loadSheetData(initialSheet);
+
+// 產生重置按鈕
+createResetTab();
+
+  function createResetTab() {
+  const resetTab = document.createElement("div");
+  resetTab.className = "tab";
+  resetTab.style.setProperty("--tab-color", "#e74c3c"); // 紅色
+
+  resetTab.innerHTML = `
+    <div class="tab-circle">
+      <svg width="70" height="70">
+        <circle
+          cx="35" cy="35" r="28"
+          stroke="#e0e0e0" stroke-width="4" fill="none"
+        ></circle>
+        <circle
+          cx="35" cy="35" r="28"
+          stroke="#e74c3c"
+          stroke-width="4" fill="none"
+          stroke-dasharray="${2 * Math.PI * 28}"
+          stroke-dashoffset="0"
+          stroke-linecap="round"
+          class="reset-circle"
+        ></circle>
+      </svg>
+    </div>
+    <div class="tab-label">
+      <div class="tab-name">重置</div>
+      <div class="tab-count"></div>
+    </div>
+  `;
+
+  resetTab.addEventListener("click", () => {
+    // 點擊後變紅色圈圈動畫
+    const circle = resetTab.querySelector(".reset-circle");
+    circle.style.strokeDashoffset = "44"; // 這裡用任意數字做動畫效果，你可以改
+
+    // 執行重置邏輯，比如清除已收藏
+    collected = [];
+    localStorage.setItem("collectedDolls", JSON.stringify(collected));
+    // 更新所有 tab count 和卡片樣式
+    Object.keys(currentData).forEach(sheet => updateTabCount(sheet));
+    const activeTab = document.querySelector(".tab.active");
+    if (activeTab) {
+      loadSheetData(activeTab.querySelector(".tab-name").textContent);
+    }
+  });
+
+  tabsContainer.appendChild(resetTab);
+}
 </script>
 </body>
 </html>
