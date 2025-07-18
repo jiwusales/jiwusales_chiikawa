@@ -133,7 +133,7 @@ h1 {
     width: 100%;
     padding: 0 10px; /* 左右空間 */
     box-sizing: border-box;
-    gap: 1px;
+    gap: 0px;
   }
 }
 .tab {
@@ -587,7 +587,9 @@ createResetTab();
 function createResetTab() {
   const resetTab = document.createElement("div");
   resetTab.className = "tab reset-tab";
-  resetTab.style.setProperty("--tab-color", "#F85C70"); // 固定粉紅紅色
+
+  // ✅ 設定紅色圈圈
+  resetTab.style.setProperty("--tab-color", "#F85C70");
 
   resetTab.innerHTML = `
     <div class="tab-circle">
@@ -600,14 +602,11 @@ function createResetTab() {
   `;
 
   resetTab.addEventListener("click", () => {
-    const confirmReset = confirm("⚠️ 確定要重置寶寶們嗎 ㅇㅅㅇ ！");
+    const confirmReset = confirm("❗️確定要重置寶寶們嗎 ㅇㅅㅇ ！");
     if (confirmReset) {
-      // 清除已收藏
       collected = [];
       localStorage.setItem("collectedDolls", JSON.stringify(collected));
-      // 更新所有普通分頁的 count
       sheetNames.forEach(name => updateTabCount(name));
-      // 重新載入當前分頁
       const activeTab = document.querySelector(".tab.active .tab-name");
       if (activeTab) {
         loadSheetData(activeTab.textContent);
@@ -618,6 +617,7 @@ function createResetTab() {
 
   tabsContainer.appendChild(resetTab);
 }
+
 
 </script>
 </body>
