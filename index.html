@@ -26,6 +26,10 @@
   --tab-color: #dac7b7;
 }
 
+html, body {
+  overflow-x: hidden;
+}
+
 body {
   font-family: Arial, sans-serif;
   background-color: #f9f9f9;
@@ -36,7 +40,6 @@ body {
   padding: 0;
   color: #333333;
   text-align: center;
-  overflow-x: hidden; /* 新增：禁止水平滾動 */
 }
 
 /* 🔘 控制按鈕共用樣式 */
@@ -93,13 +96,13 @@ body {
   margin-top: 70px;
 }
 .logo-container img {
-  width: 160px;
+  width: clamp(120px, 20vw, 200px);
   height: auto;
 }
 
 h1 {
   margin: 10px 0;
-  font-size: 18px;
+  font-size: clamp(16px, 4vw, 24px);
   color: #333333;
   user-select: none;
 }
@@ -148,7 +151,7 @@ h1 {
   height: 100%;
   object-fit: cover;
   border-radius: 50%;
-  transform: scale(0.95); /* 縮小95% */
+  transform: scale(0.95);
   transform-origin: center center;
   pointer-events: none;
 }
@@ -190,21 +193,15 @@ h1 {
   white-space: nowrap;
 }
 
-/* 卡片區容器 */
+/* 📦 卡片區容器 */
+#card-container {
   width: 100%;
-  max-width: 2400px; /* 可有可無，手機時不會超寬 */
+  max-width: 2400px;
   margin: 0 auto;
   padding: 0 10px;
-  box-sizing: border-box; /* 防止 padding 影響寬度 */
-}  
-  @media (max-width: 480px) {
-  #card-container {
-    padding-left: 5px;  /* 從10px改成5px */
-    padding-right: 5px;
-  }
 }
 
-/* 分組內使用 CSS Grid 排版 */
+/* 📦 使用 CSS Grid 自適應排版 */
 .group-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
@@ -212,16 +209,9 @@ h1 {
   padding: 0 15px;
 }
 
-/* 小螢幕調整為 4 欄 */
-@media (max-width: 480px) {
-  .group-grid {
-    grid-template-columns: repeat(4, 1fr);
-  }
-}
-
 .card {
-  width: 100%;          /* 滿版欄寬 */
-  max-width: 150px;     /* 最大寬度 */
+  width: 100%;
+  max-width: 150px;
   border: 2px solid #ccc;
   border-radius: 8px;
   background-color: #ffffff !important;
@@ -235,15 +225,14 @@ h1 {
   box-shadow: none !important;
 }
 .card img {
-  width: 80px;
-  max-width: 100%;
+  width: clamp(60px, 15vw, 120px);
   margin-top: 5px;
   object-fit: contain;
 }
 .card .name,
 .card .size {
   margin: 2px auto;
-  font-size: 10px;
+  font-size: clamp(10px, 2vw, 14px);
   line-height: 1.2;
   word-break: break-word;
   min-height: 16px;
@@ -286,26 +275,12 @@ h1 {
   font-size: 14px;
   margin-top: 30px;
   user-select: none;
-  height: 60px;  /* 直接設定高度 */
-  line-height: 60px; /* 文字垂直置中 */
+  height: 60px;
+  line-height: 60px;
 }
 .bottom-bar a {
   color: #fff;
   text-decoration: underline;
-}
-
-/* ✅ 電腦版放大卡片大小 */
-@media (min-width: 768px) {
-  .card {
-    width: 120px;
-  }
-  .card img {
-    width: 116px;
-  }
-  .card .name,
-  .card .size {
-    font-size: 12px;
-  }
 }
 
 /* ✅ 強制淺色模式一致化外觀 */
