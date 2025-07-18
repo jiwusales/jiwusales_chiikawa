@@ -22,10 +22,6 @@
   <meta name="apple-mobile-web-app-capable" content="yes" />
 
 <style>
-*, *::before, *::after {
-  box-sizing: border-box;
-}
-  
 :root {
   --tab-color: #dac7b7;
 }
@@ -34,7 +30,6 @@ body {
   font-family: Arial, sans-serif;
   background-color: #f9f9f9;
   background-image: url('https://i.postimg.cc/Kj8V5YMg/2.png');
-  background-position: center top; /* 背景置中 */
   background-repeat: repeat;
   background-size: 135px;
   margin: 0;
@@ -196,13 +191,10 @@ h1 {
 
 /* 卡片區容器 */
 #card-container {
-  max-width: 2400px;
-  margin: 0 auto;
-  padding-left: 10px;
-  padding-right: 10px;
-  box-sizing: border-box; /* 確保 padding 在寬度內 */
   width: 100%;
-}
+  max-width: 2400px; /* 可選，限制最大寬度 */
+  margin: 0 auto;
+  padding: 0 10px;
 
 /* 分組內使用 CSS Grid 排版 */
 .group-grid {
@@ -216,8 +208,6 @@ h1 {
 @media (max-width: 480px) {
   .group-grid {
     grid-template-columns: repeat(4, 1fr);
-    width: 100%;  /* 讓 grid 撐滿父層 */
-    margin: 0 auto;
   }
 }
 
@@ -325,13 +315,6 @@ h1 {
   .card .size {
     color: #333333 !important;
   }
-}
-   html, body {
-  margin: 0;
-  padding: 0;
-  overflow-x: hidden;
-  box-sizing: border-box; /* 這裡加上 */
-  width: 100%;
 }
 </style>
 </head>
