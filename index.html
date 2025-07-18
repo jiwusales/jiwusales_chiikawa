@@ -49,6 +49,7 @@ body {
 
 /* 控制按鈕共用樣式 */
 .control-btn {
+  position: fixed;
   width: 40px;
   height: 40px;
   border: none;
@@ -310,9 +311,9 @@ h1 {
 
 /* 底部欄 */
 .bottom-bar {
-  min-height: 50px;
-  padding: 15px 0 0 0;
-  line-height: normal;
+  min-height: 50px;       /* 底部色塊最小高度，可依需求調整 */
+  padding: 15px 0 0 0;    /* 上方內距15px，左右0，下方0 */
+  line-height: normal;    /* 取消原本的 line-height 垂直置中 */
   text-align: center;
   background-color: #dac7b7;
   color: #fff;
