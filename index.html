@@ -134,19 +134,20 @@ h1 {
   transform: scale(1.05);
 }
 .tab-circle {
-  width: 70px;  /* 改成70x70 */
-  height: 70px;
   position: relative;
+  width: 70px;
+  height: 70px;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin: 0 auto; /* 確保置中 */
 }
 .tab-circle img {
-  width: 56px;  /* 80% 的大小 */
-  height: 56px;
+  width: 100%;
+  height: 100%;
   object-fit: cover;
   border-radius: 50%;
+  transform: scale(0.95);
+  transform-origin: center center;
   pointer-events: none;
 }
 .tab-circle svg {
@@ -160,13 +161,12 @@ h1 {
   pointer-events: none;
 }
 .tab-name {
-  font-size: 12px; /* 縮小 */
+  font-size: 14px;
   font-weight: bold;
   color: #333333;
 }
-
 .tab-count {
-  font-size: 10px; /* 縮小 */
+  font-size: 12px;
   font-weight: normal;
   color: #666666;
 }
@@ -194,25 +194,26 @@ h1 {
 #card-container {
   width: 100%;
   max-width: 2400px;
-  margin: 0 auto;          /* 重點：置中 */
-  padding: 0 15px;         /* 左右保留15px空間，避免貼邊 */
+  margin: 0 auto;
+  padding: 0 5px;
   box-sizing: border-box;
-  overflow-x: hidden;
+  overflow-x: hidden; /* 防止左右滑動 */
 }
 
 /* 卡片群組排版 */
 .group-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+  grid-template-columns: repeat(auto-fit, 82px);
   gap: 8px;
   justify-content: center;
-  padding: 0 5px;
+  padding: 0 5px; /* 左右間距小一點 */
   box-sizing: border-box;
+  overflow-x: hidden; /* 防止左右滑動 */
 }
 
 /* 卡片樣式 (手機) */
 .card {
-  width: 80px;
+  width: 82px;
   border: 2px solid #ccc;
   border-radius: 8px;
   background-color: #ffffff !important;
@@ -226,7 +227,7 @@ h1 {
   box-shadow: none !important;
 }
 .card img {
-  width: 75px;
+  width: 70px;
   margin-top: 5px;
   object-fit: contain;
 }
@@ -399,24 +400,23 @@ function updateTabCount(sheetName) {
   const totalCount = data.length;
   const percent = totalCount ? ownedCount / totalCount : 0;
 
- const radius = 28;
- const strokeWidth = 4;
-const circumference = 2 * Math.PI * radius;
-const offset = circumference * (1 - percent)
+  const radius = 30;
+  const circumference = 2 * Math.PI * radius;
+  const offset = circumference * (1 - percent);
 
   if (tabElements[sheetName]) {
-tabElements[sheetName].innerHTML = `
+    tabElements[sheetName].innerHTML = `
   <div class="tab-circle">
     <img src="${images[sheetName]}" alt="${sheetName}">
     <svg width="70" height="70">
       <circle
         cx="35" cy="35" r="${radius}"
-        stroke="#e0e0e0" stroke-width="${strokeWidth}" fill="none"
+        stroke="#e0e0e0" stroke-width="5" fill="none"
       ></circle>
       <circle
         cx="35" cy="35" r="${radius}"
         stroke="${colors[sheetName] || '#999'}"
-        stroke-width="${strokeWidth}" fill="none"
+        stroke-width="5" fill="none"
         stroke-dasharray="${circumference}"
         stroke-dashoffset="${offset}"
         stroke-linecap="round"
@@ -424,9 +424,10 @@ tabElements[sheetName].innerHTML = `
     </svg>
   </div>
   <div class="tab-label">
-    <div class="tab-name">${sheetName}</div>
-    <div class="tab-count">${ownedCount}/${totalCount}</div>
-  </div>
+  <div class="tab-name">${sheetName}</div>
+  <div class="tab-count">${ownedCount}/${totalCount}</div>
+</div>
+
 `;
   }
 }
