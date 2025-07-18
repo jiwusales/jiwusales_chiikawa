@@ -26,19 +26,25 @@
   --tab-color: #dac7b7;
 }
 
-body {
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  overflow-x: hidden; /* 防止左右滑動 */
   font-family: Arial, sans-serif;
   background-color: #f9f9f9;
   background-image: url('https://i.postimg.cc/Kj8V5YMg/2.png');
   background-repeat: repeat;
   background-size: 135px;
-  margin: 0;
-  padding: 0;
   color: #333333;
   text-align: center;
 }
 
-/* 🔘 控制按鈕共用樣式 */
+body {
+  /* 其他body特性留著 */
+}
+
+/* 控制按鈕共用樣式 */
 .control-btn {
   position: fixed;
   width: 40px;
@@ -63,7 +69,7 @@ body {
   user-select: none;
 }
 
-/* 🔃 重新整理 按鈕位置 */
+/* 重新整理 按鈕位置 */
 #refreshBtn {
   top: 60px;
   left: 10px;
@@ -103,7 +109,7 @@ h1 {
   user-select: none;
 }
 
-/* 📦 分頁按鈕樣式 */
+/* 分頁按鈕樣式 */
 .tabs {
   margin-top: 20px;
   margin-bottom: 15px;
@@ -180,22 +186,28 @@ h1 {
   white-space: nowrap;
 }
 
-/* 📦 卡片區容器 */
+/* 卡片區容器 */
 #card-container {
   width: 100%;
   max-width: 2400px;
   margin: 0 auto;
   padding: 0 5px;
-}
-.group-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, 82px); /* 📱 手機卡片寬度 */
-  gap: 8px;
-  justify-content: center;
-  padding: 0 5px;
+  box-sizing: border-box;
+  overflow-x: hidden; /* 防止左右滑動 */
 }
 
-/* 📱 卡片樣式 (手機) */
+/* 卡片群組排版 */
+.group-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, 82px);
+  gap: 8px;
+  justify-content: center;
+  padding: 0 5px; /* 左右間距小一點 */
+  box-sizing: border-box;
+  overflow-x: hidden; /* 防止左右滑動 */
+}
+
+/* 卡片樣式 (手機) */
 .card {
   width: 82px;
   border: 2px solid #ccc;
@@ -251,6 +263,7 @@ h1 {
   height: 10px;
 }
 
+/* 底部欄 */
 .bottom-bar {
   background-color: #dac7b7;
   color: #fff;
@@ -268,10 +281,10 @@ h1 {
   text-decoration: underline;
 }
 
-/* 🖥️ 電腦版放大卡片寬度 */
+/* 電腦版卡片加寬 */
 @media (min-width: 768px) {
   .group-grid {
-    grid-template-columns: repeat(auto-fit, 120px); /* 🖥️ 電腦卡片寬度 */
+    grid-template-columns: repeat(auto-fit, 120px);
   }
   .card {
     width: 120px;
@@ -285,7 +298,7 @@ h1 {
   }
 }
 
-/* ✅ 強制淺色模式一致化外觀 */
+/* 強制淺色模式 */
 @media (prefers-color-scheme: dark) {
   body {
     background-color: #f9f9f9;
