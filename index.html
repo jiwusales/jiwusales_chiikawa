@@ -114,7 +114,7 @@ h1 {
   width: 100%;
   max-width: 2400px;
   margin: 20px auto 15px auto; /* 保持上下外距，左右置中 */
-  padding: 0 15px;              /* 跟卡片容器左右內距一致 */
+  padding: 0 8px;              /* 跟卡片容器左右內距一致 */
   display: flex;
   justify-content: center;
   gap: 2px;
@@ -588,19 +588,14 @@ function createResetTab() {
   resetTab.style.setProperty("--tab-color", "#F85C70"); // 固定粉紅紅色
 
   resetTab.innerHTML = `
-    <div class="tab-circle">
-      <img src="https://i.postimg.cc/d3qMwwCv/icon.png" alt="Reset">
-      <svg width="70" height="70">
-        <circle
-          cx="35" cy="35" r="28"
-          stroke="#F85C70" stroke-width="4" fill="none"
-        ></circle>
-      </svg>
-    </div>
-    <div class="tab-label">
-      <div class="tab-name">圖鑑重置</div>
-    </div>
-  `;
+  <div class="tab-circle">
+    <img src="https://i.postimg.cc/d3qMwwCv/icon.png" alt="Reset">
+  </div>
+  <div class="tab-label">
+    <div class="tab-name">重置圖鑑</div>
+    <div class="tab-count">ฅ(๑*д*๑)ฅ!!</div>
+  </div>
+`;
 
   resetTab.addEventListener("click", () => {
     const confirmReset = confirm("⚠️ 確定要重置寶寶們嗎 ㅇㅅㅇ ！");
