@@ -191,12 +191,12 @@ h1 {
 }
 
 /* 卡片區容器 */
-#card-container {
   width: 100%;
-  max-width: 2400px; /* 可選，限制最大寬度 */
+  max-width: 2400px; /* 可有可無，手機時不會超寬 */
   margin: 0 auto;
   padding: 0 10px;
-  
+  box-sizing: border-box; /* 防止 padding 影響寬度 */
+}  
   @media (max-width: 480px) {
   #card-container {
     padding-left: 5px;  /* 從10px改成5px */
@@ -220,8 +220,8 @@ h1 {
 }
 
 .card {
-  width: 82px;         /* 自適應父層 grid 欄寬 */
-  max-width: 150px;    /* （可選）限制最大寬度，避免太大 */
+  width: 100%;          /* 滿版欄寬 */
+  max-width: 150px;     /* 最大寬度 */
   border: 2px solid #ccc;
   border-radius: 8px;
   background-color: #ffffff !important;
@@ -236,6 +236,7 @@ h1 {
 }
 .card img {
   width: 80px;
+  max-width: 100%;
   margin-top: 5px;
   object-fit: contain;
 }
