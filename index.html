@@ -546,27 +546,26 @@ function renderCards(data, sheetName) {
 }
 
 function loadSheetData(sheetName) {
+  console.log("載入工作表：", sheetName);  // 加這行
   cardContainer.innerHTML = "載入中...";
-  const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(sheetName)}`;
-  
-  fetch(`https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&sheet=${encodeURIComponent(sheetName)}`)
+  const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&sheet=${encodeURIComponent(sheetName)}`;
+  console.log("抓取網址：", url);  // 加這行
+
+  fetch(url + "&_=" + new Date().getTime())
     .then(response => response.text())
     .then(csvText => {
       const rows = csvText.trim().split('\n').map(line => line.split(','));
       const headers = rows[0];
-      const data = rows.slice(1).map(row => {
-        return {
-          type: row[0],
-          name: row[1],
-          code: row[2],
-          imgUrl: row[3],
-          url: row[4],
-          size: row[5],
-        };
-      });
+      const data = rows.slice(1).map(row => ({
+        type: row[0],
+        name: row[1],
+        code: row[2],
+        imgUrl: row[3],
+        url: row[4],
+        size: row[5],
+      }));
       console.table(data);
 
-      // ← 在這裡加上以下三行，讓資料同步與渲染
       currentData[sheetName] = data;
       updateTabCount(sheetName);
       renderCards(data, sheetName);
@@ -580,7 +579,7 @@ function loadSheetData(sheetName) {
 function preloadAllSheets() {
   sheetNames.forEach(sheetName => {
     const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(sheetName)}`;
-    fetch(url)
+    fetch(url + "&_=" + new Date().getTime())
       .then(res => res.text())
       .then(t => JSON.parse(t.substr(47).slice(0, -2)))
       .then(data => {
