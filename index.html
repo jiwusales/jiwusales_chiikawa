@@ -497,16 +497,6 @@ function renderCards(data, sheetName) {
   });
 }
 
-function loadSheetData(sheetName) {
-  cardContainer.innerHTML = "載入中...";
-  if (currentData[sheetName]) {
-    renderCards(currentData[sheetName], sheetName);
-    updateTabCount(sheetName);
-    return;
-  }
-  console.error(`⚠️ ${sheetName} 資料尚未預載入`);
-}
-
 function preloadAllSheets() {
   const requests = sheetNames.map(sheetName => {
     const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(sheetName)}`;
@@ -515,7 +505,7 @@ function preloadAllSheets() {
       .then(t => {
         const json = JSON.parse(t.match(/\{.*\}/s)[0]);
         let rows = json.table.rows || [];
-        if (rows.length > 1) rows = rows.slice(1);
+        if (rows.length > 1) rows = rows.slice(1); // 砍掉第一列（標題列）
         const parsed = rows.map(row => ({
           type: row.c[0]?.v || "無類型",
           name: row.c[1]?.v || "",
@@ -533,6 +523,15 @@ function preloadAllSheets() {
   Promise.all(requests)
     .then(() => console.log("✅ 所有分頁資料已預載完成"))
     .catch(() => console.warn("⚠️ 部分分頁資料載入失敗"));
+}
+
+function loadSheetData(sheetName) {
+  if (currentData[sheetName]) {
+    renderCards(currentData[sheetName], sheetName);
+    updateTabCount(sheetName);
+  } else {
+    console.error(`⚠️ ${sheetName} 資料尚未預載入`);
+  }
 }
 
 function getInitialSheet() {
