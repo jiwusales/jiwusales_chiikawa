@@ -103,24 +103,62 @@ body {
 }
 
 h1 {
-  margin: 10px 0;
-  font-size: 18px;
-  color: #333333;
+  margin-top: 0;
+  margin-bottom: 5px;
+  font-size: 16px;
+  color: #A49393;
   user-select: none;
 }
 
 /* 分頁按鈕樣式 */
 .tabs {
-  margin-top: 20px;
-  margin-bottom: 15px;
+  width: 100%;
+  max-width: 2400px;
+  margin: 20px auto 15px auto; /* 保持上下外距，左右置中 */
+  padding: 0 2px;              /* 跟卡片容器左右內距一致 */
   display: flex;
   justify-content: center;
-  gap: 5px;
   flex-wrap: wrap;
+  row-gap: 2px;    /* 上下排間距 */
+  column-gap: 2px; /* 左右按鈕間距 */
+  box-sizing: border-box;
+}
+@media (min-width: 768px) {
+  .tabs {
+    gap: 5px; /* 電腦版按鈕間距 */
+    max-width: 2400px; /* 確認跟主容器一樣 */
+    padding: 0 5px; /* 和主容器一樣 */
+  }
+}
+@media (max-width: 767px) {
+  .tabs {
+    padding: 0 5px;
+    gap: 2px;
+  }
+  .tab {
+    flex: 0 0 60px;
+    max-width: 60px;
+    width: auto;  /* 取消原本的20% */
+  }
+  .tab-circle {
+    width: 55px;
+    height: 55px;
+  }
+  .tab-circle img {
+    width: 44px;
+    height: 44px;
+  }
+  .tab-name {
+    font-size: 10px;
+  }
+  .tab-count {
+    font-size: 8px;
+  }
 }
 .tab {
   position: relative;
-  width: 80px;
+  width: 20%; /* 每排 5 個 */
+  max-width: 80px; /* 電腦版不超過 80px */
   height: 110px;
   display: flex;
   flex-direction: column;
@@ -269,32 +307,32 @@ h1 {
 
 /* 底部欄 */
 .bottom-bar {
+  min-height: 50px;       /* 底部色塊最小高度，可依需求調整 */
+  padding: 15px 0 0 0;    /* 上方內距15px，左右0，下方0 */
+  line-height: normal;    /* 取消原本的 line-height 垂直置中 */
+  text-align: center;
   background-color: #dac7b7;
   color: #fff;
-  text-align: center;
-  padding: 20px 0;
   font-weight: bold;
   font-size: 14px;
   margin-top: 30px;
   user-select: none;
-  height: 60px;
-  line-height: 60px;
 }
 .bottom-bar a {
   color: #fff;
   text-decoration: underline;
 }
 
-/* 電腦版卡片加寬，欄寬也固定為150px */
+/* 電腦版卡片加寬，欄寬也固定為135px */
 @media (min-width: 768px) {
   .group-grid {
-    grid-template-columns: repeat(auto-fit, 150px);
+    grid-template-columns: repeat(auto-fit, 135px);
   }
   .card {
-    width: 150px;
+    width: 135px;
   }
   .card img {
-    width: 140px;
+    width: 130px;
   }
   .card .name,
   .card .size {
@@ -322,6 +360,14 @@ h1 {
     color: #333333 !important;
   }
 }
+  .tab-circle svg circle:nth-child(2) {
+  stroke: var(--tab-color, #999);
+}
+
+.reset-tab {
+  --tab-color: #EF7C8E !important;
+}
+
 </style>
 </head>
 <body>
@@ -334,7 +380,7 @@ h1 {
     <img src="https://i.postimg.cc/CLBFxHs3/logo-banner.png" alt="JIWU LOGO" />
   </div>
   
-  <h1>吉伊卡哇寶寶圖鑑</h1>
+  <h1>吉伊卡哇．寶寶收藏圖鑑</h1>
 
   <div class="tabs" id="tabs"></div>
 
@@ -395,6 +441,8 @@ function createTab(sheetName) {
 }
 
 function updateTabCount(sheetName) {
+  if (sheetName === "重置圖鑑") return; // 🚨 如果是重置按鈕，跳過更新
+
   const data = currentData[sheetName] || [];
   const ownedCount = data.filter(item => collected.includes(item.name)).length;
   const totalCount = data.length;
@@ -431,7 +479,7 @@ function updateTabCount(sheetName) {
     `;
   }
 }
-
+  
 function renderCards(data, sheetName) {
   cardContainer.innerHTML = "";
   let grouped = {};
@@ -448,7 +496,7 @@ function renderCards(data, sheetName) {
     cardContainer.appendChild(divider);
 
     const groupContainer = document.createElement("div");
-    groupContainer.className = "group-grid";
+    groupContainer.className = "group-grid";  // 這行必須加，改用 CSS Grid 排版
 
     grouped[type].forEach(item => {
       const card = document.createElement("div");
@@ -497,15 +545,40 @@ function renderCards(data, sheetName) {
   });
 }
 
+function loadSheetData(sheetName) {
+  cardContainer.innerHTML = "載入中...";
+  const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(sheetName)}`;
+  fetch(url)
+    .then(res => res.text())
+    .then(t => JSON.parse(t.substr(47).slice(0, -2)))
+    .then(data => {
+      let rows = data.table.rows || [];
+      if (rows.length > 1) rows = rows.slice(1);
+      const parsed = rows.map(row => ({
+        type: row.c[0]?.v || "無類型",
+        name: row.c[1]?.v || "",
+        imgUrl: row.c[3]?.v || "",
+        size: row.c[5]?.v || ""
+      }));
+      currentData[sheetName] = parsed;
+      renderCards(parsed, sheetName);
+      updateTabCount(sheetName);
+    })
+    .catch(err => {
+      cardContainer.innerHTML = "載入資料失敗，請稍後再試。";
+      console.error(err);
+    });
+}
+
 function preloadAllSheets() {
-  const requests = sheetNames.map(sheetName => {
+  sheetNames.forEach(sheetName => {
     const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(sheetName)}`;
-    return fetch(url)
+    fetch(url)
       .then(res => res.text())
-      .then(t => {
-        const json = JSON.parse(t.match(/\{.*\}/s)[0]);
-        let rows = json.table.rows || [];
-        if (rows.length > 1) rows = rows.slice(1); // 砍掉第一列（標題列）
+      .then(t => JSON.parse(t.substr(47).slice(0, -2)))
+      .then(data => {
+        let rows = data.table.rows || [];
+        if (rows.length > 1) rows = rows.slice(1);
         const parsed = rows.map(row => ({
           type: row.c[0]?.v || "無類型",
           name: row.c[1]?.v || "",
@@ -519,19 +592,6 @@ function preloadAllSheets() {
         console.error(`載入 ${sheetName} 資料失敗`, err);
       });
   });
-
-  Promise.all(requests)
-    .then(() => console.log("✅ 所有分頁資料已預載完成"))
-    .catch(() => console.warn("⚠️ 部分分頁資料載入失敗"));
-}
-
-function loadSheetData(sheetName) {
-  if (currentData[sheetName]) {
-    renderCards(currentData[sheetName], sheetName);
-    updateTabCount(sheetName);
-  } else {
-    console.error(`⚠️ ${sheetName} 資料尚未預載入`);
-  }
 }
 
 function getInitialSheet() {
@@ -547,6 +607,57 @@ const initialSheet = getInitialSheet();
 tabElements[initialSheet].classList.add("active");
 document.documentElement.style.setProperty('--tab-color', colors[initialSheet] || "#999");
 loadSheetData(initialSheet);
+
+// 產生重置按鈕
+createResetTab();
+
+function createResetTab() {
+  const resetTab = document.createElement("div");
+  resetTab.className = "tab reset-tab";
+
+  // ✅ 設定紅色圈圈
+  resetTab.style.setProperty("--tab-color", "#EF7C8E");
+
+  resetTab.innerHTML = `
+    <div class="tab-circle">
+  <img src="https://i.postimg.cc/d3qMwwCv/icon.png" alt="Reset">
+  <svg width="70" height="70">
+    <circle
+      cx="35" cy="35" r="28"
+      stroke="#e0e0e0" stroke-width="4" fill="none"
+    ></circle>
+    <circle
+      cx="35" cy="35" r="28"
+      stroke="var(--tab-color)"
+      stroke-width="4" fill="none"
+      stroke-linecap="round"
+    ></circle>
+  </svg>
+</div>
+<div class="tab-label">
+  <div class="tab-name">重置圖鑑</div>
+  <div class="tab-count">ฅ(๑*д*๑)ฅ</div>
+</div>
+  `;
+
+  resetTab.addEventListener("click", () => {
+    const confirmReset = confirm("❗️確定要重置寶寶們嗎 ㅇㅅㅇ ！");
+    if (confirmReset) {
+      collected = [];
+      localStorage.setItem("collectedDolls", JSON.stringify(collected));
+      sheetNames.forEach(name => updateTabCount(name));
+      const activeTab = document.querySelector(".tab.active .tab-name");
+      if (activeTab) {
+        loadSheetData(activeTab.textContent);
+      }
+      alert("✨寶寶圖鑑打掃乾淨ㄌ！(˶ˆᗜˆ˵)");
+    }
+  });
+
+  tabsContainer.appendChild(resetTab);
+}
+
+
 </script>
 </body>
 </html>
