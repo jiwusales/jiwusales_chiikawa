@@ -400,35 +400,35 @@ function updateTabCount(sheetName) {
   const totalCount = data.length;
   const percent = totalCount ? ownedCount / totalCount : 0;
 
- const radius = 28;
- const strokeWidth = 4;
-const circumference = 2 * Math.PI * radius;
-const offset = circumference * (1 - percent)
+  const radius = 28;
+  const strokeWidth = 4;
+  const circumference = 2 * Math.PI * radius;
+  const offset = circumference * (1 - percent);
 
   if (tabElements[sheetName]) {
-tabElements[sheetName].innerHTML = `
-  <div class="tab-circle">
-    <img src="${images[sheetName]}" alt="${sheetName}">
-    <svg width="70" height="70">
-      <circle
-        cx="35" cy="35" r="${radius}"
-        stroke="#e0e0e0" stroke-width="${strokeWidth}" fill="none"
-      ></circle>
-      <circle
-        cx="35" cy="35" r="${radius}"
-        stroke="${colors[sheetName] || '#999'}"
-        stroke-width="${strokeWidth}" fill="none"
-        stroke-dasharray="${circumference}"
-        stroke-dashoffset="${offset}"
-        stroke-linecap="round"
-      ></circle>
-    </svg>
-  </div>
-  <div class="tab-label">
-    <div class="tab-name">${sheetName}</div>
-    <div class="tab-count">${ownedCount}/${totalCount}</div>
-  </div>
-`;
+    tabElements[sheetName].innerHTML = `
+      <div class="tab-circle">
+        <img src="${images[sheetName]}" alt="${sheetName}">
+        <svg width="70" height="70">
+          <circle
+            cx="35" cy="35" r="${radius}"
+            stroke="#e0e0e0" stroke-width="${strokeWidth}" fill="none"
+          ></circle>
+          <circle
+            cx="35" cy="35" r="${radius}"
+            stroke="${colors[sheetName] || '#999'}"
+            stroke-width="${strokeWidth}" fill="none"
+            stroke-dasharray="${circumference}"
+            stroke-dashoffset="${offset}"
+            stroke-linecap="round"
+          ></circle>
+        </svg>
+      </div>
+      <div class="tab-label">
+        <div class="tab-name">${sheetName}</div>
+        <div class="tab-count">${ownedCount}/${totalCount}</div>
+      </div>
+    `;
   }
 }
 
@@ -448,7 +448,7 @@ function renderCards(data, sheetName) {
     cardContainer.appendChild(divider);
 
     const groupContainer = document.createElement("div");
-    groupContainer.className = "group-grid";  // 這行必須加，改用 CSS Grid 排版
+    groupContainer.className = "group-grid";
 
     grouped[type].forEach(item => {
       const card = document.createElement("div");
@@ -499,39 +499,22 @@ function renderCards(data, sheetName) {
 
 function loadSheetData(sheetName) {
   cardContainer.innerHTML = "載入中...";
-  const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(sheetName)}`;
-  fetch(url)
-    .then(res => res.text())
-    .then(t => JSON.parse(t.substr(47).slice(0, -2)))
-    .then(data => {
-      let rows = data.table.rows || [];
-      console.log(`載入 ${sheetName} 資料筆數:`, rows.length);
-      if (rows.length > 1) rows = rows.slice(1);
-      const parsed = rows.map(row => ({
-        type: row.c[0]?.v || "無類型",
-        name: row.c[1]?.v || "",
-        imgUrl: row.c[3]?.v || "",
-        size: row.c[5]?.v || ""
-      }));
-      console.log(parsed);
-      currentData[sheetName] = parsed;
-      renderCards(parsed, sheetName);
-      updateTabCount(sheetName);
-    })
-    .catch(err => {
-      cardContainer.innerHTML = "載入資料失敗，請稍後再試。";
-      console.error(err);
-    });
+  if (currentData[sheetName]) {
+    renderCards(currentData[sheetName], sheetName);
+    updateTabCount(sheetName);
+    return;
+  }
+  console.error(`⚠️ ${sheetName} 資料尚未預載入`);
 }
-  
+
 function preloadAllSheets() {
-  sheetNames.forEach(sheetName => {
+  const requests = sheetNames.map(sheetName => {
     const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(sheetName)}`;
-    fetch(url)
+    return fetch(url)
       .then(res => res.text())
-      .then(t => JSON.parse(t.substr(47).slice(0, -2)))
-      .then(data => {
-        let rows = data.table.rows || [];
+      .then(t => {
+        const json = JSON.parse(t.match(/\{.*\}/s)[0]);
+        let rows = json.table.rows || [];
         if (rows.length > 1) rows = rows.slice(1);
         const parsed = rows.map(row => ({
           type: row.c[0]?.v || "無類型",
@@ -546,6 +529,10 @@ function preloadAllSheets() {
         console.error(`載入 ${sheetName} 資料失敗`, err);
       });
   });
+
+  Promise.all(requests)
+    .then(() => console.log("✅ 所有分頁資料已預載完成"))
+    .catch(() => console.warn("⚠️ 部分分頁資料載入失敗"));
 }
 
 function getInitialSheet() {
