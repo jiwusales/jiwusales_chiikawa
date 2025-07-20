@@ -505,6 +505,7 @@ function loadSheetData(sheetName) {
     .then(t => JSON.parse(t.substr(47).slice(0, -2)))
     .then(data => {
       let rows = data.table.rows || [];
+      console.log(`載入 ${sheetName} 資料筆數:`, rows.length);
       if (rows.length > 1) rows = rows.slice(1);
       const parsed = rows.map(row => ({
         type: row.c[0]?.v || "無類型",
@@ -512,6 +513,7 @@ function loadSheetData(sheetName) {
         imgUrl: row.c[3]?.v || "",
         size: row.c[5]?.v || ""
       }));
+      console.log(parsed);
       currentData[sheetName] = parsed;
       renderCards(parsed, sheetName);
       updateTabCount(sheetName);
@@ -521,7 +523,7 @@ function loadSheetData(sheetName) {
       console.error(err);
     });
 }
-
+  
 function preloadAllSheets() {
   sheetNames.forEach(sheetName => {
     const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(sheetName)}`;
