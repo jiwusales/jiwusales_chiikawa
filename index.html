@@ -548,24 +548,33 @@ function renderCards(data, sheetName) {
 function loadSheetData(sheetName) {
   cardContainer.innerHTML = "載入中...";
   const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(sheetName)}`;
-  fetch('https://docs.google.com/spreadsheets/d/17gH9HZKvW_6fMCWYLyqnzMHj40rA7PiwWg6L0GvbFgQ/export?format=csv&sheet=吉伊')
-  .then(response => response.text())
-  .then(csvText => {
-    const rows = csvText.trim().split('\n').map(line => line.split(','));
-    const headers = rows[0];
-    const data = rows.slice(1).map(row => {
-      return {
-        type: row[0],
-        name: row[1],
-        code: row[2],
-        imgUrl: row[3],
-        url: row[4],
-        size: row[5],
-      };
+  
+  fetch(`https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&sheet=${encodeURIComponent(sheetName)}`)
+    .then(response => response.text())
+    .then(csvText => {
+      const rows = csvText.trim().split('\n').map(line => line.split(','));
+      const headers = rows[0];
+      const data = rows.slice(1).map(row => {
+        return {
+          type: row[0],
+          name: row[1],
+          code: row[2],
+          imgUrl: row[3],
+          url: row[4],
+          size: row[5],
+        };
+      });
+      console.table(data);
+
+      // ← 在這裡加上以下三行，讓資料同步與渲染
+      currentData[sheetName] = data;
+      updateTabCount(sheetName);
+      renderCards(data, sheetName);
+    })
+    .catch(err => {
+      console.error("載入資料失敗", err);
+      cardContainer.innerHTML = "載入失敗，請稍後再試。";
     });
-    console.table(data);
-    // renderCards(data, '吉伊');
-  });
 }
 
 function preloadAllSheets() {
