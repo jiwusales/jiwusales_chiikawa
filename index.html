@@ -435,6 +435,20 @@ let collected = JSON.parse(localStorage.getItem("collectedDolls")) || [];
 const tabElements = {};
 let currentData = {};
 
+  function formatName(name) {
+  if (!name) return "";
+  const cleanName = name.trim();
+  const totalLength = cleanName.length;
+  if (totalLength <= 9) return cleanName;
+
+  const maxLengthBeforeWrap = 9;
+  const spaceIndex = cleanName.lastIndexOf(" ", maxLengthBeforeWrap);
+  if (spaceIndex > 0) {
+    return cleanName.slice(0, spaceIndex) + "<br>" + cleanName.slice(spaceIndex + 1);
+  }
+  return cleanName.slice(0, maxLengthBeforeWrap) + "<br>" + cleanName.slice(maxLengthBeforeWrap);
+}
+
 function createTab(sheetName) {
   const tab = document.createElement("div");
   tab.className = "tab";
@@ -529,7 +543,7 @@ function renderCards(data, sheetName) {
           </svg>
         </div>
         <img src="${item.imgUrl || 'https://i.postimg.cc/bv5xRs04/image.png'}" alt="${item.name}" />
-        <div class="name">${item.name}</div>
+        <div class="name">${formatName(item.name)}</div>
         <div class="size">${item.size}</div>
       `;
 
@@ -673,7 +687,6 @@ function createResetTab() {
 
   tabsContainer.appendChild(resetTab);
 }
-
 
 </script>
 </body>
