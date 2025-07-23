@@ -288,9 +288,11 @@ h1 {
 .card .name {
   font-weight: bold;
   margin-top: 2px;
-  word-break: break-word;   /* 長字斷行（必要時） */
-  white-space: normal;
+  white-space: normal;       /* ✅ 正常換行 */
+  word-break: normal;        /* ✅ 保留單字整體性 */
+  overflow-wrap: anywhere;   /* ✅ 允許空白處換行 */
 }
+
 .card .size {
   padding-bottom: 5px;
   margin-top: -2px; /* 可選：讓尺寸稍微有一點呼吸空間 */
