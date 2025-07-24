@@ -646,18 +646,18 @@ function createResetTab() {
   const resetTab = document.createElement("div");
   resetTab.className = "tab reset-tab";
 
-  // 重整不跳回上面：
-// ✅ 儲存滾動位置（重新整理前）
-    window.addEventListener("beforeunload", () => {
-      sessionStorage.setItem("scrollY", window.scrollY);
-    });
+  // 儲存滾動位置
+window.addEventListener("beforeunload", () => {
+  sessionStorage.setItem("scrollY", window.scrollY);
+});
 
-    // ✅ 還原滾動位置（重新整理後）
-    const savedScrollY = sessionStorage.getItem("scrollY");
-    if (savedScrollY !== null) {
-      window.scrollTo(0, parseInt(savedScrollY));
-    }
-  };
+// 還原滾動位置
+window.addEventListener("load", () => {
+  const savedScrollY = sessionStorage.getItem("scrollY");
+  if (savedScrollY !== null) {
+    window.scrollTo(0, parseInt(savedScrollY));
+  }
+});
 
   // ✅ 設定紅色圈圈
   resetTab.style.setProperty("--tab-color", "#EF7C8E");
