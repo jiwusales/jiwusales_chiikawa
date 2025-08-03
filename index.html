@@ -416,7 +416,7 @@ h1 {
   <a href="#娃">娃</a>｜
   <a href="#其他">其他</a>｜
   <a href="#景品">景品</a>｜
-  <a href="#地區">地區</a>｜
+  <span id="area-nav">｜<a href="#地區">地區</a>｜</span>
   <a href="#名創">名創</a>
 </div>
   
@@ -607,17 +607,13 @@ function renderCards(data, sheetName) {
 }
 
 function updateNavBarForSheet(sheetName) {
-  const navBar = document.querySelector(".nav-bar");
-  if (!navBar) return;
+  const areaNav = document.getElementById("area-nav");
+  if (!areaNav) return;
 
-  const 地區Btn = navBar.querySelector('a[href="#地區"]');
-  if (!地區Btn) return;
-
-  // 只有這三個分頁顯示地區按鈕，其他全部隱藏
   if (sheetName === "吉伊" || sheetName === "小八" || sheetName === "兔兔") {
-    地區Btn.style.display = "inline";
+    areaNav.style.display = "inline";
   } else {
-    地區Btn.style.display = "none";
+    areaNav.style.display = "none";
   }
 }
   
