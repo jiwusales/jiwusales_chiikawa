@@ -83,6 +83,29 @@ body {
   z-index: 999;
   user-select: none;
 }
+
+.nav-bar {
+  background-color: #f9f9f9;
+  color: #333333;
+  font-size: 12pt;
+  padding: 8px 0;
+  position: fixed;
+  top: 40px; /* 放在 top-bar 下方 */
+  width: 100%;
+  z-index: 998;
+  text-align: center;
+  user-select: none;
+  border-bottom: 1px solid #e0e0e0;
+}
+.nav-bar a {
+  color: #333333;
+  text-decoration: none;
+  margin: 0 6px;
+}
+.nav-bar a:hover {
+  text-decoration: underline;
+}
+  
 .top-bar a {
   color: #fff;
   text-decoration: none;
@@ -92,7 +115,7 @@ body {
 
 .logo-container {
   text-align: center;
-  margin-top: 70px;
+  margin-top: 115px;
 }
 .logo-container img {
   width: 160px;
@@ -386,6 +409,15 @@ h1 {
     如資料有誤或有缺可私訊 ⮕ <a href="https://lin.ee/X6FUFI9" target="_blank">JIWU吉物販售</a>
   </div>
 
+<div class="nav-bar">
+  <a href="#吊娃">吊娃</a>｜
+  <a href="#娃">娃</a>｜
+  <a href="#其他">其他</a>｜
+  <a href="#景品">景品</a>｜
+  <a href="#地區">地區</a>｜
+  <a href="#名創">名創</a>
+</div>
+  
   <!-- LOGO -->
   <div class="logo-container">
     <img src="https://i.postimg.cc/CLBFxHs3/logo-banner.png" alt="JIWU LOGO" />
@@ -517,6 +549,7 @@ function renderCards(data, sheetName) {
   Object.keys(grouped).forEach(type => {
     const divider = document.createElement("div");
     divider.className = "type-divider";
+    divider.id = type;
     divider.innerHTML = `<span>${type}</span>`;
     cardContainer.appendChild(divider);
 
