@@ -100,6 +100,10 @@ body {
   text-decoration: none;
   margin: 0 4px;
 }
+  .nav-bar a.active {
+  font-weight: bold;
+  color: var(--tab-color, #dac7b7);
+}
  
 .top-bar a {
   color: #fff;
@@ -731,7 +735,14 @@ const navLinks = document.querySelectorAll('.nav-bar a');
 navLinks.forEach(link => {
   link.addEventListener('click', e => {
     e.preventDefault();
-    // 只改變 hash，讓 hashchange 事件去處理 active 狀態
+
+    // 清掉原本 active
+    navLinks.forEach(l => l.classList.remove('active'));
+
+    // 加上點到的那個 active
+    link.classList.add('active');
+
+    // 更新網址 hash
     window.location.hash = link.getAttribute('href');
   });
 });
