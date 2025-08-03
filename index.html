@@ -627,7 +627,6 @@ function loadSheetData(sheetName) {
       currentData[sheetName] = parsed;
       renderCards(parsed, sheetName);
       updateTabCount(sheetName);
-      updateNavBarForSheet(sheetName); // ✅ 加這行
     })
     .catch(err => {
       cardContainer.innerHTML = "載入資料失敗，請稍後再試。";
