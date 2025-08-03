@@ -95,17 +95,18 @@ body {
   text-align: center;
   user-select: none;
   }
-.nav-bar a,
-.nav-link.active {
+.nav-bar a {
   color: #333333;
   text-decoration: none;
   margin: 0 4px;
+  cursor: pointer;  /* 建議加上，變手指 */
+  transition: color 0.3s;
 }
 
-.nav-link.active {
+.nav-bar a.active {
   font-weight: bold;
-  color: var(--tab-color, #333333); /* 使用目前分頁顏色 */
-  text-decoration: none; /* ✅ 確保不會出現底線 */
+  color: var(--tab-color, #dac7b7); /* 變色 */
+  text-decoration: none;
 }
   
 .top-bar a {
@@ -733,6 +734,30 @@ function createResetTab() {
 
   tabsContainer.appendChild(resetTab);
 }
+const navLinks = document.querySelectorAll('.nav-bar a');
+navLinks.forEach(link => {
+  link.addEventListener('click', e => {
+    e.preventDefault();
+    navLinks.forEach(l => l.classList.remove('active'));
+    link.classList.add('active');
+    // 如果要跳轉錨點，取消下面一行註解
+    // window.location.hash = link.getAttribute('href');
+  });
+});
+
+// 初始化時依網址 hash 自動加 active (選擇性)
+function updateNavActiveByHash() {
+  const hash = window.location.hash || '#吊娃';
+  navLinks.forEach(link => {
+    if (link.getAttribute('href') === hash) {
+      link.classList.add('active');
+    } else {
+      link.classList.remove('active');
+    }
+  });
+}
+window.addEventListener('hashchange', updateNavActiveByHash);
+window.addEventListener('load', updateNavActiveByHash);
 
 </script>
 </body>
