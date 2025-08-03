@@ -689,7 +689,6 @@ const initialSheet = getInitialSheet();
 tabElements[initialSheet].classList.add("active");
 document.documentElement.style.setProperty('--tab-color', colors[initialSheet] || "#999");
 
-updateNavBarForSheet(initialSheet);
 loadSheetData(initialSheet);
 
 // 產生重置按鈕
