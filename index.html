@@ -68,8 +68,8 @@ body {
 
 /* 重新整理 按鈕位置 */
 #refreshBtn {
-  top: 60px;
-  left: 10px;
+  top: 90px;
+  right: 10px;
 }
 
 .top-bar {
@@ -96,20 +96,17 @@ body {
   text-align: center;
   user-select: none;
   }
-.nav-bar a {
+.nav-bar a,
+.nav-link.active {
   color: #333333;
   text-decoration: none;
   margin: 0 6px;
 }
 
-.nav-bar a:hover {
-  text-decoration: underline;
-}
-
 .nav-link.active {
   font-weight: bold;
-  color: var(--tab-color, #333333);
-  text-decoration: none !important; /* 強制不要底線 */
+  color: var(--tab-color, #333333); /* 使用目前分頁顏色 */
+  text-decoration: none; /* ✅ 確保不會出現底線 */
 }
   
 .top-bar a {
@@ -556,7 +553,7 @@ function renderCards(data, sheetName) {
     const divider = document.createElement("div");
     divider.className = "type-divider";
     divider.id = type;
-    divider.style.scrollMarginTop = "80px"; // ✅ 控制跳轉後往下偏移的距離
+    divider.style.scrollMarginTop = "90px"; // ✅ 控制跳轉後往下偏移的距離
     divider.innerHTML = `<span>${type}</span>`;
     cardContainer.appendChild(divider);
 
