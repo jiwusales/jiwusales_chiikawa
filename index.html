@@ -99,16 +99,8 @@ body {
   color: #333333;
   text-decoration: none;
   margin: 0 4px;
-  transition: none !important; /* 取消漸變 */
 }
-
-.nav-bar a.active {
-  font-weight: bold;
-  color: var(--tab-color, #dac7b7);
-  text-decoration: none;
-  transition: none !important; /* 取消漸變 */
-}
-  
+ 
 .top-bar a {
   color: #fff;
   text-decoration: none;
@@ -743,20 +735,6 @@ navLinks.forEach(link => {
     window.location.hash = link.getAttribute('href');
   });
 });
-
-function updateNavActiveByHash() {
-  const hash = window.location.hash || '#吊娃';
-  navLinks.forEach(link => {
-    if (link.getAttribute('href') === hash) {
-      link.classList.add('active');
-    } else {
-      link.classList.remove('active');
-    }
-  });
-}
-
-window.addEventListener('hashchange', updateNavActiveByHash);
-window.addEventListener('load', updateNavActiveByHash);
 
 </script>
 </body>
