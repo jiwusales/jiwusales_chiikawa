@@ -67,7 +67,7 @@ body {
 
 /* 重新整理 按鈕位置 */
 #refreshBtn {
-  top: 75px;
+  top: 60px;
   right: 10px;
 }
 
@@ -545,7 +545,7 @@ function renderCards(data, sheetName) {
     const divider = document.createElement("div");
     divider.className = "type-divider";
     divider.id = type;
-    divider.style.scrollMarginTop = "88px"; // ✅ 控制跳轉後往下偏移的距離
+    divider.style.scrollMarginTop = "87px"; // ✅ 控制跳轉後往下偏移的距離
     divider.innerHTML = `<span>${type}</span>`;
     cardContainer.appendChild(divider);
 
