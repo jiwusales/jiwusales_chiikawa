@@ -95,15 +95,21 @@ body {
   z-index: 998;
   text-align: center;
   user-select: none;
-  border-bottom: 1px solid #e0e0e0;
-}
+  }
 .nav-bar a {
   color: #333333;
   text-decoration: none;
   margin: 0 6px;
 }
+
 .nav-bar a:hover {
   text-decoration: underline;
+}
+
+.nav-link.active {
+  font-weight: bold;
+  color: var(--tab-color, #333333);
+  text-decoration: none !important; /* 強制不要底線 */
 }
   
 .top-bar a {
@@ -550,6 +556,7 @@ function renderCards(data, sheetName) {
     const divider = document.createElement("div");
     divider.className = "type-divider";
     divider.id = type;
+    divider.style.scrollMarginTop = "80px"; // ✅ 控制跳轉後往下偏移的距離
     divider.innerHTML = `<span>${type}</span>`;
     cardContainer.appendChild(divider);
 
