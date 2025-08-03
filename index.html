@@ -99,9 +99,14 @@ body {
   color: #333333;
   text-decoration: none;
   margin: 0 4px;
+  -webkit-tap-highlight-color: transparent; /* 取消點擊時手機高亮 */
+  background-color: transparent;
 }
-  .nav-bar a:focus {
+
+.nav-bar a:focus,
+.nav-bar a:active {
   outline: none;
+  background-color: transparent; /* 取消點擊時灰底 */
 }
   .nav-bar a.active {
   font-weight: bold;
