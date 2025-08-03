@@ -83,13 +83,6 @@ body {
   user-select: none;
 }
 
-  .top-bar a {
-  color: #fff;
-  text-decoration: none;
-  font-weight: bold;
-  font-size: 16px;
-}
-
 .nav-bar {
   background-color: #f9f9f9;
   color: #333333;
@@ -102,25 +95,26 @@ body {
   text-align: center;
   user-select: none;
   }
-.nav-bar a {
+.nav-bar a,
+.nav-link.active {
   color: #333333;
   text-decoration: none;
   margin: 0 4px;
 }
 
-.tab,
-.tab.active {
-  color: #333333;
-  text-decoration: none;
-  margin: 0 4px;
-}
-
-.tab.active {
+.nav-link.active {
   font-weight: bold;
-  color: var(--tab-color, #333333);
-  text-decoration: none;
+  color: var(--tab-color, #333333); /* 使用目前分頁顏色 */
+  text-decoration: none; /* ✅ 確保不會出現底線 */
 }
   
+.top-bar a {
+  color: #fff;
+  text-decoration: none;
+  font-weight: bold;
+  font-size: 16px;
+}
+
 .logo-container {
   text-align: center;
   margin-top: 115px;
