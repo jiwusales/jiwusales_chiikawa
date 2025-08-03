@@ -95,17 +95,23 @@ body {
   text-align: center;
   user-select: none;
   }
-.nav-bar a,
-.nav-link.active {
+.nav-bar a {
   color: #333333;
   text-decoration: none;
   margin: 0 4px;
 }
 
-.nav-link.active {
+.tab,
+.tab.active {
+  color: #333333;
+  text-decoration: none;
+  margin: 0 4px;
+}
+
+.tab.active {
   font-weight: bold;
-  color: var(--tab-color, #333333); /* 使用目前分頁顏色 */
-  text-decoration: none; /* ✅ 確保不會出現底線 */
+  color: var(--tab-color, #333333);
+  text-decoration: none;
 }
   
 .top-bar a {
