@@ -99,8 +99,6 @@ body {
   color: #333333;
   text-decoration: none;
   margin: 0 4px;
-  cursor: pointer;  /* 建議加上，變手指 */
-  transition: color 0.3s;
 }
 
 .nav-bar a.active {
@@ -740,8 +738,7 @@ navLinks.forEach(link => {
     e.preventDefault();
     navLinks.forEach(l => l.classList.remove('active'));
     link.classList.add('active');
-    // 如果要跳轉錨點，取消下面一行註解
-    // window.location.hash = link.getAttribute('href');
+    window.location.hash = link.getAttribute('href'); // 這行要放開
   });
 });
 
