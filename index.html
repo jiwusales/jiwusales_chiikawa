@@ -99,12 +99,14 @@ body {
   color: #333333;
   text-decoration: none;
   margin: 0 4px;
+  transition: none !important; /* 取消漸變 */
 }
 
 .nav-bar a.active {
   font-weight: bold;
-  color: var(--tab-color, #dac7b7); /* 變色 */
+  color: var(--tab-color, #dac7b7);
   text-decoration: none;
+  transition: none !important; /* 取消漸變 */
 }
   
 .top-bar a {
@@ -733,16 +735,15 @@ function createResetTab() {
   tabsContainer.appendChild(resetTab);
 }
 const navLinks = document.querySelectorAll('.nav-bar a');
+
 navLinks.forEach(link => {
   link.addEventListener('click', e => {
     e.preventDefault();
-    navLinks.forEach(l => l.classList.remove('active'));
-    link.classList.add('active');
-    window.location.hash = link.getAttribute('href'); // 這行要放開
+    // 只改變 hash，讓 hashchange 事件去處理 active 狀態
+    window.location.hash = link.getAttribute('href');
   });
 });
 
-// 初始化時依網址 hash 自動加 active (選擇性)
 function updateNavActiveByHash() {
   const hash = window.location.hash || '#吊娃';
   navLinks.forEach(link => {
@@ -753,6 +754,7 @@ function updateNavActiveByHash() {
     }
   });
 }
+
 window.addEventListener('hashchange', updateNavActiveByHash);
 window.addEventListener('load', updateNavActiveByHash);
 
