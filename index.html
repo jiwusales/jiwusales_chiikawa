@@ -612,9 +612,9 @@ function loadSheetData(sheetName) {
   fetch(url)
     .then(res => res.text())
     .then(t => {
-  const jsonStr = t.match(/\{.*\}/s)[0]; // 取出大括號內JSON字串
-  return JSON.parse(jsonStr);
-})
+      const jsonStr = t.match(/\{.*\}/s)[0]; // 取出大括號內JSON字串
+      return JSON.parse(jsonStr);
+    })
     .then(data => {
       let rows = data.table.rows || [];
       if (rows.length > 1) rows = rows.slice(1);
@@ -627,6 +627,7 @@ function loadSheetData(sheetName) {
       currentData[sheetName] = parsed;
       renderCards(parsed, sheetName);
       updateTabCount(sheetName);
+      updateNavBarForSheet(sheetName); // ✅ 加這行
     })
     .catch(err => {
       cardContainer.innerHTML = "載入資料失敗，請稍後再試。";
