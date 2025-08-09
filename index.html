@@ -269,13 +269,15 @@ h1 {
 /* 手機版使用彈性欄寬，最小80px */
 .group-grid {
   display: grid;
-  gap: 10px;
-  grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+  grid-template-columns: repeat(auto-fit, 120px);
   justify-content: start;
-  padding: 0 5px;
-  box-sizing: border-box;
+  gap: 6px;
 }
-
+@media (max-width: 480px) {
+  .group-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
 /* 卡片樣式 (手機) */
 .card {
   width: 80px;
