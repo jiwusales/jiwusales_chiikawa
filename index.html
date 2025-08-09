@@ -416,13 +416,8 @@ h1 {
     這邊有寶寶目錄可逛逛 ⮕ <a href="https://jiwusales.github.io/jiwu_menu/" target="_blank">JIWU吉物販售</a>
   </div>
 
-<div class="nav-bar">
-  <a href="#吊娃">吊娃</a>｜
-  <a href="#娃">娃</a>｜
-  <a href="#其他">其他</a>｜
-  <a href="#景品">景品</a>｜
-  <span id="area-nav" style="display: none;"><a href="#地區">地區</a>｜</span>
-  <a href="#名創">名創</a>
+<div class="nav-bar" id="nav-bar">
+  <!-- 內容由 JS 動態產生 -->
 </div>
   
   <!-- LOGO -->
@@ -471,7 +466,7 @@ let collected = JSON.parse(localStorage.getItem("collectedDolls")) || [];
 const tabElements = {};
 let currentData = {};
 
-  function formatName(name) {
+function formatName(name) {
   if (!name) return "";
   const cleanName = name.trim();
   const totalLength = cleanName.length;
@@ -557,12 +552,12 @@ function renderCards(data, sheetName) {
     const divider = document.createElement("div");
     divider.className = "type-divider";
     divider.id = type;
-    divider.style.scrollMarginTop = "87px"; // ✅ 控制跳轉後往下偏移的距離
+    divider.style.scrollMarginTop = "87px";
     divider.innerHTML = `<span>${type}</span>`;
     cardContainer.appendChild(divider);
 
     const groupContainer = document.createElement("div");
-    groupContainer.className = "group-grid";  // 這行必須加，改用 CSS Grid 排版
+    groupContainer.className = "group-grid";
 
     grouped[type].forEach(item => {
       const card = document.createElement("div");
@@ -611,24 +606,60 @@ function renderCards(data, sheetName) {
   });
 }
 
-function updateNavBarForSheet(sheetName) {
-  const areaNav = document.getElementById("area-nav");
-  if (!areaNav) return;
+function updateNavBarWithTypes(types, sheetName) {
+  const navBar = document.getElementById("nav-bar");
+  if (!navBar) return;
 
-  if (sheetName === "吉伊" || sheetName === "小八" || sheetName === "兔兔") {
-    areaNav.style.display = "inline";
-  } else {
-    areaNav.style.display = "none";
+  navBar.innerHTML = "";
+
+  types.forEach((type, idx) => {
+    const a = document.createElement("a");
+    a.href = `#${type}`;
+    a.textContent = type;
+
+    a.addEventListener("click", e => {
+      e.preventDefault();
+      navBar.querySelectorAll("a").forEach(link => link.classList.remove("active"));
+      a.classList.add("active");
+      window.location.hash = a.getAttribute("href");
+
+      // 滾動到對應區塊（可保留或刪除）
+      const targetId = a.getAttribute("href").substring(1);
+      const targetElem = document.getElementById(targetId);
+      if (targetElem) {
+        targetElem.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    });
+
+    navBar.appendChild(a);
+    if (idx !== types.length - 1) {
+      navBar.appendChild(document.createTextNode("｜"));
+    }
+  });
+
+  const areaNav = document.getElementById("area-nav");
+  if (areaNav) {
+    if (sheetName === "吉伊" || sheetName === "小八" || sheetName === "兔兔") {
+      areaNav.style.display = "inline";
+    } else {
+      areaNav.style.display = "none";
+    }
   }
 }
-  
+
+function updateNavBarForSheet(sheetName) {
+  const parsed = currentData[sheetName] || [];
+  const uniqueTypes = [...new Set(parsed.map(item => item.type || "無類型"))];
+  updateNavBarWithTypes(uniqueTypes, sheetName);
+}
+
 function loadSheetData(sheetName) {
   cardContainer.innerHTML = "載入中...";
   const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(sheetName)}`;
   fetch(url)
     .then(res => res.text())
     .then(t => {
-      const jsonStr = t.match(/\{.*\}/s)[0]; // 取出大括號內JSON字串
+      const jsonStr = t.match(/\{.*\}/s)[0];
       return JSON.parse(jsonStr);
     })
     .then(data => {
@@ -643,7 +674,7 @@ function loadSheetData(sheetName) {
       currentData[sheetName] = parsed;
       renderCards(parsed, sheetName);
       updateTabCount(sheetName);
-      updateNavBarForSheet(sheetName);  // ← 這裡加上這行
+      updateNavBarForSheet(sheetName);
     })
     .catch(err => {
       cardContainer.innerHTML = "載入資料失敗，請稍後再試。";
@@ -668,7 +699,6 @@ function preloadAllSheets() {
         }));
         currentData[sheetName] = parsed;
         updateTabCount(sheetName);
-        updateNavBarForSheet(sheetName);
       })
       .catch(err => {
         console.error(`載入 ${sheetName} 資料失敗`, err);
@@ -692,35 +722,32 @@ document.documentElement.style.setProperty('--tab-color', colors[initialSheet] |
 loadSheetData(initialSheet);
 
 // 產生重置按鈕
-createResetTab();
-
 function createResetTab() {
   const resetTab = document.createElement("div");
   resetTab.className = "tab reset-tab";
 
-  // ✅ 設定紅色圈圈
   resetTab.style.setProperty("--tab-color", "#EF7C8E");
 
   resetTab.innerHTML = `
     <div class="tab-circle">
-  <img src="https://i.postimg.cc/d3qMwwCv/icon.png" alt="Reset">
-  <svg width="70" height="70">
-    <circle
-      cx="35" cy="35" r="28"
-      stroke="#e0e0e0" stroke-width="4" fill="none"
-    ></circle>
-    <circle
-      cx="35" cy="35" r="28"
-      stroke="var(--tab-color)"
-      stroke-width="4" fill="none"
-      stroke-linecap="round"
-    ></circle>
-  </svg>
-</div>
-<div class="tab-label">
-  <div class="tab-name">重置圖鑑</div>
-  <div class="tab-count">ฅ(๑*д*๑)ฅ</div>
-</div>
+      <img src="https://i.postimg.cc/d3qMwwCv/icon.png" alt="Reset">
+      <svg width="70" height="70">
+        <circle
+          cx="35" cy="35" r="28"
+          stroke="#e0e0e0" stroke-width="4" fill="none"
+        ></circle>
+        <circle
+          cx="35" cy="35" r="28"
+          stroke="var(--tab-color)"
+          stroke-width="4" fill="none"
+          stroke-linecap="round"
+        ></circle>
+      </svg>
+    </div>
+    <div class="tab-label">
+      <div class="tab-name">重置圖鑑</div>
+      <div class="tab-count">ฅ(๑*д*๑)ฅ</div>
+    </div>
   `;
 
   resetTab.addEventListener("click", () => {
@@ -739,22 +766,7 @@ function createResetTab() {
 
   tabsContainer.appendChild(resetTab);
 }
-const navLinks = document.querySelectorAll('.nav-bar a');
-
-navLinks.forEach(link => {
-  link.addEventListener('click', e => {
-    e.preventDefault();
-
-    // 清掉原本 active
-    navLinks.forEach(l => l.classList.remove('active'));
-
-    // 加上點到的那個 active
-    link.classList.add('active');
-
-    // 更新網址 hash
-    window.location.hash = link.getAttribute('href');
-  });
-});
+createResetTab();
 
 </script>
 </body>
