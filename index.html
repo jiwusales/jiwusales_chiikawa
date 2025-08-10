@@ -572,7 +572,9 @@ function renderCards(data, sheetName) {
       card.className = "card";
       card.style.borderColor = "#ccc";
 
-      if (collected.includes(item.name)) {
+      const itemKey = `${sheetName}|${item.name}`;
+
+      if (collected.includes(itemKey)) {
         card.classList.add("collected");
         card.style.borderColor = colors[sheetName] || "#ccc";
       }
@@ -589,7 +591,7 @@ function renderCards(data, sheetName) {
       `;
 
       const checkmark = card.querySelector(".checkmark");
-      checkmark.style.display = collected.includes(item.name) ? "flex" : "none";
+      checkmark.style.display = collected.includes(itemKey) ? "flex" : "none";
 
       card.addEventListener("click", () => {
         card.classList.toggle("collected");
@@ -597,11 +599,11 @@ function renderCards(data, sheetName) {
         if (isCollected) {
           card.style.borderColor = colors[sheetName] || "#ccc";
           checkmark.style.display = "flex";
-          if (!collected.includes(item.name)) collected.push(item.name);
+          if (!collected.includes(itemKey)) collected.push(itemKey);
         } else {
           card.style.borderColor = "#ccc";
           checkmark.style.display = "none";
-          collected = collected.filter(n => n !== item.name);
+          collected = collected.filter(n => n !== itemKey);
         }
         localStorage.setItem(getCollectedKey(sheetName), JSON.stringify(collected));
         updateTabCount(sheetName);
