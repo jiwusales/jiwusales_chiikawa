@@ -488,18 +488,24 @@ function formatName(name) {
   return cleanName.slice(0, maxLengthBeforeWrap) + "<br>" + cleanName.slice(maxLengthBeforeWrap);
 }
 
-tab.addEventListener("click", () => {
-  document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
-  tab.classList.add("active");
-  document.documentElement.style.setProperty('--tab-color', colors[sheetName] || "#999");
-  const url = new URL(window.location);
-  url.searchParams.set("tab", sheetName);
-  window.history.replaceState(null, "", url);
+function createTab(sheetName) {
+  const tab = document.createElement("div");
+  tab.className = "tab";
+  tab.style.setProperty("--tab-color", colors[sheetName] || "#999");
 
-  localStorage.setItem("currentTab", sheetName);  // ← 這一行加在這裡
+  tab.addEventListener("click", () => {
+    document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+    tab.classList.add("active");
+    document.documentElement.style.setProperty('--tab-color', colors[sheetName] || "#999");
+    const url = new URL(window.location);
+    url.searchParams.set("tab", sheetName);
+    window.history.replaceState(null, "", url);
+    loadSheetData(sheetName);
+  });
 
-  loadSheetData(sheetName);
-});
+  tabsContainer.appendChild(tab);
+  tabElements[sheetName] = tab;
+}
 
 function updateTabCount(sheetName) {
   if (sheetName === "重置圖鑑") return; // 跳過重置按鈕
@@ -727,16 +733,8 @@ function preloadAllSheets() {
 
 function getInitialSheet() {
   const urlParams = new URLSearchParams(window.location.search);
-  const tabFromUrl = urlParams.get("tab");
-  if (sheetNames.includes(tabFromUrl)) {
-    localStorage.setItem("currentTab", tabFromUrl);
-    return tabFromUrl;
-  }
-  const savedTab = localStorage.getItem("currentTab");
-  if (sheetNames.includes(savedTab)) {
-    return savedTab;
-  }
-  return sheetNames[0];
+  const tab = urlParams.get("tab");
+  return sheetNames.includes(tab) ? tab : sheetNames[0];
 }
 
 // 初始化
@@ -747,59 +745,6 @@ tabElements[initialSheet].classList.add("active");
 document.documentElement.style.setProperty('--tab-color', colors[initialSheet] || "#999");
 
 loadSheetData(initialSheet);
-function createTab(sheetName) {
-  const tab = document.createElement("div");
-  tab.className = "tab";
-  tab.style.setProperty("--tab-color", colors[sheetName] || "#999");
-
-  tab.innerHTML = `
-    <div class="tab-circle">
-      <img src="${images[sheetName]}" alt="${sheetName}">
-      <svg width="70" height="70">
-        <circle
-          cx="35" cy="35" r="28"
-          stroke="#e0e0e0" stroke-width="4" fill="none"
-        ></circle>
-        <circle
-          cx="35" cy="35" r="28"
-          stroke="var(--tab-color)"
-          stroke-width="4" fill="none"
-          stroke-linecap="round"
-        ></circle>
-      </svg>
-    </div>
-    <div class="tab-label">
-      <div class="tab-name">${sheetName}</div>
-      <div class="tab-count">0/0</div>
-    </div>
-  `;
-
-  tab.addEventListener("click", () => {
-    // 取消其他 tab 的 active
-    document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
-    // 自己變 active
-    tab.classList.add("active");
-    // 改變主題色
-    document.documentElement.style.setProperty('--tab-color', colors[sheetName] || "#999");
-
-    // 更新網址 ?tab=XXX
-    const url = new URL(window.location);
-    url.searchParams.set("tab", sheetName);
-    window.history.replaceState(null, "", url);
-
-    // 存 localStorage
-    localStorage.setItem("currentTab", sheetName);
-
-    // 載入該分頁資料
-    loadSheetData(sheetName);
-  });
-
-  tabsContainer.appendChild(tab);
-  tabElements[sheetName] = tab;
-
-  // 先更新一次數量（可選）
-  updateTabCount(sheetName);
-}
 
 // 產生重置按鈕
 function createResetTab() {
