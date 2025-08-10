@@ -508,10 +508,11 @@ function createTab(sheetName) {
 }
 
 function updateTabCount(sheetName) {
-  if (sheetName === "重置圖鑑") return; // 🚨 如果是重置按鈕，跳過更新
+  if (sheetName === "重置圖鑑") return; // 跳過重置按鈕
 
   const data = currentData[sheetName] || [];
-  const ownedCount = data.filter(item => collected.includes(`${sheetName}|${item.name}`)).length;
+  // 判斷收藏時加上 type
+  const ownedCount = data.filter(item => collected.includes(`${sheetName}|${item.type}|${item.name}`)).length;
   const totalCount = data.length;
   const percent = totalCount ? ownedCount / totalCount : 0;
 
@@ -572,7 +573,8 @@ function renderCards(data, sheetName) {
       card.className = "card";
       card.style.borderColor = "#ccc";
 
-      const itemKey = `${sheetName}|${item.name}`;
+      // 完整 key 加入 type
+      const itemKey = `${sheetName}|${type}|${item.name}`;
 
       if (collected.includes(itemKey)) {
         card.classList.add("collected");
