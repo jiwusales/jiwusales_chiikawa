@@ -511,7 +511,7 @@ function updateTabCount(sheetName) {
   if (sheetName === "重置圖鑑") return; // 🚨 如果是重置按鈕，跳過更新
 
   const data = currentData[sheetName] || [];
-  const ownedCount = data.filter(item => collected.includes(item.name)).length;
+  const ownedCount = data.filter(item => collected.includes(`${sheetName}|${item.name}`)).length;
   const totalCount = data.length;
   const percent = totalCount ? ownedCount / totalCount : 0;
 
