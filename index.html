@@ -467,7 +467,10 @@ const images = {
 
 const tabsContainer = document.getElementById("tabs");
 const cardContainer = document.getElementById("card-container");
-let collected = JSON.parse(localStorage.getItem("collectedDolls")) || [];
+let collected = [];
+function getCollectedKey(sheetName) {
+  return `collectedDolls_${sheetName}`;
+}
 const tabElements = {};
 let currentData = {};
 
@@ -600,7 +603,7 @@ function renderCards(data, sheetName) {
           checkmark.style.display = "none";
           collected = collected.filter(n => n !== item.name);
         }
-        localStorage.setItem("collectedDolls", JSON.stringify(collected));
+        localStorage.setItem(getCollectedKey(sheetName), JSON.stringify(collected));
         updateTabCount(sheetName);
       });
 
@@ -659,6 +662,7 @@ function updateNavBarForSheet(sheetName) {
 }
 
 function loadSheetData(sheetName) {
+  collected = JSON.parse(localStorage.getItem(getCollectedKey(sheetName))) || [];
   cardContainer.innerHTML = "載入中...";
   const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(sheetName)}`;
   fetch(url)
@@ -759,7 +763,9 @@ function createResetTab() {
     const confirmReset = confirm("❗️確定要重置寶寶們嗎 ㅇㅅㅇ ！");
     if (confirmReset) {
       collected = [];
-      localStorage.setItem("collectedDolls", JSON.stringify(collected));
+sheetNames.forEach(name => {
+  localStorage.removeItem(getCollectedKey(name));
+});
       sheetNames.forEach(name => updateTabCount(name));
       const activeTab = document.querySelector(".tab.active .tab-name");
       if (activeTab) {
