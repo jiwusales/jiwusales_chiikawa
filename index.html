@@ -488,24 +488,18 @@ function formatName(name) {
   return cleanName.slice(0, maxLengthBeforeWrap) + "<br>" + cleanName.slice(maxLengthBeforeWrap);
 }
 
-function createTab(sheetName) {
-  const tab = document.createElement("div");
-  tab.className = "tab";
-  tab.style.setProperty("--tab-color", colors[sheetName] || "#999");
+tab.addEventListener("click", () => {
+  document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+  tab.classList.add("active");
+  document.documentElement.style.setProperty('--tab-color', colors[sheetName] || "#999");
+  const url = new URL(window.location);
+  url.searchParams.set("tab", sheetName);
+  window.history.replaceState(null, "", url);
 
-  tab.addEventListener("click", () => {
-    document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
-    tab.classList.add("active");
-    document.documentElement.style.setProperty('--tab-color', colors[sheetName] || "#999");
-    const url = new URL(window.location);
-    url.searchParams.set("tab", sheetName);
-    window.history.replaceState(null, "", url);
-    loadSheetData(sheetName);
-  });
+  localStorage.setItem("currentTab", sheetName);  // ← 這一行加在這裡
 
-  tabsContainer.appendChild(tab);
-  tabElements[sheetName] = tab;
-}
+  loadSheetData(sheetName);
+});
 
 function updateTabCount(sheetName) {
   if (sheetName === "重置圖鑑") return; // 跳過重置按鈕
@@ -733,8 +727,16 @@ function preloadAllSheets() {
 
 function getInitialSheet() {
   const urlParams = new URLSearchParams(window.location.search);
-  const tab = urlParams.get("tab");
-  return sheetNames.includes(tab) ? tab : sheetNames[0];
+  const tabFromUrl = urlParams.get("tab");
+  if (sheetNames.includes(tabFromUrl)) {
+    localStorage.setItem("currentTab", tabFromUrl);
+    return tabFromUrl;
+  }
+  const savedTab = localStorage.getItem("currentTab");
+  if (sheetNames.includes(savedTab)) {
+    return savedTab;
+  }
+  return sheetNames[0];
 }
 
 // 初始化
