@@ -698,24 +698,36 @@ function loadSheetData(sheetName) {
 function preloadAllSheets() {
   sheetNames.forEach(sheetName => {
     const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(sheetName)}`;
-    fetch(url)
-      .then(res => res.text())
-      .then(t => JSON.parse(t.substr(47).slice(0, -2)))
-      .then(data => {
-        let rows = data.table.rows || [];
-        if (rows.length > 1) rows = rows.slice(1);
-        const parsed = rows.map(row => ({
-          type: row.c[0]?.v || "無類型",
-          name: row.c[1]?.v || "",
-          imgUrl: row.c[3]?.v || "",
-          size: row.c[5]?.v || ""
-        }));
-        currentData[sheetName] = parsed;
-        updateTabCount(sheetName);
-      })
-      .catch(err => {
-        console.error(`載入 ${sheetName} 資料失敗`, err);
-      });
+   fetch(url)
+  .then(res => res.text())
+  .then(t => {
+    const jsonStr = t.match(/\{.*\}/s)[0];
+    return JSON.parse(jsonStr);
+  })
+  .then(data => {
+    let rows = data.table.rows || [];
+    if (rows.length > 1) rows = rows.slice(1);
+    const parsed = rows.map(row => ({
+      type: row.c[0]?.v || "無類型",
+      name: row.c[1]?.v || "",
+      imgUrl: row.c[3]?.v || "",
+      size: row.c[5]?.v || ""
+    }));
+    currentData[sheetName] = parsed;
+
+    window.requestAnimationFrame(() => {
+      renderCards(parsed, sheetName);
+      updateTabCount(sheetName);
+      updateNavBarForSheet(sheetName);
+
+      window.scrollBy(0, 1);
+      window.scrollBy(0, -1);
+    });
+  })
+  .catch(err => {
+    cardContainer.innerHTML = "載入資料失敗，請稍後再試。";
+    console.error(err);
+  });
   });
 }
 
