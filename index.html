@@ -698,36 +698,27 @@ function loadSheetData(sheetName) {
 function preloadAllSheets() {
   sheetNames.forEach(sheetName => {
     const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(sheetName)}`;
-   fetch(url)
-  .then(res => res.text())
-  .then(t => {
-    const jsonStr = t.match(/\{.*\}/s)[0];
-    return JSON.parse(jsonStr);
-  })
-  .then(data => {
-    let rows = data.table.rows || [];
-    if (rows.length > 1) rows = rows.slice(1);
-    const parsed = rows.map(row => ({
-      type: row.c[0]?.v || "無類型",
-      name: row.c[1]?.v || "",
-      imgUrl: row.c[3]?.v || "",
-      size: row.c[5]?.v || ""
-    }));
-    currentData[sheetName] = parsed;
-
-    window.requestAnimationFrame(() => {
-      renderCards(parsed, sheetName);
-      updateTabCount(sheetName);
-      updateNavBarForSheet(sheetName);
-
-      window.scrollBy(0, 1);
-      window.scrollBy(0, -1);
-    });
-  })
-  .catch(err => {
-    cardContainer.innerHTML = "載入資料失敗，請稍後再試。";
-    console.error(err);
-  });
+    fetch(url)
+      .then(res => res.text())
+      .then(t => {
+        const jsonStr = t.match(/\{.*\}/s)[0];
+        return JSON.parse(jsonStr);
+      })
+      .then(data => {
+        let rows = data.table.rows || [];
+        if (rows.length > 1) rows = rows.slice(1);
+        const parsed = rows.map(row => ({
+          type: row.c[0]?.v || "無類型",
+          name: row.c[1]?.v || "",
+          imgUrl: row.c[3]?.v || "",
+          size: row.c[5]?.v || ""
+        }));
+        currentData[sheetName] = parsed;
+        // 這裡不要呼叫 renderCards 或 updateTabCount
+      })
+      .catch(err => {
+        console.error(err);
+      });
   });
 }
 
@@ -739,12 +730,17 @@ function getInitialSheet() {
 
 // 初始化
 sheetNames.forEach(createTab);
-preloadAllSheets();
-const initialSheet = getInitialSheet();
-tabElements[initialSheet].classList.add("active");
-document.documentElement.style.setProperty('--tab-color', colors[initialSheet] || "#999");
+preloadAllSheets();  // 先只載資料不渲染
 
-loadSheetData(initialSheet);
+const initialSheet = getInitialSheet();
+
+// 設定 active tab 樣式
+Object.values(tabElements).forEach(t => t.classList.remove("active"));
+if (tabElements[initialSheet]) {
+  tabElements[initialSheet].classList.add("active");
+  document.documentElement.style.setProperty('--tab-color', colors[initialSheet] || "#999");
+  loadSheetData(initialSheet);
+}
 
 // 產生重置按鈕
 function createResetTab() {
