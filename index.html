@@ -558,12 +558,13 @@ function renderCards(data, sheetName) {
   });
 
   Object.keys(grouped).forEach(type => {
-    const count = grouped[type].length;
+    const ownedCount = grouped[type].filter(item => collected.includes(`${sheetName}|${type}|${item.name}`)).length;
+const totalCount = grouped[type].length;
 const divider = document.createElement("div");
 divider.className = "type-divider";
 divider.id = type;
 divider.style.scrollMarginTop = "87px";
-divider.innerHTML = `<span>${type} (${count})</span>`;
+divider.innerHTML = `<span>${type} (${ownedCount}/${totalCount})</span>`;
 cardContainer.appendChild(divider);
 
     const groupContainer = document.createElement("div");
