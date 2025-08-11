@@ -509,11 +509,11 @@ function createTab(sheetName) {
 }
 
 function updateTabCount(sheetName) {
-  if (sheetName === "重置圖鑑") return; // 跳過重置按鈕
+  if (sheetName === "重置圖鑑") return;
 
   const data = currentData[sheetName] || [];
-  // 判斷收藏時加上 type
-  const ownedCount = data.filter(item => collected.includes(`${sheetName}|${item.type}|${item.name}`)).length;
+  const storedCollected = JSON.parse(localStorage.getItem(getCollectedKey(sheetName))) || [];
+  const ownedCount = data.filter(item => storedCollected.includes(`${sheetName}|${item.type}|${item.name}`)).length;
   const totalCount = data.length;
   const percent = totalCount ? ownedCount / totalCount : 0;
 
@@ -527,18 +527,9 @@ function updateTabCount(sheetName) {
       <div class="tab-circle">
         <img src="${images[sheetName]}" alt="${sheetName}">
         <svg width="70" height="70">
-          <circle
-            cx="35" cy="35" r="${radius}"
-            stroke="#e0e0e0" stroke-width="${strokeWidth}" fill="none"
-          ></circle>
-          <circle
-            cx="35" cy="35" r="${radius}"
-            stroke="${colors[sheetName] || '#999'}"
-            stroke-width="${strokeWidth}" fill="none"
-            stroke-dasharray="${circumference}"
-            stroke-dashoffset="${offset}"
-            stroke-linecap="round"
-          ></circle>
+          <circle cx="35" cy="35" r="${radius}" stroke="#e0e0e0" stroke-width="${strokeWidth}" fill="none"></circle>
+          <circle cx="35" cy="35" r="${radius}" stroke="${colors[sheetName] || '#999'}" stroke-width="${strokeWidth}" fill="none"
+            stroke-dasharray="${circumference}" stroke-dashoffset="${offset}" stroke-linecap="round"></circle>
         </svg>
       </div>
       <div class="tab-label">
@@ -687,7 +678,7 @@ function loadSheetData(sheetName) {
       }));
       currentData[sheetName] = parsed;
       renderCards(parsed, sheetName);
-      updateTabCount(sheetName);
+      updateTabCount(sheetName); // ✅ 畫面更新後也同步更新分頁數量
       updateNavBarForSheet(sheetName);
     })
     .catch(err => {
@@ -712,7 +703,7 @@ function preloadAllSheets() {
           size: row.c[5]?.v || ""
         }));
         currentData[sheetName] = parsed;
-        updateTabCount(sheetName);
+        updateTabCount(sheetName); // ✅ 這裡每個分頁即時更新數量
       })
       .catch(err => {
         console.error(`載入 ${sheetName} 資料失敗`, err);
