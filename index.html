@@ -2,7 +2,7 @@
 <html lang="zh-Hant">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
   <title>JIWU寶寶圖鑑</title>
 
   <!-- ✅ 貼網址預覽圖（社群分享圖） -->
@@ -140,7 +140,7 @@ h1 {
 /* 分頁按鈕樣式 */
 .tabs {
   width: 100%;
-  max-width: 2400px;
+  max-width: 100%;
   margin: 20px auto 15px auto; /* 保持上下外距，左右置中 */
   padding: 0 2px;              /* 跟卡片容器左右內距一致 */
   display: flex;
@@ -149,6 +149,7 @@ h1 {
   row-gap: 2px;    /* 上下排間距 */
   column-gap: 2px; /* 左右按鈕間距 */
   box-sizing: border-box;
+  overflow-x: hidden;
 }
 @media (min-width: 768px) {
   .tabs {
@@ -266,11 +267,11 @@ h1 {
 }
 
 /* 卡片群組排版 */
-/* 手機版使用彈性欄寬，最小80px */
 .group-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, 120px);
+  grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
   justify-content: start;
+  box-sizing: border-box;
   gap: 6px;
 }
 @media (max-width: 480px) {
@@ -280,7 +281,9 @@ h1 {
 }
 /* 卡片樣式 (手機) */
 .card {
-  width: 80px;
+  width: 100%;            /* ✅ 改成自適應 */
+  max-width: 135px;       /* ✅ 上限控制 */
+  margin: 0 auto;         /* ✅ 水平置中 */
   border: 2px solid #ccc;
   border-radius: 8px;
   background-color: #ffffff !important;
@@ -294,8 +297,9 @@ h1 {
   box-shadow: none !important;
 }
 .card img {
-  height: 75px;
-  width: auto;
+  height: auto;
+  max-height: 130px;
+  width: 100%;
   margin-top: 5px;
   object-fit: contain;
   justify-content: flex-end; /* 圖片靠底 */
