@@ -238,7 +238,7 @@ h1 {
   max-width: 100%; /* 或設定與 .group-grid 同寬 */
   padding-left: 5px; /* 和 .group-grid 左右 padding 相同 */
   text-align: left;
-  margin: 10px 0 0 0;
+  margin: 10px 0 5px -15px;
   font-weight: bold;
   font-size: 18px;
   color: #333333;
@@ -551,13 +551,23 @@ function renderCards(data, sheetName) {
   });
 
   Object.keys(grouped).forEach(type => {
+    // 分類標題
     const divider = document.createElement("div");
     divider.className = "type-divider";
     divider.id = type;
     divider.style.scrollMarginTop = "87px";
-    divider.innerHTML = `<span>${type}</span>`;
+
+    const storedCollected = JSON.parse(localStorage.getItem(getCollectedKey(sheetName))) || [];
+    const totalCount = grouped[type].length;
+    const ownedCount = grouped[type].filter(item =>
+      storedCollected.includes(`${sheetName}|${type}|${item.name}`)
+    ).length;
+
+    // 加上 data-type 屬性
+    divider.innerHTML = `<span data-type="${type}">${type} (${ownedCount}/${totalCount})</span>`;
     cardContainer.appendChild(divider);
 
+    // 卡片容器
     const groupContainer = document.createElement("div");
     groupContainer.className = "group-grid";
 
@@ -566,7 +576,10 @@ function renderCards(data, sheetName) {
       card.className = "card";
       card.style.borderColor = "#ccc";
 
-      // 完整 key 加入 type
+      // 給卡片加上 data-type 與 data-name
+      card.setAttribute("data-type", type);
+      card.setAttribute("data-name", item.name);
+
       const itemKey = `${sheetName}|${type}|${item.name}`;
 
       if (collected.includes(itemKey)) {
@@ -588,6 +601,7 @@ function renderCards(data, sheetName) {
       const checkmark = card.querySelector(".checkmark");
       checkmark.style.display = collected.includes(itemKey) ? "flex" : "none";
 
+      // 卡片點擊事件
       card.addEventListener("click", () => {
         card.classList.toggle("collected");
         const isCollected = card.classList.contains("collected");
@@ -600,8 +614,14 @@ function renderCards(data, sheetName) {
           checkmark.style.display = "none";
           collected = collected.filter(n => n !== itemKey);
         }
+        // 存 localStorage
         localStorage.setItem(getCollectedKey(sheetName), JSON.stringify(collected));
+
+        // 更新分頁圈圈數量
         updateTabCount(sheetName);
+
+        // 更新分類數量
+        updateTypeCount(type, sheetName);
       });
 
       groupContainer.appendChild(card);
@@ -611,6 +631,19 @@ function renderCards(data, sheetName) {
   });
 }
 
+// 更新分類數量
+function updateTypeCount(type, sheetName) {
+  const storedCollected = JSON.parse(localStorage.getItem(getCollectedKey(sheetName))) || [];
+  const data = currentData[sheetName].filter(item => (item.type || "無類型") === type);
+  const ownedCount = data.filter(item => storedCollected.includes(`${sheetName}|${type}|${item.name}`)).length;
+  const totalCount = data.length;
+
+  const titleSpan = document.querySelector(`.type-divider span[data-type="${type}"]`);
+  if (titleSpan) {
+    titleSpan.textContent = `${type} (${ownedCount}/${totalCount})`;
+  }
+}
+  
 function updateNavBarWithTypes(types, sheetName) {
   const navBar = document.getElementById("nav-bar");
   if (!navBar) return;
