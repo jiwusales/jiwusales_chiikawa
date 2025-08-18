@@ -716,7 +716,23 @@ function preloadAllSheets() {
       });
   });
 }
+function updateTypeCount(type) {
+      const cards = document.querySelectorAll(`.card[data-type="${type}"]`);
+      const checked = document.querySelectorAll(`.card[data-type="${type}"] .card-check:checked`);
 
+      const title = document.querySelector(`.type-title[data-type="${type}"]`);
+      if (title) {
+        title.textContent = `${type}（${checked.length} / ${cards.length}）`;
+      }
+    }
+
+    document.addEventListener("change", function(e) {
+      if (e.target.classList.contains("card-check")) {
+        const card = e.target.closest(".card");
+        const type = card.getAttribute("data-type");
+        updateTypeCount(type);
+      }
+    });
 function getInitialSheet() {
   const urlParams = new URLSearchParams(window.location.search);
   const tab = urlParams.get("tab");
