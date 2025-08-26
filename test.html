@@ -83,61 +83,93 @@ body {
   user-select: none;
 }
 
-.nav-bar {
-  background-color: #f9f9f9;
-  color: #333333;
-  font-size: 11pt;
-  padding: 8px 0;
-  position: fixed;
-  top: 40px; /* 放在 top-bar 下方 */
-  width: 100%;
-  z-index: 998;
+.nav-bar-wrapper {
+      position: fixed;
+      top: 40px;
+      width: 100%;
+      background: #f9f9f9;
+      display: flex;
+      align-items: center;
+      z-index: 998;
+      padding: 0 5px;
+      box-sizing: border-box;
+      height: 40px;
+    }
+    .nav-bar-scroll {
+      flex: 1;
+      overflow-x: auto;
+      white-space: nowrap;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+    }
+    .nav-bar-scroll::-webkit-scrollbar {
+      display: none;
+    }
+    .nav-bar {
+      display: inline-block;
+      white-space: nowrap;
+      padding: 10px 0;
+      font-size: 10pt;
+      color: #333;
+    }
+    .nav-bar a {
+      color: #333;
+      text-decoration: none;
+      margin: 0px;
+      padding-top: 6px;
+      display: inline-block;
+      font-weight: normal;
+    }
+
+    .nav-bar a::after {
+      content: "｜";
+      margin: 0px;
+      color: #aaa;
+      font-weight: normal;
+      pointer-events: none;
+    }
+    .nav-bar a:last-child::after {
+      content: "";
+    }
+    
+    .nav-bar a:hover {
+      font-weight: bold;
+      color: var(--tab-color, #333);
+    }
+    .nav-link.active {
+      font-weight: bold;
+      color: var(--tab-color, #333333);
+      text-decoration: none;
+    }
+
+.nav-arrow {
+  width: 28px;
+  height: 28px;
+  line-height: 28px;
+  font-size: 18px;
+  color: #333;
+  background-color: transparent;
+  border-radius: 0;
   text-align: center;
   user-select: none;
-  }
-.nav-bar a {
-  color: #333333;
-  text-decoration: none;
-  margin: 0 4px;
-  -webkit-tap-highlight-color: transparent; /* 取消點擊時手機高亮 */
-  background-color: transparent;
+  cursor: pointer;
+  flex-shrink: 0;
+  margin: 0 6px;
+  padding-top: 6px;
+  transition: background-color 0.2s ease, color 0.2s ease;
+  outline: none;
 }
 
-.nav-bar a:focus,
-.nav-bar a:active {
-  outline: none;
-  background-color: transparent; /* 取消點擊時灰底 */
-}
-  .nav-bar a.active {
-  font-weight: bold;
+.nav-arrow:hover {
+  background-color: transparent;
   color: var(--tab-color, #dac7b7);
 }
-  /* nav-bar 左右捲動按鈕 */
-.nav-scroll-btn {
-  position: fixed;
-  top: 60px; /* 跟 nav-bar 對齊 */
-  width: 30px;
-  height: 30px;
-  border: none;
-  border-radius: 50%;
-  background: rgba(218, 199, 183, 0.9);
-  color: #333;
-  font-size: 18px;
-  font-weight: bold;
-  cursor: pointer;
-  z-index: 1000;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: opacity 0.2s, transform 0.2s;
+.nav-arrow:focus,
+.nav-arrow:active {
+  outline: none;
+  background-color: transparent;
+  box-shadow: none;
 }
-
-#navLeft {
-  left: 5px;
-}
-#navRight {
-  right: 5px;
-} 
 .top-bar a {
   color: #fff;
   text-decoration: none;
