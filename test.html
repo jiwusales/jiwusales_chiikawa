@@ -112,7 +112,32 @@ body {
   font-weight: bold;
   color: var(--tab-color, #dac7b7);
 }
- 
+  /* nav-bar 左右捲動按鈕 */
+.nav-scroll-btn {
+  position: fixed;
+  top: 60px; /* 跟 nav-bar 對齊 */
+  width: 30px;
+  height: 30px;
+  border: none;
+  border-radius: 50%;
+  background: rgba(218, 199, 183, 0.9);
+  color: #333;
+  font-size: 18px;
+  font-weight: bold;
+  cursor: pointer;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.2s, transform 0.2s;
+}
+
+#navLeft {
+  left: 5px;
+}
+#navRight {
+  right: 5px;
+} 
 .top-bar a {
   color: #fff;
   text-decoration: none;
@@ -423,9 +448,16 @@ h1 {
     這邊有寶寶目錄可逛逛 ⮕ <a href="https://jiwusales.github.io/jiwu_menu/" target="_blank">JIWU吉物販售</a>
   </div>
 
+ <!-- 左按鈕 -->
+<button id="navLeft" class="nav-scroll-btn">❮</button>
+
+<!-- nav-bar 本體 -->
 <div class="nav-bar" id="nav-bar">
   <!-- 內容由 JS 動態產生 -->
 </div>
+
+<!-- 右按鈕 -->
+<button id="navRight" class="nav-scroll-btn">❯</button>
   
   <!-- LOGO -->
   <div class="logo-container">
@@ -808,6 +840,19 @@ sheetNames.forEach(name => {
   tabsContainer.appendChild(resetTab);
 }
 createResetTab();
+// nav-bar 左右捲動控制
+const navBar = document.getElementById("nav-bar");
+document.getElementById("navLeft").addEventListener("click", () => {
+  navBar.scrollBy({ left: -150, behavior: "smooth" });
+});
+document.getElementById("navRight").addEventListener("click", () => {
+  navBar.scrollBy({ left: 150, behavior: "smooth" });
+});
+
+// 讓 nav-bar 可以橫向捲動
+navBar.style.overflowX = "auto";
+navBar.style.whiteSpace = "nowrap";
+navBar.style.scrollBehavior = "smooth";
 
 </script>
 </body>
