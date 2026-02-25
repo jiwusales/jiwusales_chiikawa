@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>JIWU寶寶圖鑑</title>
 
-  <!-- ✅ 貼網址預覽圖（社群分享圖） -->
   <meta property="og:title" content="JIWU吉伊卡哇圖鑑" />
   <meta property="og:description" content="來幫寶寶點點名(๑•̀∀•́ฅ ✧" />
   <meta property="og:image" content="https://i.postimg.cc/dV18mp5f/image.png" />
@@ -13,9 +12,7 @@
   <meta property="og:type" content="website" />
   <meta name="twitter:card" content="summary_large_image" />
   
-  <!-- 分頁小圖（favicon）-->
   <link rel="icon" href="https://i.postimg.cc/3R7nNT0k/icon.png" type="image/png" />
-  <!-- 桌面/手機主畫面捷徑圖示 -->
   <link rel="apple-touch-icon" href="https://i.postimg.cc/L55pFY4d/chiikawaicon.png" />
   <meta name="theme-color" content="#dac7b7" />
   <meta name="mobile-web-app-capable" content="yes" />
@@ -35,10 +32,6 @@ html, body {
   background-color: #f9f9f9;
   color: #333333;
   text-align: center;
-}
-
-body {
-  /* 其他body特性留著 */
 }
 
 /* 控制按鈕共用樣式 */
@@ -67,7 +60,7 @@ body {
 
 /* 重新整理 按鈕位置 */
 #refreshBtn {
-  top: 70px;
+  top: 85px; /* 稍微往下移避開滑動列 */
   right: 10px;
 }
 
@@ -79,97 +72,76 @@ body {
   top: 0;
   left: 0;
   width: 100%;
-  z-index: 999;
+  z-index: 1001;
   user-select: none;
 }
 
-.nav-bar-wrapper {
-      position: fixed;
-      top: 40px;
-      width: 100%;
-      background: #f9f9f9;
-      display: flex;
-      align-items: center;
-      z-index: 998;
-      padding: 0 5px;
-      box-sizing: border-box;
-      height: 40px;
-    }
-    .nav-bar-scroll {
-      flex: 1;
-      overflow-x: auto;
-      white-space: nowrap;
-      -webkit-overflow-scrolling: touch;
-      scrollbar-width: none;
-    }
-    .nav-bar-scroll::-webkit-scrollbar {
-      display: none;
-    }
-    .nav-bar {
-      display: inline-block;
-      white-space: nowrap;
-      padding: 10px 0;
-      font-size: 10pt;
-      color: #333;
-    }
-    .nav-bar a {
-      color: #333;
-      text-decoration: none;
-      margin: 0px;
-      padding-top: 6px;
-      display: inline-block;
-      font-weight: normal;
-    }
+/* --- 修改滑動導覽列樣式 --- */
+.nav-wrapper {
+  position: fixed;
+  top: 40px;
+  left: 0;
+  width: 100%;
+  height: 42px;
+  background-color: #f9f9f9;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
 
-    .nav-bar a::after {
-      content: "｜";
-      margin: 0px;
-      color: #aaa;
-      font-weight: normal;
-      pointer-events: none;
-    }
-    .nav-bar a:last-child::after {
-      content: "";
-    }
-    
-    .nav-bar a:hover {
-      font-weight: bold;
-      color: var(--tab-color, #333);
-    }
-    .nav-link.active {
-      font-weight: bold;
-      color: var(--tab-color, #333333);
-      text-decoration: none;
-    }
+.nav-bar {
+  display: flex;
+  overflow-x: auto;
+  white-space: nowrap;
+  flex-wrap: nowrap;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none; /* Firefox */
+  padding: 0 30px;
+  width: 100%;
+  align-items: center;
+}
 
-.nav-arrow {
-  width: 28px;
-  height: 28px;
-  line-height: 28px;
-  font-size: 18px;
-  color: #333;
-  background-color: transparent;
-  border-radius: 0;
-  text-align: center;
-  user-select: none;
-  cursor: pointer;
+.nav-bar::-webkit-scrollbar {
+  display: none; /* Chrome, Safari */
+}
+
+.nav-bar a {
+  color: #333333;
+  text-decoration: none;
+  font-size: 11pt;
+  padding: 8px 12px; /* 取代「｜」的間隔感 */
   flex-shrink: 0;
-  margin: 0 6px;
-  padding-top: 6px;
-  transition: background-color 0.2s ease, color 0.2s ease;
-  outline: none;
+  -webkit-tap-highlight-color: transparent;
+  background-color: transparent;
+  display: inline-block;
 }
 
-.nav-arrow:hover {
-  background-color: transparent;
+.nav-bar a.active {
+  font-weight: bold;
   color: var(--tab-color, #dac7b7);
 }
-.nav-arrow:focus,
-.nav-arrow:active {
-  outline: none;
-  background-color: transparent;
-  box-shadow: none;
+
+.nav-arrow {
+  position: absolute;
+  top: 0;
+  width: 30px;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1002;
+  color: #dac7b7;
+  font-weight: bold;
+  pointer-events: none; /* 不影響點擊下方按鈕 */
+  background: linear-gradient(to right, #f9f9f9 60%, rgba(249,249,249,0));
 }
+.nav-arrow.right {
+  right: 0;
+  background: linear-gradient(to left, #f9f9f9 60%, rgba(249,249,249,0));
+}
+/* --- 滑動導覽列樣式結束 --- */
+
 .top-bar a {
   color: #fff;
   text-decoration: none;
@@ -198,21 +170,21 @@ h1 {
 .tabs {
   width: 100%;
   max-width: 100%;
-  margin: 20px auto 15px auto; /* 保持上下外距，左右置中 */
-  padding: 0 2px;              /* 跟卡片容器左右內距一致 */
+  margin: 20px auto 15px auto;
+  padding: 0 2px;
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
-  row-gap: 2px;    /* 上下排間距 */
-  column-gap: 2px; /* 左右按鈕間距 */
+  row-gap: 2px;
+  column-gap: 2px;
   box-sizing: border-box;
   overflow-x: hidden;
 }
 @media (min-width: 768px) {
   .tabs {
-    gap: 5px; /* 電腦版按鈕間距 */
-    max-width: 2400px; /* 確認跟主容器一樣 */
-    padding: 0 5px; /* 和主容器一樣 */
+    gap: 5px;
+    max-width: 2400px;
+    padding: 0 5px;
   }
 }
 @media (max-width: 767px) {
@@ -223,7 +195,7 @@ h1 {
   .tab {
     flex: 0 0 60px;
     max-width: 60px;
-    width: auto;  /* 取消原本的20% */
+    width: auto;
   }
   .tab-circle {
     width: 55px;
@@ -242,8 +214,8 @@ h1 {
 }
 .tab {
   position: relative;
-  width: 20%; /* 每排 5 個 */
-  max-width: 80px; /* 電腦版不超過 80px */
+  width: 20%;
+  max-width: 80px;
   height: 110px;
   display: flex;
   flex-direction: column;
@@ -254,16 +226,16 @@ h1 {
   transition: transform 0.3s;
 }
 .tab-circle {
-  width: 70px;  /* 改成70x70 */
+  width: 70px;
   height: 70px;
   position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin: 0 auto; /* 確保置中 */
+  margin: 0 auto;
 }
 .tab-circle img {
-  width: 56px;  /* 80% 的大小 */
+  width: 56px;
   height: 56px;
   object-fit: cover;
   border-radius: 50%;
@@ -280,20 +252,20 @@ h1 {
   pointer-events: none;
 }
 .tab-name {
-  font-size: 12px; /* 縮小 */
+  font-size: 12px;
   font-weight: bold;
   color: #333333;
 }
 
 .tab-count {
-  font-size: 10px; /* 縮小 */
+  font-size: 10px;
   font-weight: normal;
   color: #666666;
 }
 
 .type-divider {
-  max-width: 100%; /* 或設定與 .group-grid 同寬 */
-  padding-left: 5px; /* 和 .group-grid 左右 padding 相同 */
+  max-width: 100%;
+  padding-left: 5px;
   text-align: left;
   margin: 10px 0 5px -15px;
   font-weight: bold;
@@ -314,8 +286,8 @@ h1 {
 #card-container {
   width: 100%;
   max-width: 2400px;
-  margin: 0 auto;          /* 重點：置中 */
-  padding: 0 15px;         /* 左右保留15px空間，避免貼邊 */
+  margin: 0 auto;
+  padding: 0 15px;
   box-sizing: border-box;
   overflow-x: hidden;
 }
@@ -335,9 +307,9 @@ h1 {
 }
 /* 卡片樣式 (手機) */
 .card {
-  width: 100%;            /* ✅ 改成自適應 */
-  max-width: 135px;       /* ✅ 上限控制 */
-  margin: 0 auto;         /* ✅ 水平置中 */
+  width: 100%;
+  max-width: 135px;
+  margin: 0 auto;
   border: 2px solid #ccc;
   border-radius: 8px;
   background-color: #ffffff !important;
@@ -356,18 +328,16 @@ h1 {
   width: 100%;
   margin-top: 5px;
   object-fit: contain;
-  justify-content: flex-end; /* 圖片靠底 */
-  align-items: center;      /* 水平置中 */
   -webkit-touch-callout: none;
 }
 .card .name,
 .card .size {
   margin: 0px;
   font-size: 10px;
-  line-height: 1.3;         /* 🚀 行距更舒服 */
+  line-height: 1.3;
   word-break: break-word;
-  white-space: normal;      /* ✅ 允許多行換行 */
-  overflow-wrap: break-word;/* ✅ 防止單字超出 */
+  white-space: normal;
+  overflow-wrap: break-word;
   min-height: 16px;
   color: #333333 !important;
   display: block;
@@ -377,14 +347,12 @@ h1 {
 .card .name {
   font-weight: bold;
   margin-top: 2px;
-  white-space: normal;       /* ✅ 正常換行 */
-  word-break: normal;        /* ✅ 保留單字整體性 */
-  overflow-wrap: anywhere;   /* ✅ 允許空白處換行 */
+  overflow-wrap: anywhere;
 }
 
 .card .size {
   padding-bottom: 5px;
-  margin-top: -2px; /* 可選：讓尺寸稍微有一點呼吸空間 */
+  margin-top: -2px;
 }
   
 .card .checkmark {
@@ -410,9 +378,8 @@ h1 {
 
 /* 底部欄 */
 .bottom-bar {
-  min-height: 50px;       /* 底部色塊最小高度，可依需求調整 */
-  padding: 15px 0 0 0;    /* 上方內距15px，左右0，下方0 */
-  line-height: normal;    /* 取消原本的 line-height 垂直置中 */
+  min-height: 50px;
+  padding: 15px 0 0 0;
   text-align: center;
   background-color: #dac7b7;
   color: #fff;
@@ -426,7 +393,7 @@ h1 {
   text-decoration: none;
 }
 
-/* 電腦版卡片加寬，欄寬也固定為135px */
+/* 電腦版樣式 */
 @media (min-width: 768px) {
   .group-grid {
     grid-template-columns: repeat(auto-fit, 135px);
@@ -442,9 +409,6 @@ h1 {
   .card .name,
   .card .size {
     font-size: 12px;
-  }
-  .type-divider {
-    padding-left: 5px;
   }
 }
 
@@ -465,14 +429,12 @@ h1 {
     color: #333333 !important;
   }
 }
-  .tab-circle svg circle:nth-child(2) {
+.tab-circle svg circle:nth-child(2) {
   stroke: var(--tab-color, #999);
 }
-
 .reset-tab {
   --tab-color: #EF7C8E !important;
 }
-
 </style>
 </head>
 <body>
@@ -480,18 +442,12 @@ h1 {
     這邊有寶寶目錄可逛逛 ⮕ <a href="https://jiwusales.github.io/jiwu_menu/" target="_blank">JIWU吉物販售</a>
   </div>
 
- <!-- 左按鈕 -->
-<button id="navLeft" class="nav-scroll-btn">❮</button>
-
-<!-- nav-bar 本體 -->
-<div class="nav-bar" id="nav-bar">
-  <!-- 內容由 JS 動態產生 -->
+<div class="nav-wrapper">
+  <div class="nav-arrow left">❮</div>
+  <div class="nav-bar" id="nav-bar"></div>
+  <div class="nav-arrow right">❯</div>
 </div>
-
-<!-- 右按鈕 -->
-<button id="navRight" class="nav-scroll-btn">❯</button>
   
-  <!-- LOGO -->
   <div class="logo-container">
     <img src="https://i.postimg.cc/CLBFxHs3/logo-banner.png" alt="JIWU LOGO" />
   </div>
@@ -499,14 +455,12 @@ h1 {
   <h1>吉伊卡哇．寶寶收藏圖鑑</h1>
 
   <div class="tabs" id="tabs"></div>
-
   <div id="card-container"></div>
 
   <div class="bottom-bar">
     <a href="https://jiwusales.github.io/jiwusales_nagano" target="_blank">自嘲熊圖鑑點這邊 d(`･∀･)b</a>
   </div>
 
-  <!-- 重新整理 按鈕 -->
   <button id="refreshBtn" class="control-btn" onclick="location.reload()" aria-label="重新整理" title="重新整理">
     <img src="https://i.postimg.cc/gkpnr8RJ/re.png" alt="Refresh" />
   </button>
@@ -545,7 +499,6 @@ function formatName(name) {
   const cleanName = name.trim();
   const totalLength = cleanName.length;
   if (totalLength <= 9) return cleanName;
-
   const maxLengthBeforeWrap = 9;
   const spaceIndex = cleanName.lastIndexOf(" ", maxLengthBeforeWrap);
   if (spaceIndex > 0) {
@@ -558,7 +511,6 @@ function createTab(sheetName) {
   const tab = document.createElement("div");
   tab.className = "tab";
   tab.style.setProperty("--tab-color", colors[sheetName] || "#999");
-
   tab.addEventListener("click", () => {
     document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
     tab.classList.add("active");
@@ -568,25 +520,21 @@ function createTab(sheetName) {
     window.history.replaceState(null, "", url);
     loadSheetData(sheetName);
   });
-
   tabsContainer.appendChild(tab);
   tabElements[sheetName] = tab;
 }
 
 function updateTabCount(sheetName) {
   if (sheetName === "重置圖鑑") return;
-
   const data = currentData[sheetName] || [];
   const storedCollected = JSON.parse(localStorage.getItem(getCollectedKey(sheetName))) || [];
   const ownedCount = data.filter(item => storedCollected.includes(`${sheetName}|${item.type}|${item.name}`)).length;
   const totalCount = data.length;
   const percent = totalCount ? ownedCount / totalCount : 0;
-
   const radius = 28;
   const strokeWidth = 4;
   const circumference = 2 * Math.PI * radius;
   const offset = circumference * (1 - percent);
-
   if (tabElements[sheetName]) {
     tabElements[sheetName].innerHTML = `
       <div class="tab-circle">
@@ -613,44 +561,26 @@ function renderCards(data, sheetName) {
     if (!grouped[type]) grouped[type] = [];
     grouped[type].push(item);
   });
-
   Object.keys(grouped).forEach(type => {
-    // 分類標題
     const divider = document.createElement("div");
     divider.className = "type-divider";
     divider.id = type;
-    divider.style.scrollMarginTop = "87px";
-
+    divider.style.scrollMarginTop = "95px"; // 考慮頂部兩層導覽列的高度
     const storedCollected = JSON.parse(localStorage.getItem(getCollectedKey(sheetName))) || [];
     const totalCount = grouped[type].length;
-    const ownedCount = grouped[type].filter(item =>
-      storedCollected.includes(`${sheetName}|${type}|${item.name}`)
-    ).length;
-
-    // 加上 data-type 屬性
+    const ownedCount = grouped[type].filter(item => storedCollected.includes(`${sheetName}|${type}|${item.name}`)).length;
     divider.innerHTML = `<span data-type="${type}">${type} (${ownedCount}/${totalCount})</span>`;
     cardContainer.appendChild(divider);
-
-    // 卡片容器
     const groupContainer = document.createElement("div");
     groupContainer.className = "group-grid";
-
     grouped[type].forEach(item => {
       const card = document.createElement("div");
       card.className = "card";
-      card.style.borderColor = "#ccc";
-
-      // 給卡片加上 data-type 與 data-name
-      card.setAttribute("data-type", type);
-      card.setAttribute("data-name", item.name);
-
       const itemKey = `${sheetName}|${type}|${item.name}`;
-
       if (collected.includes(itemKey)) {
         card.classList.add("collected");
         card.style.borderColor = colors[sheetName] || "#ccc";
       }
-
       card.innerHTML = `
         <div class="checkmark" style="background-color: ${colors[sheetName] || "#ccc"}">
           <svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
@@ -661,15 +591,11 @@ function renderCards(data, sheetName) {
         <div class="name">${formatName(item.name)}</div>
         <div class="size">${item.size}</div>
       `;
-
       const checkmark = card.querySelector(".checkmark");
       checkmark.style.display = collected.includes(itemKey) ? "flex" : "none";
-
-      // 卡片點擊事件
       card.addEventListener("click", () => {
         card.classList.toggle("collected");
-        const isCollected = card.classList.contains("collected");
-        if (isCollected) {
+        if (card.classList.contains("collected")) {
           card.style.borderColor = colors[sheetName] || "#ccc";
           checkmark.style.display = "flex";
           if (!collected.includes(itemKey)) collected.push(itemKey);
@@ -678,75 +604,53 @@ function renderCards(data, sheetName) {
           checkmark.style.display = "none";
           collected = collected.filter(n => n !== itemKey);
         }
-        // 存 localStorage
         localStorage.setItem(getCollectedKey(sheetName), JSON.stringify(collected));
-
-        // 更新分頁圈圈數量
         updateTabCount(sheetName);
-
-        // 更新分類數量
         updateTypeCount(type, sheetName);
       });
-
       groupContainer.appendChild(card);
     });
-
     cardContainer.appendChild(groupContainer);
   });
 }
 
-// 更新分類數量
 function updateTypeCount(type, sheetName) {
   const storedCollected = JSON.parse(localStorage.getItem(getCollectedKey(sheetName))) || [];
   const data = currentData[sheetName].filter(item => (item.type || "無類型") === type);
   const ownedCount = data.filter(item => storedCollected.includes(`${sheetName}|${type}|${item.name}`)).length;
   const totalCount = data.length;
-
   const titleSpan = document.querySelector(`.type-divider span[data-type="${type}"]`);
-  if (titleSpan) {
-    titleSpan.textContent = `${type} (${ownedCount}/${totalCount})`;
-  }
+  if (titleSpan) titleSpan.textContent = `${type} (${ownedCount}/${totalCount})`;
 }
-  
+
+// --- 修改後的更新導覽列函數 ---
 function updateNavBarWithTypes(types, sheetName) {
   const navBar = document.getElementById("nav-bar");
   if (!navBar) return;
-
   navBar.innerHTML = "";
-
-  types.forEach((type, idx) => {
+  types.forEach((type) => {
     const a = document.createElement("a");
     a.href = `#${type}`;
     a.textContent = type;
-
     a.addEventListener("click", e => {
       e.preventDefault();
       navBar.querySelectorAll("a").forEach(link => link.classList.remove("active"));
       a.classList.add("active");
-      window.location.hash = a.getAttribute("href");
-
-      // 滾動到對應區塊（可保留或刪除）
+      
       const targetId = a.getAttribute("href").substring(1);
       const targetElem = document.getElementById(targetId);
       if (targetElem) {
-        targetElem.scrollIntoView({ behavior: "smooth", block: "start" });
+        // 設定滾動偏移量 (top-bar 40px + nav-bar 42px + 一點餘裕)
+        const offset = 92;
+        const elementPosition = targetElem.getBoundingClientRect().top + window.pageYOffset;
+        window.scrollTo({
+          top: elementPosition - offset,
+          behavior: "smooth"
+        });
       }
     });
-
     navBar.appendChild(a);
-    if (idx !== types.length - 1) {
-      navBar.appendChild(document.createTextNode("｜"));
-    }
   });
-
-  const areaNav = document.getElementById("area-nav");
-  if (areaNav) {
-    if (sheetName === "吉伊" || sheetName === "小八" || sheetName === "兔兔") {
-      areaNav.style.display = "inline";
-    } else {
-      areaNav.style.display = "none";
-    }
-  }
 }
 
 function updateNavBarForSheet(sheetName) {
@@ -761,10 +665,7 @@ function loadSheetData(sheetName) {
   const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(sheetName)}`;
   fetch(url)
     .then(res => res.text())
-    .then(t => {
-      const jsonStr = t.match(/\{.*\}/s)[0];
-      return JSON.parse(jsonStr);
-    })
+    .then(t => JSON.parse(t.match(/\{.*\}/s)[0]))
     .then(data => {
       let rows = data.table.rows || [];
       if (rows.length > 1) rows = rows.slice(1);
@@ -776,11 +677,11 @@ function loadSheetData(sheetName) {
       }));
       currentData[sheetName] = parsed;
       renderCards(parsed, sheetName);
-      updateTabCount(sheetName); // ✅ 畫面更新後也同步更新分頁數量
+      updateTabCount(sheetName);
       updateNavBarForSheet(sheetName);
     })
     .catch(err => {
-      cardContainer.innerHTML = "載入資料失敗，請稍後再試。";
+      cardContainer.innerHTML = "載入資料失敗。";
       console.error(err);
     });
 }
@@ -794,17 +695,13 @@ function preloadAllSheets() {
       .then(data => {
         let rows = data.table.rows || [];
         if (rows.length > 1) rows = rows.slice(1);
-        const parsed = rows.map(row => ({
+        currentData[sheetName] = rows.map(row => ({
           type: row.c[0]?.v || "無類型",
           name: row.c[1]?.v || "",
           imgUrl: row.c[3]?.v || "",
           size: row.c[5]?.v || ""
         }));
-        currentData[sheetName] = parsed;
-        updateTabCount(sheetName); // ✅ 這裡每個分頁即時更新數量
-      })
-      .catch(err => {
-        console.error(`載入 ${sheetName} 資料失敗`, err);
+        updateTabCount(sheetName);
       });
   });
 }
@@ -815,77 +712,36 @@ function getInitialSheet() {
   return sheetNames.includes(tab) ? tab : sheetNames[0];
 }
 
-// 初始化
 sheetNames.forEach(createTab);
 preloadAllSheets();
 const initialSheet = getInitialSheet();
 tabElements[initialSheet].classList.add("active");
 document.documentElement.style.setProperty('--tab-color', colors[initialSheet] || "#999");
-
 loadSheetData(initialSheet);
 
-// 產生重置按鈕
 function createResetTab() {
   const resetTab = document.createElement("div");
   resetTab.className = "tab reset-tab";
-
-  resetTab.style.setProperty("--tab-color", "#EF7C8E");
-
   resetTab.innerHTML = `
     <div class="tab-circle">
       <img src="https://i.postimg.cc/d3qMwwCv/icon.png" alt="Reset">
-      <svg width="70" height="70">
-        <circle
-          cx="35" cy="35" r="28"
-          stroke="#e0e0e0" stroke-width="4" fill="none"
-        ></circle>
-        <circle
-          cx="35" cy="35" r="28"
-          stroke="var(--tab-color)"
-          stroke-width="4" fill="none"
-          stroke-linecap="round"
-        ></circle>
-      </svg>
+      <svg width="70" height="70"><circle cx="35" cy="35" r="28" stroke="#e0e0e0" stroke-width="4" fill="none"></circle>
+      <circle cx="35" cy="35" r="28" stroke="#EF7C8E" stroke-width="4" fill="none" stroke-linecap="round"></circle></svg>
     </div>
-    <div class="tab-label">
-      <div class="tab-name">重置圖鑑</div>
-      <div class="tab-count">ฅ(๑*д*๑)ฅ</div>
-    </div>
+    <div class="tab-label"><div class="tab-name">重置圖鑑</div><div class="tab-count">ฅ(๑*д*๑)ฅ</div></div>
   `;
-
   resetTab.addEventListener("click", () => {
-    const confirmReset = confirm("❗️確定要重置寶寶們嗎 ㅇㅅㅇ ！");
-    if (confirmReset) {
+    if (confirm("❗️確定要重置寶寶們嗎 ㅇㅅㅇ ！")) {
       collected = [];
-sheetNames.forEach(name => {
-  localStorage.removeItem(getCollectedKey(name));
-});
+      sheetNames.forEach(name => localStorage.removeItem(getCollectedKey(name)));
       sheetNames.forEach(name => updateTabCount(name));
-      const activeTab = document.querySelector(".tab.active .tab-name");
-      if (activeTab) {
-        loadSheetData(activeTab.textContent);
-      }
+      loadSheetData(document.querySelector(".tab.active .tab-name").textContent);
       alert("✨寶寶圖鑑打掃乾淨ㄌ！(˶ˆᗜˆ˵)");
     }
   });
-
   tabsContainer.appendChild(resetTab);
 }
 createResetTab();
-// nav-bar 左右捲動控制
-const navBar = document.getElementById("nav-bar");
-document.getElementById("navLeft").addEventListener("click", () => {
-  navBar.scrollBy({ left: -150, behavior: "smooth" });
-});
-document.getElementById("navRight").addEventListener("click", () => {
-  navBar.scrollBy({ left: 150, behavior: "smooth" });
-});
-
-// 讓 nav-bar 可以橫向捲動
-navBar.style.overflowX = "auto";
-navBar.style.whiteSpace = "nowrap";
-navBar.style.scrollBehavior = "smooth";
-
 </script>
 </body>
 </html>
