@@ -97,9 +97,19 @@ html, body {
   flex-wrap: nowrap;
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none; /* Firefox */
-  padding: 0 30px;
+  padding: 0 35px; /* 留位置給箭頭 */
   width: 100%;
   align-items: center;
+  
+  /* --- 加入這行讓內容在寬度足夠時置中 --- */
+  justify-content: center; 
+}
+
+/* 針對手機版做微調：如果內容超出寬度（需要滑動時），要改回靠左，滑動才不會出錯 */
+@media (max-width: 767px) {
+  .nav-bar {
+    justify-content: flex-start;
+  }
 }
 
 .nav-bar::-webkit-scrollbar {
