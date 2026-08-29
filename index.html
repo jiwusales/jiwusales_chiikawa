@@ -752,6 +752,17 @@ function createResetTab() {
   tabsContainer.appendChild(resetTab);
 }
 createResetTab();
+
+const UPDATE_API='https://script.google.com/macros/s/AKfycbzP4LWYn3NC09uj9ZZccKexgCV7MDpqdsV_iC-bAUUmLpMM-fXogx7zYf9TXWBEv-QcFQ/exec';
+
+fetch(UPDATE_API)
+  .then(r=>r.json())
+  .then(d=>{
+    document.getElementById('lastUpdated').textContent='最後更新：'+d.updated;
+  })
+  .catch(()=>{
+    document.getElementById('lastUpdated').textContent='';
+  });
 </script>
 </body>
 </html>
