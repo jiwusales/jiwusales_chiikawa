@@ -5,6 +5,13 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>JIWU寶寶圖鑑</title>
 
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link rel="dns-prefetch" href="//cdn.jsdelivr.net">
+  <link rel="preconnect" href="https://i.postimg.cc" crossorigin>
+  <link rel="dns-prefetch" href="//i.postimg.cc">
+  <link rel="preconnect" href="https://docs.google.com" crossorigin>
+  <link rel="dns-prefetch" href="//docs.google.com">
+
   <meta property="og:title" content="JIWU吉伊卡哇圖鑑" />
   <meta property="og:description" content="來幫寶寶點點名(๑•̀∀•́ฅ ✧" />
   <meta property="og:image" content="https://i.postimg.cc/dV18mp5f/image.png" />
@@ -459,7 +466,7 @@ h1 {
 </div>
   
   <div class="logo-container">
-    <img src="https://i.postimg.cc/CLBFxHs3/logo-banner.png" alt="JIWU LOGO" />
+    <img src="https://i.postimg.cc/CLBFxHs3/logo-banner.png" alt="JIWU LOGO" fetchpriority="high" decoding="async" />
   </div>
   
   <h1>吉伊卡哇．寶寶收藏圖鑑</h1>
@@ -473,10 +480,17 @@ h1 {
 </div>
 
   <button id="refreshBtn" class="control-btn" onclick="location.reload()" aria-label="重新整理" title="重新整理">
-    <img src="https://i.postimg.cc/gkpnr8RJ/re.png" alt="Refresh" />
+    <img src="https://i.postimg.cc/gkpnr8RJ/re.png" alt="Refresh" loading="lazy" decoding="async" fetchpriority="low" />
   </button>
 
 <script>
+function fastImg(url) {
+  const s = String(url || "").trim();
+  return s
+    .replace(/^https:\/\/raw\.githubusercontent\.com\/([^/]+)\/([^/]+)\/([^/]+)\/(.+)$/, "https://cdn.jsdelivr.net/gh/$1/$2@$3/$4")
+    .replace(/^https:\/\/github\.com\/([^/]+)\/([^/]+)\/raw\/([^/]+)\/(.+)$/, "https://cdn.jsdelivr.net/gh/$1/$2@$3/$4");
+}
+
 const SHEET_ID = "17gH9HZKvW_6fMCWYLyqnzMHj40rA7PiwWg6L0GvbFgQ";
 const sheetNames = ["吉伊", "小八", "兔兔", "小桃", "師傅", "栗子", "獅薩", "古本", "其他角色"];
 const colors = {
@@ -549,7 +563,7 @@ function updateTabCount(sheetName) {
   if (tabElements[sheetName]) {
     tabElements[sheetName].innerHTML = `
       <div class="tab-circle">
-        <img src="${images[sheetName]}" alt="${sheetName}">
+        <img src="${fastImg(images[sheetName])}" alt="${sheetName}" loading="lazy" decoding="async" fetchpriority="low">
         <svg width="70" height="70">
           <circle cx="35" cy="35" r="${radius}" stroke="#e0e0e0" stroke-width="${strokeWidth}" fill="none"></circle>
           <circle cx="35" cy="35" r="${radius}" stroke="${colors[sheetName] || '#999'}" stroke-width="${strokeWidth}" fill="none"
@@ -598,7 +612,7 @@ function renderCards(data, sheetName) {
             <path d="M6 11.2L3.3 8.5l-1.4 1.4L6 14 14 6l-1.4-1.4z"/>
           </svg>
         </div>
-        <img src="${item.imgUrl || 'https://i.postimg.cc/bv5xRs04/image.png'}" alt="${item.name}" />
+        <img src="${fastImg(item.imgUrl || 'https://i.postimg.cc/bv5xRs04/image.png')}" alt="${item.name}" loading="lazy" decoding="async" fetchpriority="low" />
         <div class="name">${formatName(item.name)}</div>
         <div class="size">${item.size}</div>
       `;
@@ -735,7 +749,7 @@ function createResetTab() {
   resetTab.className = "tab reset-tab";
   resetTab.innerHTML = `
     <div class="tab-circle">
-      <img src="https://i.postimg.cc/d3qMwwCv/icon.png" alt="Reset">
+      <img src="https://i.postimg.cc/d3qMwwCv/icon.png" alt="Reset" loading="lazy" decoding="async" fetchpriority="low">
       <svg width="70" height="70"><circle cx="35" cy="35" r="28" stroke="#e0e0e0" stroke-width="4" fill="none"></circle>
       <circle cx="35" cy="35" r="28" stroke="#EF7C8E" stroke-width="4" fill="none" stroke-linecap="round"></circle></svg>
     </div>
