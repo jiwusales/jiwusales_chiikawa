@@ -455,6 +455,8 @@ h1 {
 .reset-tab {
   --tab-color: #EF7C8E !important;
 }
+.card img.catalogProductImage{visibility:hidden;height:130px;width:100%;object-fit:contain}
+.card img.catalogImageReady{visibility:visible}
 </style>
 </head>
 <body>
@@ -487,26 +489,43 @@ h1 {
   </button>
 
 <script>
-function fastImg(url) {
-  const s = String(url || "").trim().split(/\s+/)[0]||"";
-  return s
-    .replace(/^https:\/\/raw\.githubusercontent\.com\/([^/]+)\/([^/]+)\/([^/]+)\/(.+)$/, "https://cdn.jsdelivr.net/gh/$1/$2@$3/$4")
-    .replace(/^https:\/\/github\.com\/([^/]+)\/([^/]+)\/raw\/([^/]+)\/(.+)$/, "https://cdn.jsdelivr.net/gh/$1/$2@$3/$4");
+function fastImg(value){
+ const url=String(value||'').trim().split(/\s+/)[0]||'';
+ return url.replace(/^https:\/\/([^.]+)\.github\.io\/([^/]+)\/(.+)$/,'https://cdn.jsdelivr.net/gh/$1/$2@main/$3')
+ .replace(/^https:\/\/raw\.githubusercontent\.com\/([^/]+)\/([^/]+)\/([^/]+)\/(.+)$/,'https://cdn.jsdelivr.net/gh/$1/$2@$3/$4')
+ .replace(/^https:\/\/github\.com\/([^/]+)\/([^/]+)\/raw\/([^/]+)\/(.+)$/,'https://cdn.jsdelivr.net/gh/$1/$2@$3/$4');
 }
-
-
-function retryCatalogImage(img){
- const current=img.currentSrc||img.src;
- const tried=JSON.parse(img.dataset.triedSources||'[]');tried.push(current);img.dataset.triedSources=JSON.stringify(tried);
- const match=current.match(/^https:\/\/(?:cdn|fastly|testingcf)\.jsdelivr\.net\/gh\/([^/]+)\/([^/@]+)@([^/]+)\/(.+)$/);
- if(match){
-  const [,owner,repo,ref,path]=match;
-  const candidates=[`https://fastly.jsdelivr.net/gh/${owner}/${repo}@${ref}/${path}`,`https://raw.githubusercontent.com/${owner}/${repo}/${ref}/${path}`];
-  const next=candidates.find(url=>!tried.includes(url));if(next){img.src=next;return;}
+function catalogImageSources(value){
+ const first=fastImg(value),match=first.match(/^https:\/\/(?:cdn|fastly)\.jsdelivr\.net\/gh\/([^/]+)\/([^/@]+)@([^/]+)\/(.+)$/);
+ if(!match)return [first];
+ const [,owner,repo,ref,path]=match;
+ return [...new Set([first,`https://raw.githubusercontent.com/${owner}/${repo}/${ref}/${path}`,`https://${owner}.github.io/${repo}/${path}`])];
+}
+let catalogImageQueue=[],catalogImagesRunning=0;
+function pumpCatalogImages(){
+ while(catalogImagesRunning<6&&catalogImageQueue.length){
+  const img=catalogImageQueue.shift();if(!img.isConnected)continue;
+  catalogImagesRunning++;
+  loadCatalogImage(img).finally(()=>{catalogImagesRunning--;pumpCatalogImages();});
  }
- img.dataset.imageFailed='1';img.alt=img.alt||'圖片暫時無法載入';
 }
-document.addEventListener('error',event=>{if(event.target instanceof HTMLImageElement)retryCatalogImage(event.target);},true);
+async function loadCatalogImage(img){
+ for(const url of catalogImageSources(img.dataset.catalogSrc)){
+  if(!img.isConnected)return;
+  try{
+   await new Promise((resolve,reject)=>{const probe=new Image();probe.onload=async()=>{try{if(probe.decode)await probe.decode();resolve();}catch(error){reject(error);}};probe.onerror=reject;probe.src=url;});
+   if(!img.isConnected)return;
+   img.onload=()=>img.classList.add('catalogImageReady');img.src=url;
+   if(img.complete&&img.naturalWidth)img.classList.add('catalogImageReady');return;
+  }catch(_){}
+ }
+ if(img.isConnected){img.classList.add('catalogImageReady');img.alt='圖片暫時無法載入';}
+}
+function prepareCatalogImages(){
+ const images=[...cardContainer.querySelectorAll('img[data-catalog-src]')];
+ images.forEach(img=>{img.classList.add('catalogProductImage');catalogImageQueue.push(img);});
+ pumpCatalogImages();
+}
 
 const SHEET_ID = "17gH9HZKvW_6fMCWYLyqnzMHj40rA7PiwWg6L0GvbFgQ";
 const sheetNames = ["吉伊", "小八", "兔兔", "小桃", "師傅", "栗子", "獅薩", "古本", "其他角色"];
@@ -629,7 +648,7 @@ function renderCards(data, sheetName) {
             <path d="M6 11.2L3.3 8.5l-1.4 1.4L6 14 14 6l-1.4-1.4z"/>
           </svg>
         </div>
-        <img src="${fastImg(item.imgUrl || 'https://i.postimg.cc/bv5xRs04/image.png')}" alt="${item.name}" loading="lazy" decoding="async" fetchpriority="low" />
+        <img data-catalog-src="${fastImg(item.imgUrl || 'https://i.postimg.cc/bv5xRs04/image.png')}" alt="${item.name}" loading="lazy" decoding="async" fetchpriority="low" />
         <div class="name">${formatName(item.name)}</div>
         <div class="size">${item.size}</div>
       `;
@@ -654,6 +673,7 @@ function renderCards(data, sheetName) {
     });
     cardContainer.appendChild(groupContainer);
   });
+  prepareCatalogImages();
 }
 
 function updateTypeCount(type, sheetName) {
@@ -720,7 +740,7 @@ async function loadSheetData(sheetName){
  const cached=currentData[sheetName]||cachedSheetRows(sheetName);
  if(Array.isArray(cached)){currentData[sheetName]=cached;renderCards(cached,sheetName);updateNavBarForSheet(sheetName);}
  else cardContainer.textContent='載入中...';
- try{const parsed=await fetchSheetRows(sheetName);if(ticket!==activeSheetRequest)return;renderCards(parsed,sheetName);updateNavBarForSheet(sheetName);
+ try{const parsed=await fetchSheetRows(sheetName);if(ticket!==activeSheetRequest)return;if(cached&&JSON.stringify(cached)===JSON.stringify(parsed))return;renderCards(parsed,sheetName);updateNavBarForSheet(sheetName);
  cardContainer.querySelectorAll('img').forEach((img,index)=>{if(index<12){img.loading='eager';img.fetchPriority='high';}});
  }catch(error){if(ticket===activeSheetRequest&&!cached)cardContainer.textContent='載入資料失敗，請重新整理。';console.error(error);}
 }
