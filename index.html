@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="preconnect" href="https://i.postimg.cc" crossorigin>
+<link rel="preconnect" href="https://docs.google.com">
   <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>JIWU寶寶圖鑑</title>
@@ -485,11 +488,25 @@ h1 {
 
 <script>
 function fastImg(url) {
-  const s = String(url || "").trim();
+  const s = String(url || "").trim().split(/\s+/)[0]||"";
   return s
     .replace(/^https:\/\/raw\.githubusercontent\.com\/([^/]+)\/([^/]+)\/([^/]+)\/(.+)$/, "https://cdn.jsdelivr.net/gh/$1/$2@$3/$4")
     .replace(/^https:\/\/github\.com\/([^/]+)\/([^/]+)\/raw\/([^/]+)\/(.+)$/, "https://cdn.jsdelivr.net/gh/$1/$2@$3/$4");
 }
+
+
+function retryCatalogImage(img){
+ const current=img.currentSrc||img.src;
+ const tried=JSON.parse(img.dataset.triedSources||'[]');tried.push(current);img.dataset.triedSources=JSON.stringify(tried);
+ const match=current.match(/^https:\/\/(?:cdn|fastly|testingcf)\.jsdelivr\.net\/gh\/([^/]+)\/([^/@]+)@([^/]+)\/(.+)$/);
+ if(match){
+  const [,owner,repo,ref,path]=match;
+  const candidates=[`https://fastly.jsdelivr.net/gh/${owner}/${repo}@${ref}/${path}`,`https://raw.githubusercontent.com/${owner}/${repo}/${ref}/${path}`];
+  const next=candidates.find(url=>!tried.includes(url));if(next){img.src=next;return;}
+ }
+ img.dataset.imageFailed='1';img.alt=img.alt||'圖片暫時無法載入';
+}
+document.addEventListener('error',event=>{if(event.target instanceof HTMLImageElement)retryCatalogImage(event.target);},true);
 
 const SHEET_ID = "17gH9HZKvW_6fMCWYLyqnzMHj40rA7PiwWg6L0GvbFgQ";
 const sheetNames = ["吉伊", "小八", "兔兔", "小桃", "師傅", "栗子", "獅薩", "古本", "其他角色"];
@@ -684,51 +701,35 @@ function updateNavBarForSheet(sheetName) {
   updateNavBarWithTypes(uniqueTypes, sheetName);
 }
 
-function loadSheetData(sheetName) {
-  collected = JSON.parse(localStorage.getItem(getCollectedKey(sheetName))) || [];
-  cardContainer.innerHTML = "載入中...";
-  const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(sheetName)}`;
-  fetch(url)
-    .then(res => res.text())
-    .then(t => JSON.parse(t.match(/\{.*\}/s)[0]))
-    .then(data => {
-      let rows = data.table.rows || [];
-      if (rows.length > 1) rows = rows.slice(1);
-      const parsed = rows.map(row => ({
-        type: row.c[0]?.v || "無類型",
-        name: row.c[1]?.v || "",
-        imgUrl: row.c[3]?.v || "",
-        size: row.c[5]?.v || ""
-      }));
-      currentData[sheetName] = parsed;
-      renderCards(parsed, sheetName);
-      updateTabCount(sheetName);
-      updateNavBarForSheet(sheetName);
-    })
-    .catch(err => {
-      cardContainer.innerHTML = "載入資料失敗。";
-      console.error(err);
-    });
+const sheetRequests=new Map();
+let activeSheetRequest=0;
+function cachedSheetRows(sheetName){try{return JSON.parse(localStorage.getItem('jiwu_catalog_'+SHEET_ID+'_'+sheetName)||'null');}catch(_){return null;}}
+function fetchSheetRows(sheetName){
+ if(sheetRequests.has(sheetName))return sheetRequests.get(sheetName);
+ const url=`https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(sheetName)}`;
+ const request=fetch(url).then(res=>{if(!res.ok)throw new Error('資料讀取失敗');return res.text();}).then(text=>{
+ const data=JSON.parse(text.match(/\{.*\}/s)[0]);let rows=data.table.rows||[];if(rows.length>1)rows=rows.slice(1);
+ const parsed=rows.map(row=>({type:row.c[0]?.v||'無類型',name:row.c[1]?.v||'',imgUrl:fastImg(row.c[3]?.v||''),size:row.c[5]?.v||''}));
+ currentData[sheetName]=parsed;try{localStorage.setItem('jiwu_catalog_'+SHEET_ID+'_'+sheetName,JSON.stringify(parsed));}catch(_){}
+ updateTabCount(sheetName);return parsed;
+ }).finally(()=>sheetRequests.delete(sheetName));sheetRequests.set(sheetName,request);return request;
 }
-
-function preloadAllSheets() {
-  sheetNames.forEach(sheetName => {
-    const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(sheetName)}`;
-    fetch(url)
-      .then(res => res.text())
-      .then(t => JSON.parse(t.substr(47).slice(0, -2)))
-      .then(data => {
-        let rows = data.table.rows || [];
-        if (rows.length > 1) rows = rows.slice(1);
-        currentData[sheetName] = rows.map(row => ({
-          type: row.c[0]?.v || "無類型",
-          name: row.c[1]?.v || "",
-          imgUrl: row.c[3]?.v || "",
-          size: row.c[5]?.v || ""
-        }));
-        updateTabCount(sheetName);
-      });
-  });
+async function loadSheetData(sheetName){
+ const ticket=++activeSheetRequest;
+ collected = JSON.parse(localStorage.getItem(getCollectedKey(sheetName))) || [];
+ const cached=currentData[sheetName]||cachedSheetRows(sheetName);
+ if(Array.isArray(cached)){currentData[sheetName]=cached;renderCards(cached,sheetName);updateNavBarForSheet(sheetName);}
+ else cardContainer.textContent='載入中...';
+ try{const parsed=await fetchSheetRows(sheetName);if(ticket!==activeSheetRequest)return;renderCards(parsed,sheetName);updateNavBarForSheet(sheetName);
+ cardContainer.querySelectorAll('img').forEach((img,index)=>{if(index<12){img.loading='eager';img.fetchPriority='high';}});
+ }catch(error){if(ticket===activeSheetRequest&&!cached)cardContainer.textContent='載入資料失敗，請重新整理。';console.error(error);}
+}
+function preloadAllSheets(){
+ sheetNames.forEach(name=>{
+  const cached=cachedSheetRows(name);
+  if(Array.isArray(cached)){currentData[name]=cached;updateTabCount(name);}
+  fetchSheetRows(name).catch(error=>console.error(error));
+ });
 }
 
 function getInitialSheet() {
