@@ -1,0 +1,16 @@
+{
+  "version": 1,
+  "taskId": "28ecf8be-a19a-4a3d-9be1-874ecb20ea68",
+  "expiresAt": "2026-10-17T22:58:59.410Z",
+  "oauthUrl": "https://dash.cloudflare.com/oauth2/auth?response_type=code&client_id=54d11594-84e4-41aa-b438-e81b8fa78ee7&redirect_uri=http%3A%2F%2Flocalhost%3A8976%2Foauth%2Fcallback&scope=account%3Aread%20user%3Aread%20workers_scripts%3Awrite%20offline_access&state=kKTBYPXJME~L07lB~Zousx8G.mDCPV4J&code_challenge=JzE8m7J3R8BD0GbWbp7CbWcp6lwUvscd5Z938PBZpOc&code_challenge_method=S256",
+  "publicJwk": {
+    "kty": "RSA",
+    "n": "la75ZVerlhCw76R5s3m6KTte4jf9Vv7W1SVNACCwPodeBnqC7UnXiBm42VaajsXkr3OpQHduXuQncCO2qTTf_pQziUCke61bQrfYefHH47I6wrlqNAnJRKQF7XQLoFaAkdLR2AhI_ClBk6ZUcpqzSjKP95ooP7KBmnyroBdypXbewE3DjHWM8Fh1xwjowfMS8q9j4wZoZPyhNsrFkcd1il1z_X5KH02DrdFB1KvoreLYm3TvKiJTFBSIhgHxzoQmgKdCd6uODRNVI_J0cni4SmfwxJigPtbhR2r0I8TwlL-oxvzEIl_DoRWVI3FclhkA67TkiLf1xE7MIaTk2LjbirmUvXu2yjBAj39xsaN31DUSiK-j4YtgYpH8dneZuepr7hrhERRyccGho130IIDBHX3Y6d97eQr_OgEfaktRkc1EAc0VMryliEum3WRDIN3UNxDWOoQIKnzhJ6bSaWaXvpbIu1EqCx-JkVf_UswdY46nfcGfGCmAptZzz5xoI5jt",
+    "e": "AQAB",
+    "alg": "RSA-OAEP-256",
+    "ext": true,
+    "key_ops": [
+      "encrypt"
+    ]
+  }
+}

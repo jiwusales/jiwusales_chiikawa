@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="referrer" content="no-referrer">
+  <meta name="color-scheme" content="light">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; connect-src 'self'; img-src 'none'; font-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'">
+  <title>圖鑑管理安全設定</title>
+  <link rel="stylesheet" href="./setup.css">
+  <script src="./setup.js" defer></script>
+</head>
+<body>
+  <main class="setup-card">
+    <header><p class="eyebrow">JIWU COLLECTION</p><h1>圖鑑管理安全設定</h1><p class="intro">在手機完成授權與設定，再把加密檔傳回原對話。</p></header>
+    <p id="configStatus" class="config-status" role="status">正在準備安全設定…</p>
+
+    <form id="setupForm" novalidate>
+      <section class="step" aria-labelledby="detailsTitle">
+        <h2 id="detailsTitle"><span class="step-number" aria-hidden="true">1</span>先填入權杖與管理密碼</h2>
+        <label for="githubToken">GitHub 圖鑑權杖</label>
+        <input id="githubToken" name="githubToken" type="password" autocomplete="off" autocapitalize="none" spellcheck="false" maxlength="1024" required placeholder="貼上兩個圖鑑儲存庫的權杖">
+        <label for="password">管理密碼</label>
+        <input id="password" name="password" type="password" minlength="12" maxlength="512" autocomplete="new-password" required placeholder="至少 12 個字元">
+        <label for="confirmPassword">再次輸入管理密碼</label>
+        <input id="confirmPassword" name="confirmPassword" type="password" minlength="12" maxlength="512" autocomplete="new-password" required placeholder="再輸入一次相同密碼">
+        <p class="help">先備妥這些內容，再開啟下一步授權。切換到授權分頁時，這些輸入會保留在本頁。</p>
+      </section>
+
+      <section class="step" aria-labelledby="authorizeTitle">
+        <h2 id="authorizeTitle"><span class="step-number" aria-hidden="true">2</span>開啟 Cloudflare 授權</h2>
+        <a id="oauthLink" class="button secondary is-disabled" target="_blank" rel="noopener noreferrer" aria-disabled="true">開啟 Cloudflare 授權 ↗</a>
+        <p class="help">授權完成後，如果手機顯示「localhost 無法連線」，請複製瀏覽器的<strong>完整網址</strong>，立即回本頁貼在下一步。</p>
+      </section>
+
+      <section class="step" aria-labelledby="callbackTitle">
+        <h2 id="callbackTitle"><span class="step-number" aria-hidden="true">3</span>貼回完整網址並加密下載</h2>
+        <label for="callbackUrl">Cloudflare 授權後的完整網址</label>
+        <textarea id="callbackUrl" name="callbackUrl" rows="3" inputmode="url" autocomplete="off" autocapitalize="none" spellcheck="false" maxlength="16384" required placeholder="貼上含有 code 與 state 的 localhost 完整網址"></textarea>
+        <p class="help">管理密碼會在本機轉成雜湊；授權網址、權杖與密碼雜湊會在本機加密。本頁不會上傳或儲存這些輸入內容。</p>
+        <p id="formError" class="error" role="alert"></p>
+        <button id="encryptBtn" class="button primary" type="submit" disabled>加密並下載設定檔</button>
+      </section>
+    </form>
+
+    <section id="result" class="step result" aria-labelledby="resultTitle" hidden>
+      <h2 id="resultTitle"><span class="step-number" aria-hidden="true">4</span>把加密檔傳回原對話</h2>
+      <p>請將剛下載的 <strong>jiwu-catalog-setup.encrypted.json</strong> 以附件傳回原對話。</p>
+      <p class="help">這份加密檔可以安全傳回，只有持有此次設定私鑰的一方能解開。輸入欄位已清空，請直接傳檔案，無須貼上授權網址、權杖或密碼。</p>
+      <a id="downloadAgain" class="button secondary" download="jiwu-catalog-setup.encrypted.json">再次下載加密檔</a>
+    </section>
+    <footer>一次性設定連結有使用期限。此頁只讀取公開加密設定，所有敏感資料都在目前瀏覽器內處理。</footer>
+  </main>
+</body>
+</html>
