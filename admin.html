@@ -1,107 +1,26 @@
 <!doctype html>
-<html lang="zh-Hant">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="color-scheme" content="light">
-  <meta name="referrer" content="strict-origin-when-cross-origin">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; connect-src https://api.github.com https://jiwusales.github.io; img-src https: data:; base-uri 'self'; form-action 'none'; object-src 'none'; frame-src 'none'">
-  <title>圖鑑管理</title>
-  <link rel="stylesheet" href="./admin.css">
-  <script src="./catalog-core.js" defer></script>
-  <script src="./admin.js" defer></script>
-</head>
-<body>
-  <a class="skip-link" href="#mainContent">跳到圖鑑內容</a>
-  <header class="app-header">
-    <div class="header-inner">
-      <div class="brand">
-        <span class="brand-mark" aria-hidden="true">✦</span>
-        <div><p class="eyebrow">JIWU COLLECTION</p><h1>圖鑑管理</h1></div>
-      </div>
-      <div class="header-tools">
-        <label class="site-picker" for="siteSelect"><span>目前圖鑑</span><select id="siteSelect"><option value="chiikawa">吉伊卡哇圖鑑</option><option value="nagano">自嘲熊圖鑑</option></select></label>
-        <button id="authBtn" class="button button-secondary" type="button">連接 GitHub</button>
-      </div>
-    </div>
-  </header>
-
-  <main id="mainContent" class="workspace">
-    <section class="catalog-heading" aria-labelledby="catalogTitle">
-      <div><p class="eyebrow">我的圖鑑</p><h2 id="catalogTitle">載入圖鑑中…</h2><p class="catalog-meta"><a id="publicLink" href="#" target="_blank" rel="noopener noreferrer">開啟公開圖鑑 <span aria-hidden="true">↗</span></a><span class="meta-divider" aria-hidden="true">·</span><span id="lastPublished">讀取更新時間中</span></p></div>
-      <div class="publish-tools"><span id="dirtySummary" class="dirty-summary">尚無未發布變更</span><button id="publishBtn" class="button button-primary" type="button" disabled>發布 <span aria-hidden="true">↗</span></button></div>
-    </section>
-
-    <div id="notice" class="notice" hidden></div>
-
-    <nav id="roleTabs" class="role-tabs" aria-label="選擇角色"></nav>
-
-    <div class="catalog-layout">
-      <aside class="category-panel" aria-label="分類管理">
-        <div class="panel-title"><h3>分類</h3><button id="addCategory" class="icon-button" type="button" aria-label="新增分類" title="新增分類">＋ 新增分類</button></div>
-        <p class="panel-description">拖曳分類調整順序</p>
-        <div id="categoryList" class="category-list"></div>
-      </aside>
-
-      <section class="items-panel" aria-label="商品管理">
-        <div class="items-toolbar">
-          <div class="search-wrap"><span class="search-icon" aria-hidden="true">⌕</span><label class="sr-only" for="searchInput">搜尋此分類的商品</label><input id="searchInput" type="search" placeholder="搜尋此分類的商品…" autocomplete="off"></div>
-          <button id="addItem" class="button button-primary" type="button"><span aria-hidden="true">＋</span> 新增商品</button>
-        </div>
-        <div class="items-summary"><span id="countSummary">正在讀取商品…</span><span id="sortHint">拖曳「≡」調整商品順序</span></div>
-        <div id="itemGrid" class="item-grid" aria-live="polite" aria-busy="true"><div class="empty-state"><span class="empty-symbol" aria-hidden="true">✦</span><p>正在載入圖鑑資料…</p></div></div>
-        <nav id="pagination" class="pagination" aria-label="商品分頁"></nav>
-      </section>
-    </div>
-
-    <footer class="workspace-footer">
-      <div id="status" class="status" role="status" aria-live="polite">準備載入圖鑑</div>
-      <div class="utility-tools"><button id="undoBtn" class="text-button" type="button" disabled>復原變更</button><button id="reloadBtn" class="text-button" type="button">重新載入</button><button id="exportBtn" class="text-button" type="button">匯出備份</button><button id="discardBtn" class="text-button text-danger" type="button" disabled>放棄草稿</button></div>
-    </footer>
-  </main>
-
-  <dialog id="authDialog" class="modal auth-modal" aria-labelledby="authTitle">
-    <form id="authForm" class="modal-form">
-      <div class="modal-heading"><div><p class="eyebrow">GITHUB</p><h2 id="authTitle">連接圖鑑儲存庫</h2></div><button id="authClose" class="icon-button close-button" type="button" aria-label="關閉">×</button></div>
-      <p class="modal-intro">使用你的 GitHub 權杖發布圖鑑內容。</p>
-      <label class="field" for="tokenInput"><span>GitHub 存取權杖 <span class="required" aria-hidden="true">*</span></span><input id="tokenInput" name="token" type="password" autocomplete="off" spellcheck="false" required placeholder="貼上 fine-grained personal access token"></label>
-      <div id="authHelp" class="auth-help"><p>建立 <strong>fine-grained personal access token</strong> 時，Resource owner 選 <strong>jiwusales</strong>，Repository access 選 <strong>Only select repositories</strong>，只勾選：</p><ul><li>jiwusales_chiikawa</li><li>jiwusales_nagano</li></ul><p>Repository permissions 請設定 <strong>Contents → Read and write</strong>。權杖只留在目前分頁的記憶體，不寫入瀏覽器儲存空間或 GitHub 檔案；重新整理後需要再次連接。</p><a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener noreferrer">前往 GitHub 建立權杖 ↗</a></div>
-      <p id="authError" class="field-error" role="alert"></p>
-      <div class="modal-actions"><button id="disconnectBtn" class="button button-secondary" type="button" hidden>中斷連接</button><button id="authSubmit" class="button button-primary" type="submit">驗證並連接</button></div>
-    </form>
-  </dialog>
-
-  <dialog id="categoryDialog" class="modal confirm-modal" aria-labelledby="categoryTitle">
-    <form id="categoryForm" class="modal-form" novalidate>
-      <div class="modal-heading"><h2 id="categoryTitle">新增分類</h2></div>
-      <label class="field" for="categoryName"><span>分類名稱 <span class="required" aria-hidden="true">*</span></span><input id="categoryName" name="name" type="text" autocomplete="off" maxlength="160" required placeholder="輸入分類名稱"></label>
-      <p id="categoryError" class="field-error" role="alert"></p>
-      <div class="modal-actions"><button id="categoryCancel" class="button button-secondary" type="button">取消</button><button id="categorySubmit" class="button button-primary" type="submit">新增分類</button></div>
-    </form>
-  </dialog>
-
-  <dialog id="editorDialog" class="modal editor-modal" aria-labelledby="editorTitle">
-    <form id="editorForm" class="modal-form" novalidate>
-      <div class="modal-heading"><div><p class="eyebrow">COLLECTION ITEM</p><h2 id="editorTitle">新增商品</h2></div></div>
-      <div class="editor-body">
-        <div class="editor-fields">
-          <label class="field" for="editName"><span>商品名稱 <span class="required" aria-hidden="true">*</span></span><input id="editName" name="name" required placeholder="輸入商品名稱"></label>
-          <div class="field-row"><label class="field" for="editType"><span>分類名稱 <span class="required" aria-hidden="true">*</span></span><input id="editType" name="type" list="typeOptions" required placeholder="選擇或輸入分類"><datalist id="typeOptions"></datalist></label><label class="field" for="editSku"><span>商品編號</span><input id="editSku" name="sku" placeholder="選填"></label></div>
-          <label class="field" for="editImage"><span>圖片網址</span><input id="editImage" name="image" type="url" placeholder="https://…"></label>
-          <label class="field" for="editUrl"><span>商品連結</span><input id="editUrl" name="url" type="url" placeholder="https://…"></label>
-          <div class="field-row"><label class="field" for="editSize"><span>尺寸</span><input id="editSize" name="size" placeholder="選填"></label><label class="field" for="editJapaneseName"><span>日韓名</span><input id="editJapaneseName" name="japaneseName" placeholder="選填"></label></div>
-          <label class="field" for="editPosition"><span>分類內排序位置</span><input id="editPosition" name="position" type="number" min="1" step="1" placeholder="預設放在分類最後"></label>
-        </div>
-        <div class="preview-panel"><p class="preview-label">圖片預覽</p><div class="preview-frame"><img id="imagePreview" alt="商品圖片預覽" hidden referrerpolicy="no-referrer"><div id="imagePreviewEmpty" class="preview-empty"><span aria-hidden="true">▧</span><p>貼上圖片網址<br>即可預覽</p></div></div><p class="preview-caption">公開圖鑑會沿用這個圖片網址</p></div>
-      </div>
-      <p id="identityWarning" class="identity-warning">既有商品的角色、分類及名稱與使用者的勾選紀錄相連；更改前請確認。</p>
-      <p id="formError" class="field-error" role="alert"></p>
-      <div class="modal-actions"><button id="cancelEdit" class="button button-secondary" type="button">取消</button><button id="saveItem" class="button button-primary" type="submit">儲存商品</button></div>
-    </form>
-  </dialog>
-
-  <dialog id="confirmDialog" class="modal confirm-modal" aria-labelledby="confirmTitle" aria-describedby="confirmMessage">
-    <div class="modal-form"><div class="modal-heading"><h2 id="confirmTitle">確認操作</h2></div><p id="confirmMessage" class="confirm-message"></p><div class="modal-actions"><button id="confirmCancel" class="button button-secondary" type="button">取消</button><button id="confirmAccept" class="button button-primary" type="button">確認</button></div></div>
-  </dialog>
-</body>
-</html>
+<html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="referrer" content="no-referrer"><meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-VtKkaB5zPPhWM0wACTBnS8ncfLHJW7cBUUIL66dCo4o='; style-src 'sha256-6pDbevVstWyCN1wnVTjC3W8W4tEJHo5pe4CIxm4a/Gw='; connect-src 'none'; img-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'"><title>吉伊卡哇圖鑑管理入口</title><style>*{box-sizing:border-box}html{color-scheme:light}body{margin:0;padding:28px 18px;min-width:320px;background:#f7f3ec;color:#443b31;font:16px/1.75 -apple-system,BlinkMacSystemFont,"PingFang TC","Microsoft JhengHei",sans-serif}main{max-width:580px;margin:9vh auto 0;padding:30px 27px;background:#fffefa;border:1px solid #e6dccd;border-radius:19px;box-shadow:0 10px 32px #69513b08}.eyebrow{font-size:11px;letter-spacing:2px;color:#a18b70;font-weight:700;margin:0 0 8px}h1{font-size:25px;line-height:1.45;margin:0 0 18px;font-weight:650}p{margin:0 0 17px;color:#887763;overflow-wrap:anywhere}.actions{display:flex;flex-direction:column;gap:12px;margin-top:24px}button,a.button{display:flex;align-items:center;justify-content:center;width:100%;min-height:49px;padding:11px 15px;border:1px solid #d7c6b1;border-radius:10px;background:#fffefa;color:#7f654d;font-family:inherit;font-size:16px;line-height:1.5;font-weight:600;text-decoration:none;cursor:pointer;touch-action:manipulation}button{font-family:inherit;font-size:16px}a.primary{background:#7f654d;color:#fffefa;border-color:#7f654d}button:hover{background:#f3ecdf}a.primary:hover{background:#674e38}button:focus-visible,a:focus-visible{outline:3px solid #b29169;outline-offset:4px}.note{font-size:13px;color:#a3947e;margin:19px 0 0}#status{font-size:14px;color:#856f50;margin:15px 0 0;min-height:1.6em}[hidden]{display:none!important}noscript{display:block;max-width:580px;margin:20px auto;padding:20px;background:#fffefa;border:1px solid #e6dccd;border-radius:12px}noscript a{color:#7f654d}@media(max-width:540px){body{padding:18px 14px}main{padding:25px 20px;margin-top:7vh;border-radius:15px}h1{font-size:23px}button,a.button{font-size:16px}}</style></head>
+<body><main id="gateway" hidden><p class="eyebrow">JIWU COLLECTION</p><h1>吉伊卡哇圖鑑管理已搬移</h1><p id="message"></p><div class="actions"><button id="downloadDraft" type="button" hidden>下載草稿備份</button><a class="button primary" href="https://jiwu-catalog-admin.jiwusales.workers.dev/?site=chiikawa" rel="noreferrer">前往密碼管理頁</a></div><p id="draftNote" class="note"></p><p id="status" role="status" aria-live="polite"></p></main><noscript>圖鑑管理已搬到新網址。請啟用 JavaScript，先確認並下載舊草稿備份；或<a href="https://jiwu-catalog-admin.jiwusales.workers.dev/?site=chiikawa" rel="noreferrer">前往密碼管理頁</a>。本頁不會刪除既有草稿。</noscript><script>(function(){
+'use strict';
+const target="https://jiwu-catalog-admin.jiwusales.workers.dev/?site=chiikawa";
+const key="jiwu_catalog_admin_draft_v1_chiikawa";
+const $=id=>document.getElementById(id);
+let draft=null,readable=true;
+try{draft=localStorage.getItem(key);}catch(_){readable=false;}
+if(readable&&draft===null){try{location.replace(target);return;}catch(_){}}
+$('gateway').hidden=false;
+if(readable&&draft!==null){
+  $('message').textContent='這個瀏覽器還有尚未發布的舊圖鑑草稿。請先下載備份，再前往新的密碼管理頁。';
+  $('draftNote').textContent='舊草稿仍保留在目前網址的瀏覽器中，不會自動帶到新管理頁。本頁不會修改或刪除草稿。';
+  $('downloadDraft').hidden=false;
+  $('downloadDraft').addEventListener('click',()=>{
+    const url=URL.createObjectURL(new Blob([draft],{type:'application/json'}));
+    const link=document.createElement('a');link.href=url;link.download="jiwu-catalog-draft-chiikawa.json";link.click();
+    setTimeout(()=>URL.revokeObjectURL(url),60000);
+    $('status').textContent='已準備草稿備份，請確認下載完成後再前往新管理頁。';
+  });
+}else{
+  $('message').textContent=readable?'請點下方按鈕開啟新的密碼管理頁。':'瀏覽器目前無法確認舊草稿。你可以前往新的密碼管理頁；本頁不會修改或刪除任何資料。';
+  $('draftNote').textContent='公開圖鑑與使用者的勾選紀錄維持原樣。';
+}
+}());</script></body></html>
