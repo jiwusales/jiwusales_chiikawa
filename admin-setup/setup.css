@@ -28,6 +28,7 @@ h2{font-size:17px;font-weight:650;display:flex;align-items:center;gap:10px;margi
 .is-disabled{opacity:.5;cursor:not-allowed;pointer-events:none}
 .help{font-size:13px;color:var(--muted);margin-top:13px;line-height:1.8;overflow-wrap:anywhere}
 .help strong{color:#79654b;font-weight:600}
+.callback-steps{padding-left:22px}.callback-steps li+li{margin-top:7px}
 label{display:block;font-size:14px;font-weight:600;color:#77644c;margin-top:19px;margin-bottom:7px}
 form>label:first-child{margin-top:0}
 .error{color:#a34234;font-size:13px;margin-top:13px;white-space:pre-line;overflow-wrap:anywhere}

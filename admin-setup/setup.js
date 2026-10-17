@@ -27,6 +27,7 @@
     let url;
     if(value.length>16384)throw new Error('授權網址過長，請重新複製瀏覽器的完整網址。');
     try {url=new URL(value);}catch(_){throw new Error('請貼上 Cloudflare 授權後的完整網址。');}
+    if(url.hostname==='dash.cloudflare.com')throw new Error('你貼到的是開始授權的連結。請在 Cloudflare 按「Allow／允許」，等網址變成 http://localhost:8976/oauth/callback?code= 開頭，再點 Safari 網址列 → 全選 → 複製，回本頁貼上。手機顯示 localhost 無法連線是正常的。');
     if(url.origin!=='http://localhost:8976'||url.pathname!=='/oauth/callback'||url.username||url.password||url.hash||url.searchParams.getAll('code').length!==1||!/^[A-Za-z0-9._~+\/=\-]{1,4096}$/.test(url.searchParams.get('code')||'')||url.searchParams.getAll('state').length!==1||Array.from(url.searchParams.keys()).some(key=>!['code','state'].includes(key)))throw new Error('請貼上授權完成後，含有 code 與 state 的 localhost:8976/oauth/callback 完整網址。');
     if(url.searchParams.get('state')!==config.oauthState)throw new Error('這個授權網址不屬於目前設定，請使用本頁的 Cloudflare 授權按鈕重新授權。');
     if(url.searchParams.has('error'))throw new Error('這個網址顯示授權未完成，請重新開啟 Cloudflare 授權。');
