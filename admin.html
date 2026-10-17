@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; connect-src https://api.github.com https://jiwusales.github.io; img-src https: data:; base-uri 'self'; form-action 'none'; object-src 'none'; frame-src 'none'">
+  <title>圖鑑管理</title>
+  <link rel="stylesheet" href="./admin.css">
+  <script src="./catalog-core.js" defer></script>
+  <script src="./admin.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#mainContent">跳到圖鑑內容</a>
+  <header class="app-header">
+    <div class="header-inner">
+      <div class="brand">
+        <span class="brand-mark" aria-hidden="true">✦</span>
+        <div><p class="eyebrow">JIWU COLLECTION</p><h1>圖鑑管理</h1></div>
+      </div>
+      <div class="header-tools">
+        <label class="site-picker" for="siteSelect"><span>目前圖鑑</span><select id="siteSelect"><option value="chiikawa">吉伊卡哇圖鑑</option><option value="nagano">自嘲熊圖鑑</option></select></label>
+        <button id="authBtn" class="button button-secondary" type="button">連接 GitHub</button>
+      </div>
+    </div>
+  </header>
+
+  <main id="mainContent" class="workspace">
+    <section class="catalog-heading" aria-labelledby="catalogTitle">
+      <div><p class="eyebrow">我的圖鑑</p><h2 id="catalogTitle">載入圖鑑中…</h2><p class="catalog-meta"><a id="publicLink" href="#" target="_blank" rel="noopener noreferrer">開啟公開圖鑑 <span aria-hidden="true">↗</span></a><span class="meta-divider" aria-hidden="true">·</span><span id="lastPublished">讀取更新時間中</span></p></div>
+      <div class="publish-tools"><span id="dirtySummary" class="dirty-summary">尚無未發布變更</span><button id="publishBtn" class="button button-primary" type="button" disabled>發布 <span aria-hidden="true">↗</span></button></div>
+    </section>
+
+    <div id="notice" class="notice" hidden></div>
+    <div class="working-note"><span aria-hidden="true">✎</span><p>新增、編輯與排序會暫存在這台瀏覽器的草稿中，完成後按「發布」，公開圖鑑才會更新。</p></div>
+
+    <nav id="roleTabs" class="role-tabs" aria-label="選擇角色"></nav>
+
+    <div class="catalog-layout">
+      <aside class="category-panel" aria-label="分類管理">
+        <div class="panel-title"><h3>分類</h3><button id="addCategory" class="icon-button" type="button" aria-label="新增分類" title="新增分類">＋</button></div>
+        <p class="panel-description">拖曳分類調整順序</p>
+        <div id="categoryList" class="category-list"></div>
+      </aside>
+
+      <section class="items-panel" aria-label="商品管理">
+        <div class="items-toolbar">
+          <div class="search-wrap"><span class="search-icon" aria-hidden="true">⌕</span><label class="sr-only" for="searchInput">搜尋此分類的商品</label><input id="searchInput" type="search" placeholder="搜尋此分類的商品…" autocomplete="off"></div>
+          <button id="addItem" class="button button-primary" type="button"><span aria-hidden="true">＋</span> 新增商品</button>
+        </div>
+        <div class="items-summary"><span id="countSummary">正在讀取商品…</span><span id="sortHint">拖曳商品，或使用 ↑ ↓ 調整順序</span></div>
+        <div id="itemGrid" class="item-grid" aria-live="polite" aria-busy="true"><div class="empty-state"><span class="empty-symbol" aria-hidden="true">✦</span><p>正在載入圖鑑資料…</p></div></div>
+        <nav id="pagination" class="pagination" aria-label="商品分頁"></nav>
+      </section>
+    </div>
+
+    <footer class="workspace-footer">
+      <div id="status" class="status" role="status" aria-live="polite">準備載入圖鑑</div>
+      <div class="utility-tools"><button id="undoBtn" class="text-button" type="button" disabled>復原變更</button><button id="reloadBtn" class="text-button" type="button">重新載入</button><button id="exportBtn" class="text-button" type="button">匯出備份</button><button id="discardBtn" class="text-button text-danger" type="button" disabled>放棄草稿</button></div>
+    </footer>
+  </main>
+
+  <dialog id="authDialog" class="modal auth-modal" aria-labelledby="authTitle">
+    <form id="authForm" class="modal-form">
+      <div class="modal-heading"><div><p class="eyebrow">GITHUB</p><h2 id="authTitle">連接圖鑑儲存庫</h2></div><button id="authClose" class="icon-button close-button" type="button" aria-label="關閉">×</button></div>
+      <p class="modal-intro">使用你的 GitHub 權杖發布圖鑑內容。</p>
+      <label class="field" for="tokenInput"><span>GitHub 存取權杖 <span class="required" aria-hidden="true">*</span></span><input id="tokenInput" name="token" type="password" autocomplete="off" spellcheck="false" required placeholder="貼上 fine-grained personal access token"></label>
+      <div id="authHelp" class="auth-help"><p>建立 <strong>fine-grained personal access token</strong> 時，Resource owner 選 <strong>jiwusales</strong>，Repository access 選 <strong>Only select repositories</strong>，只勾選：</p><ul><li>jiwusales_chiikawa</li><li>jiwusales_nagano</li></ul><p>Repository permissions 請設定 <strong>Contents → Read and write</strong>。權杖只留在目前分頁的記憶體，不寫入瀏覽器儲存空間或 GitHub 檔案；重新整理後需要再次連接。</p><a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener noreferrer">前往 GitHub 建立權杖 ↗</a></div>
+      <p id="authError" class="field-error" role="alert"></p>
+      <div class="modal-actions"><button id="disconnectBtn" class="button button-secondary" type="button" hidden>中斷連接</button><button id="authSubmit" class="button button-primary" type="submit">驗證並連接</button></div>
+    </form>
+  </dialog>
+
+  <dialog id="editorDialog" class="modal editor-modal" aria-labelledby="editorTitle">
+    <form id="editorForm" class="modal-form" novalidate>
+      <div class="modal-heading"><div><p class="eyebrow">COLLECTION ITEM</p><h2 id="editorTitle">新增商品</h2></div></div>
+      <div class="editor-body">
+        <div class="editor-fields">
+          <label class="field" for="editName"><span>商品名稱 <span class="required" aria-hidden="true">*</span></span><input id="editName" name="name" required placeholder="輸入商品名稱"></label>
+          <div class="field-row"><label class="field" for="editType"><span>分類名稱 <span class="required" aria-hidden="true">*</span></span><input id="editType" name="type" list="typeOptions" required placeholder="選擇或輸入分類"><datalist id="typeOptions"></datalist></label><label class="field" for="editSku"><span>商品編號</span><input id="editSku" name="sku" placeholder="選填"></label></div>
+          <label class="field" for="editImage"><span>圖片網址</span><input id="editImage" name="image" type="url" placeholder="https://…"></label>
+          <label class="field" for="editUrl"><span>商品連結</span><input id="editUrl" name="url" type="url" placeholder="https://…"></label>
+          <div class="field-row"><label class="field" for="editSize"><span>尺寸</span><input id="editSize" name="size" placeholder="選填"></label><label class="field" for="editJapaneseName"><span>日韓名</span><input id="editJapaneseName" name="japaneseName" placeholder="選填"></label></div>
+          <label class="field" for="editPosition"><span>分類內排序位置</span><input id="editPosition" name="position" type="number" min="1" step="1" placeholder="預設放在分類最後"></label>
+        </div>
+        <div class="preview-panel"><p class="preview-label">圖片預覽</p><div class="preview-frame"><img id="imagePreview" alt="商品圖片預覽" hidden referrerpolicy="no-referrer"><div id="imagePreviewEmpty" class="preview-empty"><span aria-hidden="true">▧</span><p>貼上圖片網址<br>即可預覽</p></div></div><p class="preview-caption">公開圖鑑會沿用這個圖片網址</p></div>
+      </div>
+      <p id="identityWarning" class="identity-warning">既有商品的角色、分類及名稱與使用者的勾選紀錄相連；更改前請確認。</p>
+      <p id="formError" class="field-error" role="alert"></p>
+      <div class="modal-actions"><button id="cancelEdit" class="button button-secondary" type="button">取消</button><button id="saveItem" class="button button-primary" type="submit">儲存商品</button></div>
+    </form>
+  </dialog>
+
+  <dialog id="confirmDialog" class="modal confirm-modal" aria-labelledby="confirmTitle" aria-describedby="confirmMessage">
+    <div class="modal-form"><div class="modal-heading"><h2 id="confirmTitle">確認操作</h2></div><p id="confirmMessage" class="confirm-message"></p><div class="modal-actions"><button id="confirmCancel" class="button button-secondary" type="button">取消</button><button id="confirmAccept" class="button button-primary" type="button">確認</button></div></div>
+  </dialog>
+</body>
+</html>
