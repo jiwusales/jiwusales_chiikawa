@@ -726,7 +726,7 @@ let activeSheetRequest=0;
 function cachedSheetRows(sheetName){try{return JSON.parse(localStorage.getItem('jiwu_catalog_'+SHEET_ID+'_'+sheetName)||'null');}catch(_){return null;}}
 function fetchSheetRows(sheetName){
  if(sheetRequests.has(sheetName))return sheetRequests.get(sheetName);
- const url=`https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(sheetName)}`;
+ const url=`./data/${encodeURIComponent(sheetName)}.json`;
  const request=fetch(url).then(res=>{if(!res.ok)throw new Error('資料讀取失敗');return res.text();}).then(text=>{
  const data=JSON.parse(text.match(/\{.*\}/s)[0]);let rows=data.table.rows||[];if(rows.length>1)rows=rows.slice(1);
  const parsed=rows.map(row=>({type:row.c[0]?.v||'無類型',name:row.c[1]?.v||'',imgUrl:fastImg(row.c[3]?.v||''),size:row.c[5]?.v||''}));
@@ -789,7 +789,7 @@ function createResetTab() {
 }
 createResetTab();
 
-const UPDATE_API='https://script.google.com/macros/s/AKfycbzP4LWYn3NC09uj9ZZccKexgCV7MDpqdsV_iC-bAUUmLpMM-fXogx7zYf9TXWBEv-QcFQ/exec';
+const UPDATE_API='./data/updated.json';
 
 fetch(UPDATE_API)
   .then(r=>r.json())
