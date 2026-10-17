@@ -107,20 +107,52 @@
     if(isBlocked())return;const order=groups().map(group=>group.type),from=order.indexOf(type),to=from+delta;if(to<0||to>=order.length)return;
     [order[from],order[to]]=[order[to],order[from]];recordChange(C.reorderGroups(doc(),order));
   }
+  function dragHandle(kind,label,sourceKey,onDrop,onKeyboard,disabled) {
+    const handle=button('≡',()=>{},'drag-handle');handle.disabled=disabled;handle.draggable=false;
+    handle.setAttribute('aria-label',label+'，拖曳或使用方向鍵調整順序');
+    handle.addEventListener('keydown',event=>{
+      const steps={ArrowLeft:-1,ArrowRight:1,ArrowUp:kind==='category'?-3:-4,ArrowDown:kind==='category'?3:4};
+      if(disabled||!(event.key in steps))return;event.preventDefault();onKeyboard(steps[event.key]);
+    });
+    handle.addEventListener('pointerdown',event=>{
+      if(disabled||isBlocked()||event.button!==0||event.isPrimary===false||state.drag)return;
+      event.preventDefault();
+      const selector=kind==='category'?'.category-item':'.item-card',source=handle.closest(selector),container=source.parentElement,documentBefore=doc();
+      const start={x:event.clientX,y:event.clientY},pointerId=event.pointerId;let active=false,target=null;
+      state.drag={kind,sourceKey,pointerId};
+      const targetAt=e=>{const candidate=document.elementFromPoint(e.clientX,e.clientY)?.closest(selector);return candidate?.parentElement===container?candidate:null;};
+      const cleanup=()=>{
+        window.removeEventListener('pointermove',move,true);window.removeEventListener('pointerup',end,true);window.removeEventListener('pointercancel',cancel,true);window.removeEventListener('blur',cancelAll);document.removeEventListener('visibilitychange',visibility);handle.removeEventListener('lostpointercapture',cancelAll);
+        source.classList.remove('is-dragging');target?.classList.remove('drag-over');state.drag=null;
+        try{if(handle.hasPointerCapture(pointerId))handle.releasePointerCapture(pointerId);}catch(_){}
+      };
+      const move=e=>{
+        if(e.pointerId!==pointerId)return;
+        if(isBlocked()||doc()!==documentBefore){cleanup();return;}
+        e.preventDefault();if(!active&&Math.hypot(e.clientX-start.x,e.clientY-start.y)<6)return;
+        active=true;source.classList.add('is-dragging');
+        const next=targetAt(e);if(next!==target){target?.classList.remove('drag-over');target=next;if(target!==source)target?.classList.add('drag-over');}
+        if(e.clientY<60)window.scrollBy(0,-18);else if(e.clientY>innerHeight-60)window.scrollBy(0,18);
+      };
+      const end=e=>{
+        if(e.pointerId!==pointerId)return;e.preventDefault();const destination=targetAt(e),shouldDrop=active&&destination&&destination!==source&&!isBlocked()&&doc()===documentBefore;
+        cleanup();if(shouldDrop)onDrop(kind==='category'?destination.dataset.type:Number(destination.dataset.index));
+      };
+      const cancel=e=>{if(e.pointerId===pointerId)cleanup();};const cancelAll=()=>cleanup();const visibility=()=>{if(document.hidden)cleanup();};
+      window.addEventListener('pointermove',move,{capture:true,passive:false});window.addEventListener('pointerup',end,true);window.addEventListener('pointercancel',cancel,true);window.addEventListener('blur',cancelAll);document.addEventListener('visibilitychange',visibility);handle.addEventListener('lostpointercapture',cancelAll);
+      try{handle.setPointerCapture(pointerId);}catch(_){}
+    });
+    return handle;
+  }
   function renderCategories() {
     const list=$('categoryList');list.replaceChildren();const all=groups();
-    all.forEach((group,index)=>{
-      const wrap=el('div','category-item'+(group.type===state.category?' is-active':''));wrap.draggable=!isBlocked();wrap.dataset.type=group.type;
+    all.forEach(group=>{
+      const wrap=el('div','category-item'+(group.type===state.category?' is-active':''));wrap.dataset.type=group.type;
       const choose=button(group.type,()=>{state.category=group.type;state.page=1;renderCategories();renderItems();},'category-select');choose.append(el('span','category-count',String(group.rows.length)));choose.disabled=isBlocked();
-      const controls=el('div','category-actions');
-      const up=button('↑',()=>categoryMove(group.type,-1),'icon-button');up.setAttribute('aria-label',group.type+'分類往上');up.disabled=isBlocked()||index===0;
-      const down=button('↓',()=>categoryMove(group.type,1),'icon-button');down.setAttribute('aria-label',group.type+'分類往下');down.disabled=isBlocked()||index===all.length-1;controls.append(up,down);wrap.append(choose,controls);
-      wrap.addEventListener('dragstart',event=>{if(event.target.closest('button')&&event.target.closest('.category-actions')){event.preventDefault();return;}state.drag={kind:'category',type:group.type};event.dataTransfer.setData('text/plain','category');event.dataTransfer.effectAllowed='move';wrap.classList.add('is-dragging');});
-      wrap.addEventListener('dragend',()=>{state.drag=null;wrap.classList.remove('is-dragging');});
-      wrap.addEventListener('dragover',event=>{if(state.drag?.kind==='category'&&!isBlocked())event.preventDefault();});
-      wrap.addEventListener('drop',event=>{event.preventDefault();if(isBlocked()||state.drag?.kind!=='category')return;const order=groups().map(g=>g.type),from=order.indexOf(state.drag.type),to=order.indexOf(group.type);if(from<0||from===to)return;order.splice(to,0,order.splice(from,1)[0]);state.drag=null;recordChange(C.reorderGroups(doc(),order));});list.append(wrap);
+      const handle=dragHandle('category','拖曳分類「'+group.type+'」',group.type,target=>{const order=groups().map(g=>g.type),from=order.indexOf(group.type),to=order.indexOf(target);if(from<0||to<0||from===to)return;order.splice(to,0,order.splice(from,1)[0]);recordChange(C.reorderGroups(doc(),order));},delta=>{categoryMove(group.type,delta);Array.from(list.children).find(node=>node.dataset.type===group.type)?.querySelector('.drag-handle')?.focus();},isBlocked());
+      wrap.append(handle,choose);list.append(wrap);
     });
-    if(!all.length)list.append(el('p','empty-state','新增第一筆商品後就會建立分類。'));
+    if(!all.length)list.append(el('p','empty-state','按右上方「＋」新增分類。'));
   }
   function imageUrl(value) {
     const first=String(value||'').trim().split(/\s+/)[0];if(!first)return '';
@@ -137,26 +169,23 @@
   }
   function renderItems() {
     const grid=$('itemGrid'),pages=$('pagination');grid.setAttribute('aria-busy',String(state.loading));grid.replaceChildren();pages.replaceChildren();
-    if(!doc()){grid.append(el('p','empty-state',state.loading?'正在讀取圖鑑…':'尚未讀取資料，請按「重新讀取」。'));$('countSummary').textContent='';return;}
+    if(!doc()){grid.append(el('p','empty-state',state.loading?'正在讀取圖鑑…':state.authenticated?'尚未讀取資料，請按「重新載入」。':'請先登入圖鑑管理，登入後會還原這台瀏覽器的草稿。'));$('countSummary').textContent='';return;}
     const group=currentGroup(),query=state.query.toLocaleLowerCase(),all=group?.rows||[],filtered=all.filter(item=>!query||Object.values(item.values).some(value=>String(value).toLocaleLowerCase().includes(query)));
     const totalPages=Math.max(1,Math.ceil(filtered.length/pageSize));state.page=Math.min(state.page,totalPages);
     const displayed=filtered.slice((state.page-1)*pageSize,state.page*pageSize),sortDisabled=isBlocked()||!!state.query;
     $('countSummary').textContent=`${state.role}共 ${doc().rows.length} 筆 · ${state.category||'尚無分類'} ${all.length} 筆`+(query?` · 搜尋結果 ${filtered.length} 筆`:'');
-    $('sortHint').textContent=query?'清除搜尋後可調整商品順序。':'可拖曳商品排序，或使用箭頭與「移到」指定位置。';
+    $('sortHint').textContent=query?'清除搜尋後可調整商品順序。':'拖曳「≡」調整順序，或按「移到」指定位置。';
     for(const item of displayed){
-      const position=all.findIndex(value=>value.index===item.index),card=el('article','item-card');card.dataset.index=String(item.index);card.draggable=!sortDisabled;
+      const position=all.findIndex(value=>value.index===item.index),card=el('article','item-card');card.dataset.index=String(item.index);
       const picture=el('div','item-image'),src=imageUrl(item.values.image);
       if(src){const image=el('img');image.src=src;image.alt=String(item.values.name||'未命名商品');image.loading='lazy';image.decoding='async';image.addEventListener('error',()=>{image.remove();picture.append(el('span','image-placeholder','圖片無法載入'));},{once:true});picture.append(image);}else picture.append(el('span','image-placeholder','尚無圖片'));
       picture.append(el('span','item-position',String(position+1)));
       const info=el('div','item-info');info.append(el('h3','item-name',String(item.values.name||'（未填名稱）')),el('p','item-size',String(item.values.size||'未填尺寸')),el('p','item-sku',String(item.values.sku||'')));
       const controls=el('div','item-actions'),edit=button('編輯',()=>openEditor(item.index),'secondary');edit.disabled=isBlocked();
-      const up=button('↑',()=>moveItem(item.index,position-1),'icon-button');up.setAttribute('aria-label','商品第 '+(position+1)+' 個往前');up.disabled=sortDisabled||position===0;
-      const down=button('↓',()=>moveItem(item.index,position+1),'icon-button');down.setAttribute('aria-label','商品第 '+(position+1)+' 個往後');down.disabled=sortDisabled||position===all.length-1;
-      const move=button('移到',()=>moveItemPrompt(item.index),'secondary');move.disabled=sortDisabled;controls.append(edit,up,down,move);card.append(picture,info,controls);
-      card.addEventListener('dragstart',event=>{if(sortDisabled){event.preventDefault();return;}state.drag={kind:'item',index:item.index,type:state.category};event.dataTransfer.setData('text/plain','item');event.dataTransfer.effectAllowed='move';card.classList.add('is-dragging');});
-      card.addEventListener('dragend',()=>{state.drag=null;card.classList.remove('is-dragging');});
-      card.addEventListener('dragover',event=>{if(!sortDisabled&&state.drag?.kind==='item'&&state.drag.type===state.category)event.preventDefault();});
-      card.addEventListener('drop',event=>{event.preventDefault();if(sortDisabled||state.drag?.kind!=='item'||state.drag.type!==state.category)return;const from=state.drag.index;state.drag=null;moveItem(from,position);});grid.append(card);
+      const move=button('移到',()=>moveItemPrompt(item.index),'secondary');move.disabled=sortDisabled;controls.append(edit,move);
+      const handle=dragHandle('item','拖曳商品第 '+(position+1)+' 個',item.index,target=>{const to=currentGroup()?.rows.findIndex(value=>value.index===target);if(to>=0)moveItem(item.index,to);},delta=>{const to=position+delta;if(to<0||to>=all.length)return;state.page=Math.floor(to/pageSize)+1;moveItem(item.index,to);const next=currentGroup()?.rows[to];if(next)grid.querySelector('[data-index="'+next.index+'"] .drag-handle')?.focus();},sortDisabled);
+      for(const image of picture.querySelectorAll('img'))image.draggable=false;
+      card.append(handle,picture,info,controls);grid.append(card);
     }
     if(!displayed.length)grid.append(el('div','empty-state',query?'找不到符合的商品。':'這裡還沒有商品，按「新增商品」開始。'));
     if(totalPages>1){const prev=button('上一頁',()=>{state.page--;renderItems();},'page-btn');prev.disabled=state.page===1;const next=button('下一頁',()=>{state.page++;renderItems();},'page-btn');next.disabled=state.page===totalPages;pages.append(prev,el('span','page-label',`${state.page} / ${totalPages}`),next);}
@@ -265,7 +294,9 @@
   $('siteSelect').addEventListener('change',()=>{state.role=null;state.category=null;state.page=1;loadSite($('siteSelect').value);});
   let searchTimer;$('searchInput').addEventListener('input',()=>{state.query=$('searchInput').value;state.page=1;clearTimeout(searchTimer);searchTimer=setTimeout(renderItems,120);});
   $('addItem').addEventListener('click',()=>openEditor());
-  $('addCategory').addEventListener('click',()=>{openEditor(null,'');$('editType').value='';$('editType').focus();status('填入新分類名稱並新增第一筆商品，儲存後即建立分類。');});
+  $('addCategory').addEventListener('click',()=>{if(isBlocked())return;$('categoryName').value='';$('categoryError').textContent='';$('categoryDialog').showModal();$('categoryName').focus();});
+  $('categoryCancel').addEventListener('click',()=>$('categoryDialog').close());
+  $('categoryForm').addEventListener('submit',event=>{event.preventDefault();if(isBlocked())return;try{const name=$('categoryName').value.trim();if(name.length>160)throw new Error('分類名稱最多 160 字。');const next=C.addCategory(doc(),name);state.category=name;state.query='';$('searchInput').value='';state.page=1;recordChange(next);$('categoryDialog').close();status('已新增分類「'+name+'」。');}catch(error){$('categoryError').textContent=error.message;$('categoryName').focus();}});
   $('undoBtn').addEventListener('click',()=>{if(isBlocked())return;const cat=catalog(),previous=cat.history.pop();if(!previous)return;cat.documents[previous.role]=C.parseDocument(previous.raw);state.role=previous.role;persistDraft(cat);ensureCategory();render();status('已復原上一步，尚未發布。');});
   $('reloadBtn').addEventListener('click',()=>{persistDraft();loadSite(state.site,true);});
   $('discardBtn').addEventListener('click',discardDraft);$('exportBtn').addEventListener('click',exportDraft);$('publishBtn').addEventListener('click',publish);

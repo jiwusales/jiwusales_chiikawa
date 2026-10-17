@@ -33,13 +33,12 @@
     </section>
 
     <div id="notice" class="notice" hidden></div>
-    <div class="working-note"><span aria-hidden="true">✎</span><p>新增、編輯與排序會暫存在這台瀏覽器的草稿中，完成後按「發布」，公開圖鑑才會更新。</p></div>
 
     <nav id="roleTabs" class="role-tabs" aria-label="選擇角色"></nav>
 
     <div class="catalog-layout">
       <aside class="category-panel" aria-label="分類管理">
-        <div class="panel-title"><h3>分類</h3><button id="addCategory" class="icon-button" type="button" aria-label="新增分類" title="新增分類">＋</button></div>
+        <div class="panel-title"><h3>分類</h3><button id="addCategory" class="icon-button" type="button" aria-label="新增分類" title="新增分類">＋ 新增分類</button></div>
         <p class="panel-description">拖曳分類調整順序</p>
         <div id="categoryList" class="category-list"></div>
       </aside>
@@ -49,7 +48,7 @@
           <div class="search-wrap"><span class="search-icon" aria-hidden="true">⌕</span><label class="sr-only" for="searchInput">搜尋此分類的商品</label><input id="searchInput" type="search" placeholder="搜尋此分類的商品…" autocomplete="off"></div>
           <button id="addItem" class="button button-primary" type="button"><span aria-hidden="true">＋</span> 新增商品</button>
         </div>
-        <div class="items-summary"><span id="countSummary">正在讀取商品…</span><span id="sortHint">拖曳商品，或使用 ↑ ↓ 調整順序</span></div>
+        <div class="items-summary"><span id="countSummary">正在讀取商品…</span><span id="sortHint">拖曳「≡」調整商品順序</span></div>
         <div id="itemGrid" class="item-grid" aria-live="polite" aria-busy="true"><div class="empty-state"><span class="empty-symbol" aria-hidden="true">✦</span><p>正在載入圖鑑資料…</p></div></div>
         <nav id="pagination" class="pagination" aria-label="商品分頁"></nav>
       </section>
@@ -69,6 +68,15 @@
       <div id="authHelp" class="auth-help"><p>建立 <strong>fine-grained personal access token</strong> 時，Resource owner 選 <strong>jiwusales</strong>，Repository access 選 <strong>Only select repositories</strong>，只勾選：</p><ul><li>jiwusales_chiikawa</li><li>jiwusales_nagano</li></ul><p>Repository permissions 請設定 <strong>Contents → Read and write</strong>。權杖只留在目前分頁的記憶體，不寫入瀏覽器儲存空間或 GitHub 檔案；重新整理後需要再次連接。</p><a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener noreferrer">前往 GitHub 建立權杖 ↗</a></div>
       <p id="authError" class="field-error" role="alert"></p>
       <div class="modal-actions"><button id="disconnectBtn" class="button button-secondary" type="button" hidden>中斷連接</button><button id="authSubmit" class="button button-primary" type="submit">驗證並連接</button></div>
+    </form>
+  </dialog>
+
+  <dialog id="categoryDialog" class="modal confirm-modal" aria-labelledby="categoryTitle">
+    <form id="categoryForm" class="modal-form" novalidate>
+      <div class="modal-heading"><h2 id="categoryTitle">新增分類</h2></div>
+      <label class="field" for="categoryName"><span>分類名稱 <span class="required" aria-hidden="true">*</span></span><input id="categoryName" name="name" type="text" autocomplete="off" maxlength="160" required placeholder="輸入分類名稱"></label>
+      <p id="categoryError" class="field-error" role="alert"></p>
+      <div class="modal-actions"><button id="categoryCancel" class="button button-secondary" type="button">取消</button><button id="categorySubmit" class="button button-primary" type="submit">新增分類</button></div>
     </form>
   </dialog>
 

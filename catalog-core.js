@@ -33,6 +33,7 @@
     if (!raw || !raw.table || !Array.isArray(raw.table.rows) || !raw.table.rows.length || !raw.table.rows.every(row => row && Array.isArray(row.c))) {
       throw new Error('圖鑑資料格式錯誤：必須保留 GViz 表格與標題列。');
     }
+    if (owns(raw,'catalogCategories') && (!Array.isArray(raw.catalogCategories) || raw.catalogCategories.some(type=>typeof type!=='string') || new Set(raw.catalogCategories).size!==raw.catalogCategories.length)) throw new Error('圖鑑分類資料格式錯誤。');
     return {raw, header:raw.table.rows[0], rows:raw.table.rows.slice(1), fields:FIELDS.slice()};
   }
   function getValues(row) {
@@ -45,9 +46,10 @@
     const values = getValues(row);
     return (role == null ? '' : role + '|') + String(values.type || '無類型') + '|' + String(values.name || '');
   }
-  function withRows(doc, rows) {
+  function withRows(doc, rows, categories) {
     const raw = clone(doc.raw);
     raw.table.rows = [clone(doc.header)].concat(clone(rows));
+    if (categories !== undefined) raw.catalogCategories = categories.slice();
     return parseDocument(raw);
   }
   function serializeDocument(doc) {
@@ -57,6 +59,9 @@
   }
   function groupRows(doc) {
     const groups = [], byType = new Map();
+    for (const type of doc.raw.catalogCategories || []) {
+      const group={type,rows:[]};byType.set(type,group);groups.push(group);
+    }
     doc.rows.forEach((row,index) => {
       const type = groupType(row);
       if (!byType.has(type)) { const group = {type,rows:[]}; byType.set(type,group); groups.push(group); }
@@ -74,16 +79,32 @@
     });
     return result;
   }
-  function insertionIndex(rows,type) {
+  function insertionIndex(rows,type,types=[]) {
     for (let index=rows.length-1;index>=0;index--) if (groupType(rows[index]) === type) return index + 1;
+    const position=types.indexOf(type);
+    if(position!==-1){for(const nextType of types.slice(position+1)){const index=rows.findIndex(row=>groupType(row)===nextType);if(index!==-1)return index;}}
     return rows.length;
+  }
+  function categoryName(name) {
+    if(typeof name!=='string')throw new Error('請填寫分類名稱。');
+    const trimmed=name.trim();
+    if(!trimmed)throw new Error('分類名稱不能空白。');
+    if(/[<>\"]/.test(trimmed)||Object.getOwnPropertyNames(Object.prototype).includes(trimmed))throw new Error('請使用有效的分類名稱，不可包含 <、> 或雙引號。');
+    return trimmed;
+  }
+  function addCategory(doc,name) {
+    const type=categoryName(name),types=groupRows(doc).map(group=>group.type);
+    if(types.includes(type))throw new Error('這個分類已經存在。');
+    return withRows(doc,doc.rows,types.concat(type));
   }
   function addItem(doc, values) {
     const count = Math.max(FIELDS.length, (doc.raw.table.cols || []).length, doc.header.c.length);
     const row = {c:Array.from({length:count},(_,index) => index < FIELDS.length ? {v:owns(values,FIELDS[index]) ? values[FIELDS[index]] : ''} : null)};
     const rows = doc.rows.slice();
-    rows.splice(insertionIndex(rows,groupType(row)),0,row);
-    return withRows(doc,rows);
+    const types=groupRows(doc).map(group=>group.type),type=groupType(row);
+    if(!types.includes(type))types.push(type);
+    rows.splice(insertionIndex(rows,type,types),0,row);
+    return withRows(doc,rows,owns(doc.raw,'catalogCategories')?types:undefined);
   }
   function validIndex(doc,index) {
     if (!Number.isInteger(index) || index < 0 || index >= doc.rows.length) throw new Error('找不到要修改的商品，請重新選取。');
@@ -91,13 +112,15 @@
   function updateItem(doc,index,patch) {
     validIndex(doc,index);
     const before = doc.rows[index], after = patchRow(before,patch), rows = doc.rows.slice();
+    const types=groupRows(doc).map(group=>group.type);
+    if(!types.includes(groupType(after)))types.push(groupType(after));
     rows[index] = after;
     if (groupType(before) !== groupType(after)) {
       rows.splice(index,1);
-      rows.splice(insertionIndex(rows,groupType(after)),0,after);
+      rows.splice(insertionIndex(rows,groupType(after),types),0,after);
     }
     const beforeIdentity = collectionIdentity(before), afterIdentity = collectionIdentity(after);
-    return {document:withRows(doc,rows), identityChanged:beforeIdentity !== afterIdentity, beforeIdentity, afterIdentity};
+    return {document:withRows(doc,rows,owns(doc.raw,'catalogCategories')?types:undefined), identityChanged:beforeIdentity !== afterIdentity, beforeIdentity, afterIdentity};
   }
   function reorderItems(doc,type,indices) {
     const positions = [];
@@ -115,10 +138,12 @@
       throw new Error('分類排序必須包含每一個分類各一次。');
     }
     const byType = new Map(groups.map(group => [group.type,group.rows.map(item => item.row)]));
-    return withRows(doc,types.flatMap(type => byType.get(type)));
+    return withRows(doc,types.flatMap(type => byType.get(type)),owns(doc.raw,'catalogCategories')?types:undefined);
   }
   function renameGroup(doc,oldType,newType) {
-    if (!String(newType).trim()) throw new Error('分類名稱不能空白。');
+    newType=categoryName(newType);
+    const types=groupRows(doc).map(group=>group.type);
+    if(newType!==oldType&&types.includes(newType))throw new Error('這個分類已經存在。');
     let identityChanges = 0;
     const rows = doc.rows.map(row => {
       if (groupType(row) !== oldType) return row;
@@ -126,7 +151,7 @@
       if (collectionIdentity(row) !== collectionIdentity(changed)) identityChanges++;
       return changed;
     });
-    return {document:withRows(doc,rows),identityChanges};
+    return {document:withRows(doc,rows,owns(doc.raw,'catalogCategories')?types.map(type=>type===oldType?newType:type):undefined),identityChanges};
   }
 
   class GitHubError extends Error {
@@ -262,5 +287,5 @@
       return {status:latest.status,conclusion:latest.conclusion || null,url:latest.html_url,runs};
     }
   }
-  return {sites,FIELDS,FIELD_LABELS,pathForRole,parseDocument,serializeDocument,getValues,groupRows,collectionIdentity,addItem,updateItem,reorderItems,reorderGroups,renameGroup,GitHubClient,GitHubError};
+  return {sites,FIELDS,FIELD_LABELS,pathForRole,parseDocument,serializeDocument,getValues,groupRows,collectionIdentity,addCategory,addItem,updateItem,reorderItems,reorderGroups,renameGroup,GitHubClient,GitHubError};
 }));
