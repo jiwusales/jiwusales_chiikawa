@@ -728,7 +728,7 @@ function fetchSheetRows(sheetName){
  if(sheetRequests.has(sheetName))return sheetRequests.get(sheetName);
  const url=`./data/${encodeURIComponent(sheetName)}.json`;
  const request=fetch(url).then(res=>{if(!res.ok)throw new Error('資料讀取失敗');return res.text();}).then(text=>{
- const data=JSON.parse(text.match(/\{.*\}/s)[0]);let rows=data.table.rows||[];if(rows.length>1)rows=rows.slice(1);
+ const data=JSON.parse(text.match(/\{.*\}/s)[0]);const rows=(data.table.rows||[]).slice(1);
  const parsed=rows.map(row=>({type:row.c[0]?.v||'無類型',name:row.c[1]?.v||'',imgUrl:fastImg(row.c[3]?.v||''),size:row.c[5]?.v||''}));
  currentData[sheetName]=parsed;try{localStorage.setItem('jiwu_catalog_'+SHEET_ID+'_'+sheetName,JSON.stringify(parsed));}catch(_){}
  updateTabCount(sheetName);return parsed;
