@@ -455,7 +455,8 @@ h1 {
 .reset-tab {
   --tab-color: #EF7C8E !important;
 }
-.card img.catalogProductImage{visibility:hidden;height:130px;width:100%;object-fit:contain}
+/* 圖片區隨卡片寬度縮放，避免窄螢幕仍保留 130px 高度。 */
+.card img.catalogProductImage{visibility:hidden;display:block;height:auto;aspect-ratio:1 / 1;width:100%;max-height:130px;object-fit:contain}
 .card img.catalogImageReady{visibility:visible}
 </style>
 </head>
