@@ -553,6 +553,43 @@ let collected = [];
 function getCollectedKey(sheetName) {
   return `collectedDolls_${sheetName}`;
 }
+// Only explicitly linked cards share ownership; ordinary same-name cards retain their old keys.
+// Verified legacy combination products: exact role/type/name/SKU/image matches only.
+const LEGACY_SHARED_ITEMS=[{"id":"jiwu-legacy-shared:08aa9b816cd52ecf842ba54e","roles":["吉伊","小八","兔兔"],"matches":[["小八","吊娃","注連繩三小隻","4571609383475","https://jiwusales.github.io/imgh/images_1350/al00332_58eb02dc.png"],["兔兔","吊娃","注連繩三小隻","4571609383475","https://jiwusales.github.io/imgh/images_1350/al00332_58eb02dc.png"],["吉伊","吊娃","注連繩三小隻","4571609383475","https://jiwusales.github.io/imgh/images_1350/al00332_58eb02dc.png"]]},{"id":"jiwu-legacy-shared:60b88221bd14d6fa726a9d8a","roles":["吉伊","小八","兔兔"],"matches":[["小八","娃","鏡餅三小隻","4571609380511","https://jiwusales.github.io/imgh/images_1350/al00331_2a91919a.png"],["兔兔","娃","鏡餅三小隻","4571609380511","https://jiwusales.github.io/imgh/images_1350/al00331_2a91919a.png"],["吉伊","娃","鏡餅三小隻","4571609380511","https://jiwusales.github.io/imgh/images_1350/al00331_2a91919a.png"]]},{"id":"jiwu-legacy-shared:93d0558b1d269dd7eff841cb","roles":["吉伊","小八"],"matches":[["小八","娃","抱抱吉伊小八","4589468450078","https://chiikawamarket.jp/cdn/shop/products/4589468450078_1.jpg?v=1663058946"],["吉伊","娃","抱抱吉伊小八","4589468450078","https://chiikawamarket.jp/cdn/shop/products/4589468450078_1.jpg?v=1663058946"]]},{"id":"jiwu-legacy-shared:7a712167b14cf92ec00a5ad0","roles":["吉伊","小八","兔兔"],"matches":[["小八","娃","甜夢床組","4582662913646","https://chiikawamarket.jp/cdn/shop/products/4582662913646_1.jpg?v=1663058866"],["兔兔","娃","甜夢床組","4582662913646","https://chiikawamarket.jp/cdn/shop/products/4582662913646_1.jpg?v=1663058866"],["吉伊","娃","甜夢床組","4582662913646","https://chiikawamarket.jp/cdn/shop/products/4582662913646_1.jpg?v=1663058866"]]},{"id":"jiwu-legacy-shared:bd5d4944b9ab1db34eb3f163","roles":["吉伊","小八","兔兔"],"matches":[["小八","娃","聖誕床組","4582662905658","https://chiikawamarket.jp/cdn/shop/files/4582662905658_1.jpg?v=1701074226&width=1100"],["兔兔","娃","聖誕床組","4582662905658","https://chiikawamarket.jp/cdn/shop/files/4582662905658_1.jpg?v=1701074226&width=1100"],["吉伊","娃","聖誕床組","4582662905658","https://chiikawamarket.jp/cdn/shop/files/4582662905658_1.jpg?v=1701074226&width=1100"]]},{"id":"jiwu-legacy-shared:f9fe525cb6c83474b8cc342c","roles":["吉伊","小八","兔兔"],"matches":[["小八","娃","翻車魚公車","4589468440758","https://chiikawamarket.jp/cdn/shop/products/000000000461_1.jpg?v=1655033223"],["兔兔","娃","翻車魚公車","4589468440758","https://chiikawamarket.jp/cdn/shop/products/000000000461_1.jpg?v=1655033223"],["吉伊","娃","翻車魚公車","4589468440758","https://chiikawamarket.jp/cdn/shop/products/000000000461_1.jpg?v=1655033223"]]},{"id":"jiwu-legacy-shared:cb0f42ad9e1c6d3dc9a60cc2","roles":["吉伊","小八","兔兔"],"matches":[["小八","其他","樂園三小隻髮箍","4571609362395","https://jiwusales.github.io/imgh/images_1350/al00327_d80352cf.png"],["兔兔","其他","樂園三小隻髮箍","4571609362395","https://jiwusales.github.io/imgh/images_1350/al00327_d80352cf.png"],["吉伊","其他","樂園三小隻髮箍","4571609362395","https://jiwusales.github.io/imgh/images_1350/al00327_d80352cf.png"]]},{"id":"jiwu-legacy-shared:de7df4b440e4b7cd842e4abd","roles":["吉伊","小八"],"matches":[["小八","其他","2023一番賞C賞 雙面抱枕","","https://www.chiikawatribe.com/wp-content/uploads/2025/07/mochifuwa_C.webp"],["吉伊","其他","2023一番賞C賞 雙面抱枕","","https://www.chiikawatribe.com/wp-content/uploads/2025/07/mochifuwa_C.webp"]]},{"id":"jiwu-legacy-shared:2ca2d7e6b7a2a12e23601852","roles":["吉伊","小八"],"matches":[["小八","扭蛋","水族館公仔吊飾CH","","https://jiwusales.github.io/imgh/images_1350/ba00640_8aa9a111.png"],["吉伊","扭蛋","水族館公仔吊飾CH","","https://jiwusales.github.io/imgh/images_1350/ba00640_8aa9a111.png"]]},{"id":"jiwu-legacy-shared:53d135d9d0bddfd1410c2ae6","roles":["吉伊","小八"],"matches":[["小八","扭蛋","食物公仔吊飾① 蛋包飯","","https://kitan.jp/wp-content/uploads/2021/12/05omurise-1200x1200.jpg"],["吉伊","扭蛋","食物公仔吊飾① 蛋包飯","","https://kitan.jp/wp-content/uploads/2021/12/05omurise-1200x1200.jpg"]]},{"id":"jiwu-legacy-shared:d74519f08a96074590232e20","roles":["吉伊","小八"],"matches":[["小八","扭蛋","食物公仔吊飾③鯛魚燒","","https://jiwusales.github.io/imgh/images_1350/tu-ceng-7_614d23c2.png"],["吉伊","扭蛋","食物公仔吊飾③鯛魚燒","","https://jiwusales.github.io/imgh/images_1350/tu-ceng-7_614d23c2.png"]]},{"id":"jiwu-legacy-shared:aebb3f5036b9c48d9a5b9b31","roles":["吉伊","小八"],"matches":[["小八","扭蛋","抱線公仔①貼貼","","https://kitan.jp/wp-content/uploads/2021/07/chiikawacable_fix6-1-e1632385150551.png"],["吉伊","扭蛋","抱線公仔①貼貼","","https://kitan.jp/wp-content/uploads/2021/07/chiikawacable_fix6-1-e1632385150551.png"]]},{"id":"jiwu-legacy-shared:d171b9bac5f40f16c3636eb9","roles":["吉伊","小八"],"matches":[["小八","扭蛋","水族館立牌CH","","https://kitan.jp/wp-content/uploads/2023/04/004.jpg"],["吉伊","扭蛋","水族館立牌CH","","https://kitan.jp/wp-content/uploads/2023/04/004.jpg"]]},{"id":"jiwu-legacy-shared:a050878ef04eeff86a1248a8","roles":["吉伊","小八"],"matches":[["小八","扭蛋","半立體磁鐵公仔CH","","https://jiwusales.github.io/imgh/images_1350/ba00644_a731f2d2.png"],["吉伊","扭蛋","半立體磁鐵公仔CH","","https://jiwusales.github.io/imgh/images_1350/ba00644_a731f2d2.png"]]},{"id":"jiwu-legacy-shared:6616571611f8b0dc40edaf80","roles":["吉伊","小八","兔兔"],"matches":[["小八","中","夏日三小隻","","https://jiwusales.github.io/imgh/images_1350/al00325_aa7180e6.png"],["兔兔","中","夏日三小隻","","https://jiwusales.github.io/imgh/images_1350/al00325_aa7180e6.png"],["吉伊","中","夏日三小隻","","https://jiwusales.github.io/imgh/images_1350/al00325_aa7180e6.png"]]},{"id":"jiwu-legacy-shared:51d931c7508010e9c3dac2e4","roles":["吉伊","兔兔"],"matches":[["兔兔","台","12吋翻車魚","","https://jiwusales.github.io/imgh/images_1350/al00328_8546c652.png"],["吉伊","台","12吋翻車魚","","https://jiwusales.github.io/imgh/images_1350/al00328_8546c652.png"]]},{"id":"jiwu-legacy-shared:893c889a926fe4d700a3727c","roles":["吉伊","兔兔"],"matches":[["兔兔","台","16吋翻車魚","","https://jiwusales.github.io/imgh/images_1350/al00328_8546c652.png"],["吉伊","台","16吋翻車魚","","https://jiwusales.github.io/imgh/images_1350/al00328_8546c652.png"]]}];
+const legacySharedLookup=new Map(LEGACY_SHARED_ITEMS.flatMap(item=>item.matches.map(match=>[JSON.stringify(match),item])));
+function legacySharedInfo(row,role){return legacySharedLookup.get(JSON.stringify([role,...[0,1,2,3].map(index=>row.c[index]?.v||'')]));}
+const SHARED_COLLECTION_KEY='jiwu_catalog_shared_collected_v1';
+function readCollection(key,fallback){try{const value=JSON.parse(localStorage.getItem(key));return value&&typeof value==='object'?value:fallback;}catch(_){return fallback;}}
+let sharedCollected=readCollection(SHARED_COLLECTION_KEY,{});
+function legacyItemKey(item,role){return `${role}|${item.type||'無類型'}|${item.name}`;}
+function hydrateSharedItems(){
+ const definitions=new Map(),changed=new Set();
+ for(const items of Object.values(currentData))for(const item of items)if(item.sharedId&&item.sharedRoles?.length>1)definitions.set(item.sharedId,item.sharedRoles);
+ for(const [role,items] of Object.entries(currentData))for(const item of items)if(item.launchSource&&definitions.has(item.launchSource)&&item.sharedId!==item.launchSource){item.sharedId=item.launchSource;item.sharedRoles=definitions.get(item.launchSource);changed.add(role);}
+ return changed;
+}
+function isSharedItem(item){return typeof item.sharedId==='string'&&item.sharedId&&Array.isArray(item.sharedRoles)&&item.sharedRoles.length>1;}
+function itemIsCollected(item,role){
+ if(!isSharedItem(item))return readCollection(getCollectedKey(role),[]).includes(legacyItemKey(item,role));
+ if(Object.prototype.hasOwnProperty.call(sharedCollected,item.sharedId))return sharedCollected[item.sharedId]===true;
+ return item.sharedRoles.some(target=>{
+  const linked=(currentData[target]||[]).find(row=>row.sharedId===item.sharedId)||item;
+  return readCollection(getCollectedKey(target),[]).includes(legacyItemKey(linked,target));
+ });
+}
+function setItemCollected(item,role,selected){
+ if(isSharedItem(item)){
+  sharedCollected={...readCollection(SHARED_COLLECTION_KEY,{}),[item.sharedId]:selected};
+  localStorage.setItem(SHARED_COLLECTION_KEY,JSON.stringify(sharedCollected));
+ }else{
+  const key=legacyItemKey(item,role),stored=readCollection(getCollectedKey(role),[]);
+  localStorage.setItem(getCollectedKey(role),JSON.stringify(selected?[...new Set([...stored,key])]:stored.filter(value=>value!==key)));
+ }
+ collected=readCollection(getCollectedKey(role),[]);
+}
+function countCatalogItems(items,role,ownedOnly=false){
+ return new Set(items.filter(item=>!ownedOnly||itemIsCollected(item,role)).map((item,index)=>isSharedItem(item)?'shared:'+item.sharedId:'row:'+index)).size;
+}
 const tabElements = {};
 let currentData = {};
 
@@ -590,8 +627,8 @@ function updateTabCount(sheetName) {
   if (sheetName === "重置圖鑑") return;
   const data = currentData[sheetName] || [];
   const storedCollected = JSON.parse(localStorage.getItem(getCollectedKey(sheetName))) || [];
-  const ownedCount = data.filter(item => storedCollected.includes(`${sheetName}|${item.type}|${item.name}`)).length;
-  const totalCount = data.length;
+  const ownedCount = countCatalogItems(data,sheetName,true);
+  const totalCount = countCatalogItems(data,sheetName);
   const percent = totalCount ? ownedCount / totalCount : 0;
   const radius = 28;
   const strokeWidth = 4;
@@ -629,8 +666,8 @@ function renderCards(data, sheetName) {
     divider.id = type;
     divider.style.scrollMarginTop = "95px"; // 考慮頂部兩層導覽列的高度
     const storedCollected = JSON.parse(localStorage.getItem(getCollectedKey(sheetName))) || [];
-    const totalCount = grouped[type].length;
-    const ownedCount = grouped[type].filter(item => storedCollected.includes(`${sheetName}|${type}|${item.name}`)).length;
+    const totalCount = countCatalogItems(grouped[type],sheetName);
+    const ownedCount = countCatalogItems(grouped[type],sheetName,true);
     divider.innerHTML = `<span data-type="${type}">${type} (${ownedCount}/${totalCount})</span>`;
     cardContainer.appendChild(divider);
     const groupContainer = document.createElement("div");
@@ -639,7 +676,7 @@ function renderCards(data, sheetName) {
       const card = document.createElement("div");
       card.className = "card";
       const itemKey = `${sheetName}|${type}|${item.name}`;
-      if (collected.includes(itemKey)) {
+      if (itemIsCollected(item,sheetName)) {
         card.classList.add("collected");
         card.style.borderColor = colors[sheetName] || "#ccc";
       }
@@ -654,21 +691,11 @@ function renderCards(data, sheetName) {
         <div class="size">${item.size}</div>
       `;
       const checkmark = card.querySelector(".checkmark");
-      checkmark.style.display = collected.includes(itemKey) ? "flex" : "none";
+      checkmark.style.display = itemIsCollected(item,sheetName) ? "flex" : "none";
       card.addEventListener("click", () => {
-        card.classList.toggle("collected");
-        if (card.classList.contains("collected")) {
-          card.style.borderColor = colors[sheetName] || "#ccc";
-          checkmark.style.display = "flex";
-          if (!collected.includes(itemKey)) collected.push(itemKey);
-        } else {
-          card.style.borderColor = "#ccc";
-          checkmark.style.display = "none";
-          collected = collected.filter(n => n !== itemKey);
-        }
-        localStorage.setItem(getCollectedKey(sheetName), JSON.stringify(collected));
-        updateTabCount(sheetName);
-        updateTypeCount(type, sheetName);
+        setItemCollected(item,sheetName,!itemIsCollected(item,sheetName));
+        sheetNames.forEach(updateTabCount);
+        renderCards(currentData[sheetName]||data,sheetName);
       });
       groupContainer.appendChild(card);
     });
@@ -680,8 +707,8 @@ function renderCards(data, sheetName) {
 function updateTypeCount(type, sheetName) {
   const storedCollected = JSON.parse(localStorage.getItem(getCollectedKey(sheetName))) || [];
   const data = currentData[sheetName].filter(item => (item.type || "無類型") === type);
-  const ownedCount = data.filter(item => storedCollected.includes(`${sheetName}|${type}|${item.name}`)).length;
-  const totalCount = data.length;
+  const ownedCount = countCatalogItems(data,sheetName,true);
+  const totalCount = countCatalogItems(data,sheetName);
   const titleSpan = document.querySelector(`.type-divider span[data-type="${type}"]`);
   if (titleSpan) titleSpan.textContent = `${type} (${ownedCount}/${totalCount})`;
 }
@@ -730,9 +757,10 @@ function fetchSheetRows(sheetName){
  const url=`./data/${encodeURIComponent(sheetName)}.json`;
  const request=fetch(url).then(res=>{if(!res.ok)throw new Error('資料讀取失敗');return res.text();}).then(text=>{
  const data=JSON.parse(text.match(/\{.*\}/s)[0]);const rows=(data.table.rows||[]).slice(1);
- const parsed=rows.map(row=>({type:row.c[0]?.v||'無類型',name:row.c[1]?.v||'',imgUrl:fastImg(row.c[3]?.v||''),size:row.c[5]?.v||''}));
+ const parsed=rows.map(row=>{const legacy=legacySharedInfo(row,sheetName);return {launchSource:row.catalogLaunchSource||'',sharedId:row.catalogSharedId||legacy?.id||'',sharedRoles:Array.isArray(row.catalogSharedRoles)?row.catalogSharedRoles.filter(role=>sheetNames.includes(role)):(legacy?.roles||[]),type:row.c[0]?.v||'無類型',name:row.c[1]?.v||'',imgUrl:fastImg(row.c[3]?.v||''),size:row.c[5]?.v||''};});
  currentData[sheetName]=parsed;try{localStorage.setItem('jiwu_catalog_'+SHEET_ID+'_'+sheetName,JSON.stringify(parsed));}catch(_){}
- updateTabCount(sheetName);return parsed;
+ const linkedRoles=hydrateSharedItems();sheetNames.forEach(updateTabCount);
+ const active=document.querySelector('.tab.active .tab-name')?.textContent;if(active&&active!==sheetName&&linkedRoles.has(active)&&currentData[active])renderCards(currentData[active],active);return parsed;
  }).finally(()=>sheetRequests.delete(sheetName));sheetRequests.set(sheetName,request);return request;
 }
 async function loadSheetData(sheetName){
@@ -779,7 +807,7 @@ function createResetTab() {
   `;
   resetTab.addEventListener("click", () => {
     if (confirm("❗️確定要重置寶寶們嗎 ㅇㅅㅇ ！")) {
-      collected = [];
+      collected = [];sharedCollected={};localStorage.removeItem(SHARED_COLLECTION_KEY);
       sheetNames.forEach(name => localStorage.removeItem(getCollectedKey(name)));
       sheetNames.forEach(name => updateTabCount(name));
       loadSheetData(document.querySelector(".tab.active .tab-name").textContent);
@@ -789,6 +817,12 @@ function createResetTab() {
   tabsContainer.appendChild(resetTab);
 }
 createResetTab();
+window.addEventListener('storage',event=>{
+ if(event.key!==SHARED_COLLECTION_KEY&&!sheetNames.some(role=>event.key===getCollectedKey(role))&&event.key!==null)return;
+ sharedCollected=readCollection(SHARED_COLLECTION_KEY,{});sheetNames.forEach(updateTabCount);
+ const active=document.querySelector('.tab.active .tab-name')?.textContent;
+ if(active&&currentData[active])renderCards(currentData[active],active);
+});
 
 const UPDATE_API='./data/updated.json';
 
@@ -803,3 +837,4 @@ fetch(UPDATE_API)
 </script>
 </body>
 </html>
+
