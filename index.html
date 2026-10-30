@@ -786,7 +786,7 @@ function updateTabCount(sheetName) {
         <svg width="70" height="70">
           <circle cx="35" cy="35" r="${radius}" stroke="#e0e0e0" stroke-width="${strokeWidth}" fill="none"></circle>
           <circle cx="35" cy="35" r="${radius}" stroke="${colors[sheetName] || '#999'}" stroke-width="${strokeWidth}" fill="none"
-            stroke-dasharray="${circumference}" stroke-dashoffset="${offset}" stroke-linecap="round"></circle>
+            stroke-dasharray="${circumference}" stroke-dashoffset="${offset}" stroke-linecap="${percent < 0.01 ? 'butt' : 'round'}" visibility="${ownedCount > 0 ? 'visible' : 'hidden'}"></circle>
         </svg>
       </div>
       <div class="tab-label">
@@ -995,3 +995,4 @@ searchInput.addEventListener('input',e=>{if(!e.isComposing)runCatalogSearch();})
 document.getElementById('wishListButton').innerHTML=heartIcon();document.getElementById('wishListButton').onclick=()=>{finishBoughtWishes();drawWishList();document.getElementById('wishListDialog').showModal();refreshWishPurchaseData(true);};document.getElementById('closeWishList').onclick=()=>document.getElementById('wishListDialog').close();refreshWishPurchaseData();finishBoughtWishes();document.addEventListener('visibilitychange',()=>{if(!document.hidden){finishBoughtWishes();if(document.getElementById('wishListDialog').open)refreshWishPurchaseData();}});window.addEventListener('storage',e=>{if(e.key==='jiwu_catalog_wishes_v1'){finishBoughtWishes();if(!wishPurchaseLoading&&document.getElementById('wishListDialog').open)drawWishList();}});
 </script><script>setInterval(()=>{if(!document.hidden&&document.getElementById('wishListDialog').open)refreshWishPurchaseData();},60000);</script></body>
 </html>
+
