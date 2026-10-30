@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
+
 <meta name="jiwu-catalog-release" content="20261030-collection-wishes-v1">
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 <link rel="preconnect" href="https://i.postimg.cc" crossorigin>
@@ -29,6 +30,25 @@
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
 
+<script>
+// Retain the current catalog position on reload, after product cards exist.
+(()=>{
+ const key='jiwu_catalog_scroll_v1:'+location.pathname;
+ const currentTab=()=>new URLSearchParams(location.search).get('tab')||'';
+ let saved=null;try{saved=JSON.parse(sessionStorage.getItem(key)||'null');}catch(_){}
+ const navigation=performance.getEntriesByType('navigation')[0];
+ let pending=!!(saved&&saved.tab===currentTab()&&(navigation?.type==='reload'||saved.reloadRequested));
+ let scheduled=false;
+ if(pending){history.scrollRestoration='manual';document.documentElement.style.overflowAnchor='none';}
+ function save(reloadRequested=false){if(pending)return;try{sessionStorage.setItem(key,JSON.stringify({y:window.scrollY,tab:currentTab(),reloadRequested}));}catch(_){} }
+ function finish(){pending=false;scheduled=false;document.documentElement.style.removeProperty('overflow-anchor');save();}
+ function restore(final=false){if(!pending||scheduled)return;const max=Math.max(0,document.documentElement.scrollHeight-window.innerHeight);if(!final&&max<saved.y)return;scheduled=true;requestAnimationFrame(()=>{if(!pending){scheduled=false;return;}window.scrollTo({top:Math.min(saved.y,Math.max(0,document.documentElement.scrollHeight-window.innerHeight)),behavior:'instant'});requestAnimationFrame(finish);});}
+ function cancel(){if(pending)finish();}
+ window.addEventListener('touchstart',cancel,{passive:true});window.addEventListener('wheel',cancel,{passive:true});window.addEventListener('keydown',cancel);
+ window.addEventListener('scroll',()=>save(),{passive:true});window.addEventListener('pagehide',()=>{save();history.scrollRestoration='auto';});
+ window.jiwuCatalogReloadPosition={restore,reload(){save(true);location.reload();}};
+})();
+</script>
 <style>
 :root {
   --tab-color: #dac7b7;
@@ -623,7 +643,7 @@ html,body,button,input,select,textarea,dialog,.card .checkmark{font-family:"JIWU
   <div class="nav-arrow right">❯</div>
 </div>
   
-  <div class="logo-container" role="button" tabindex="0" aria-label="重新整理圖鑑" title="重新整理圖鑑" onclick="location.reload()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();location.reload()}">
+  <div class="logo-container" role="button" tabindex="0" aria-label="重新整理圖鑑" title="重新整理圖鑑" onclick="jiwuCatalogReloadPosition.reload()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();jiwuCatalogReloadPosition.reload()}">
     <img src="https://i.postimg.cc/CLBFxHs3/logo-banner.png" alt="JIWU LOGO" fetchpriority="high" decoding="async" />
   </div>
   
@@ -937,7 +957,7 @@ preloadAllSheets();
 const initialSheet = getInitialSheet();
 tabElements[initialSheet].classList.add("active");
 document.documentElement.style.setProperty('--tab-color', colors[initialSheet] || "#999");
-loadSheetData(initialSheet);
+loadSheetData(initialSheet).finally(()=>window.jiwuCatalogReloadPosition.restore(true));
 
 function createResetTab() {
   const resetTab = document.createElement("div");
@@ -995,4 +1015,5 @@ searchInput.addEventListener('input',e=>{if(!e.isComposing)runCatalogSearch();})
 document.getElementById('wishListButton').innerHTML=heartIcon();document.getElementById('wishListButton').onclick=()=>{finishBoughtWishes();drawWishList();document.getElementById('wishListDialog').showModal();refreshWishPurchaseData(true);};document.getElementById('closeWishList').onclick=()=>document.getElementById('wishListDialog').close();refreshWishPurchaseData();finishBoughtWishes();document.addEventListener('visibilitychange',()=>{if(!document.hidden){finishBoughtWishes();if(document.getElementById('wishListDialog').open)refreshWishPurchaseData();}});window.addEventListener('storage',e=>{if(e.key==='jiwu_catalog_wishes_v1'){finishBoughtWishes();if(!wishPurchaseLoading&&document.getElementById('wishListDialog').open)drawWishList();}});
 </script><script>setInterval(()=>{if(!document.hidden&&document.getElementById('wishListDialog').open)refreshWishPurchaseData();},60000);</script></body>
 </html>
+
 
