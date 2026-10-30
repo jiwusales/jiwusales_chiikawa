@@ -31,22 +31,30 @@
   <meta name="apple-mobile-web-app-capable" content="yes" />
 
 <script>
-// Retain the current catalog position on reload, after product cards exist.
+// Keep reload position stable through native restoration and asynchronous layout.
 (()=>{
  const key='jiwu_catalog_scroll_v1:'+location.pathname;
  const currentTab=()=>new URLSearchParams(location.search).get('tab')||'';
  let saved=null;try{saved=JSON.parse(sessionStorage.getItem(key)||'null');}catch(_){}
  const navigation=performance.getEntriesByType('navigation')[0];
- let pending=!!(saved&&saved.tab===currentTab()&&(navigation?.type==='reload'||saved.reloadRequested));
- let scheduled=false;
- if(pending){history.scrollRestoration='manual';document.documentElement.style.overflowAnchor='none';}
- function save(reloadRequested=false){if(pending)return;try{sessionStorage.setItem(key,JSON.stringify({y:window.scrollY,tab:currentTab(),reloadRequested}));}catch(_){} }
- function finish(){pending=false;scheduled=false;document.documentElement.style.removeProperty('overflow-anchor');save();}
- function restore(final=false){if(!pending||scheduled)return;const max=Math.max(0,document.documentElement.scrollHeight-window.innerHeight);if(!final&&max<saved.y)return;scheduled=true;requestAnimationFrame(()=>{if(!pending){scheduled=false;return;}window.scrollTo({top:Math.min(saved.y,Math.max(0,document.documentElement.scrollHeight-window.innerHeight)),behavior:'instant'});requestAnimationFrame(finish);});}
- function cancel(){if(pending)finish();}
+ let pending=!!(saved&&Number.isFinite(saved.y)&&saved.tab===currentTab()&&(navigation?.type==='reload'||navigation?.type==='back_forward'||saved.reloadRequested));
+ let frame=0,ready=false,dataDone=false,stopTimer=0,hardTimer=0,frozen=false;
+ history.scrollRestoration='manual';
+ function write(reloadRequested=false){try{sessionStorage.setItem(key,JSON.stringify({y:window.scrollY,tab:currentTab(),reloadRequested}));}catch(_){} }
+ function save(){if(!pending&&!frozen)write();}
+ function correct(){frame=0;if(!pending||!ready)return;const height=Math.max(document.documentElement.scrollHeight,document.body?.scrollHeight||0),max=Math.max(0,height-window.innerHeight);if(!dataDone&&max<saved.y)return;const y=Math.min(Math.max(0,saved.y),max);if(Math.abs(window.scrollY-y)>.5)window.scrollTo({top:y,behavior:'instant'});}
+ function schedule(){if(pending&&ready&&!frame)frame=requestAnimationFrame(correct);}
+ function finish(){if(!pending)return;correct();pending=false;cancelAnimationFrame(frame);clearTimeout(stopTimer);clearTimeout(hardTimer);resize?.disconnect();document.documentElement.style.removeProperty('overflow-anchor');document.body?.style.removeProperty('overflow-anchor');save();}
+ function cancel(){if(!pending)return;pending=false;cancelAnimationFrame(frame);clearTimeout(stopTimer);clearTimeout(hardTimer);resize?.disconnect();document.documentElement.style.removeProperty('overflow-anchor');document.body?.style.removeProperty('overflow-anchor');save();}
+ const resize=typeof ResizeObserver==='function'?new ResizeObserver(schedule):null;
+ if(pending){document.documentElement.style.overflowAnchor='none';resize?.observe(document.documentElement);}
+ function restore(final=false){if(!pending)return;ready=true;if(document.body){document.body.style.overflowAnchor='none';resize?.observe(document.body);}schedule();if(final&&!dataDone){dataDone=true;hardTimer=setTimeout(finish,8000);const pageReady=document.readyState==='complete'?Promise.resolve():new Promise(resolve=>window.addEventListener('load',resolve,{once:true}));const fontReady=document.fonts?.ready||Promise.resolve();Promise.allSettled([pageReady,fontReady]).then(()=>{if(pending){schedule();stopTimer=setTimeout(finish,1200);}});}}
  window.addEventListener('touchstart',cancel,{passive:true});window.addEventListener('wheel',cancel,{passive:true});window.addEventListener('keydown',cancel);
- window.addEventListener('scroll',()=>save(),{passive:true});window.addEventListener('pagehide',()=>{save();history.scrollRestoration='auto';});
- window.jiwuCatalogReloadPosition={restore,reload(){save(true);location.reload();}};
+ window.addEventListener('scroll',()=>{if(pending)schedule();else save();},{passive:true});
+ window.addEventListener('beforeunload',()=>{if(!pending&&!frozen){write(true);frozen=true;}});
+ window.addEventListener('pagehide',()=>{if(!frozen)save();});
+ window.addEventListener('pageshow',event=>{frozen=false;if(event.persisted){pending=false;cancelAnimationFrame(frame);clearTimeout(stopTimer);clearTimeout(hardTimer);save();}});
+ window.jiwuCatalogReloadPosition={restore,reload(){if(!pending){write(true);frozen=true;}location.reload();}};
 })();
 </script>
 <style>
@@ -1030,6 +1038,7 @@ searchInput.addEventListener('input',e=>{if(!e.isComposing)runCatalogSearch();})
 document.getElementById('wishListButton').innerHTML=heartIcon();document.getElementById('wishListButton').onclick=()=>{finishBoughtWishes();drawWishList();document.getElementById('wishListDialog').showModal();refreshWishPurchaseData(true);};document.getElementById('closeWishList').onclick=()=>document.getElementById('wishListDialog').close();refreshWishPurchaseData();finishBoughtWishes();document.addEventListener('visibilitychange',()=>{if(!document.hidden){finishBoughtWishes();if(document.getElementById('wishListDialog').open)refreshWishPurchaseData();}});window.addEventListener('storage',e=>{if(e.key==='jiwu_catalog_wishes_v1'){finishBoughtWishes();if(!wishPurchaseLoading&&document.getElementById('wishListDialog').open)drawWishList();}});
 </script><script>setInterval(()=>{if(!document.hidden&&document.getElementById('wishListDialog').open)refreshWishPurchaseData();},60000);</script></body>
 </html>
+
 
 
 
