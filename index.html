@@ -37,9 +37,10 @@
  const currentTab=()=>new URLSearchParams(location.search).get('tab')||'';
  let saved=null;try{saved=JSON.parse(sessionStorage.getItem(key)||'null');}catch(_){}
  const navigation=performance.getEntriesByType('navigation')[0];
- let pending=!!(saved&&Number.isFinite(saved.y)&&saved.tab===currentTab()&&(navigation?.type==='reload'||navigation?.type==='back_forward'||saved.reloadRequested));
+ let pending=!!(saved&&Number.isFinite(saved.y)&&saved.tab===currentTab()&&(navigation?.type==='reload'||navigation?.type==='back_forward'));
  let frame=0,ready=false,dataDone=false,stopTimer=0,hardTimer=0,frozen=false;
  history.scrollRestoration='manual';
+ if(!pending){window.scrollTo({top:0,left:0,behavior:'instant'});window.addEventListener('DOMContentLoaded',()=>window.scrollTo({top:0,left:0,behavior:'instant'}),{once:true});}
  function write(reloadRequested=false){try{sessionStorage.setItem(key,JSON.stringify({y:window.scrollY,tab:currentTab(),reloadRequested}));}catch(_){} }
  function save(){if(!pending&&!frozen)write();}
  function correct(){frame=0;if(!pending||!ready)return;const height=Math.max(document.documentElement.scrollHeight,document.body?.scrollHeight||0),max=Math.max(0,height-window.innerHeight);if(!dataDone&&max<saved.y)return;const y=Math.min(Math.max(0,saved.y),max);if(Math.abs(window.scrollY-y)>.5)window.scrollTo({top:y,behavior:'instant'});}
@@ -51,7 +52,7 @@
  function restore(final=false){if(!pending)return;ready=true;if(document.body){document.body.style.overflowAnchor='none';resize?.observe(document.body);}schedule();if(final&&!dataDone){dataDone=true;hardTimer=setTimeout(finish,8000);const pageReady=document.readyState==='complete'?Promise.resolve():new Promise(resolve=>window.addEventListener('load',resolve,{once:true}));const fontReady=document.fonts?.ready||Promise.resolve();Promise.allSettled([pageReady,fontReady]).then(()=>{if(pending){schedule();stopTimer=setTimeout(finish,1200);}});}}
  window.addEventListener('touchstart',cancel,{passive:true});window.addEventListener('wheel',cancel,{passive:true});window.addEventListener('keydown',cancel);
  window.addEventListener('scroll',()=>{if(pending)schedule();else save();},{passive:true});
- window.addEventListener('beforeunload',()=>{if(!pending&&!frozen){write(true);frozen=true;}});
+ window.addEventListener('beforeunload',()=>{if(!pending&&!frozen){write(false);frozen=true;}});
  window.addEventListener('pagehide',()=>{if(!frozen)save();});
  window.addEventListener('pageshow',event=>{frozen=false;if(event.persisted){pending=false;cancelAnimationFrame(frame);clearTimeout(stopTimer);clearTimeout(hardTimer);save();}});
  window.jiwuCatalogReloadPosition={restore,reload(){if(!pending){write(true);frozen=true;}location.reload();}};
