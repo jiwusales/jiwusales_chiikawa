@@ -673,7 +673,7 @@ html,body,button,input,select,textarea,dialog,.card .checkmark{font-family:"JIWU
 
   <div class="bottom-bar">
   <a href="https://jiwusales.github.io/jiwusales_nagano/" target="_blank">自嘲熊圖鑑點這邊 d(`･∀･)b</a>
-  <div id="lastUpdated" style="margin-top:1px;padding-bottom:8px;font-size:14px;font-weight:normal;opacity:.8">最後更新：讀取中...</div>
+  <div id="lastUpdated" style="margin-top:3px;padding-bottom:8px;font-size:14px;font-weight:normal;opacity:.8"><span id="catalogUpdatedDate">最後更新：讀取中...</span><span style="display:inline-block"><span aria-hidden="true" style="display:inline-block;margin:0 4px">｜</span>使用人數：<span id="catalogDeviceCount">讀取中…</span></span></div>
 </div>
 
 
@@ -1013,10 +1013,10 @@ const UPDATE_API='./data/updated.json';
 fetch(UPDATE_API)
   .then(r=>r.json())
   .then(d=>{
-    document.getElementById('lastUpdated').textContent='最後更新：'+d.updated;
+    document.getElementById('catalogUpdatedDate').textContent='最後更新：'+(String(d.updated||'').match(/\d{4}[\/-]\d{1,2}[\/-]\d{1,2}/)?.[0]||'—');
   })
   .catch(()=>{
-    document.getElementById('lastUpdated').textContent='';
+    document.getElementById('catalogUpdatedDate').textContent='最後更新：—';
   });
 </script>
 <script>
@@ -1037,8 +1037,27 @@ searchStatus.textContent=count?'找到 '+count+' 個結果':'找不到相關商�
 searchInput.addEventListener('input',e=>{if(!e.isComposing)runCatalogSearch();});searchInput.addEventListener('compositionend',runCatalogSearch);
 </script><script>
 document.getElementById('wishListButton').innerHTML=heartIcon();document.getElementById('wishListButton').onclick=()=>{finishBoughtWishes();drawWishList();document.getElementById('wishListDialog').showModal();refreshWishPurchaseData(true);};document.getElementById('closeWishList').onclick=()=>document.getElementById('wishListDialog').close();document.getElementById('wishListDialog').addEventListener('close',()=>finishBoughtWishes(Date.now(),true));refreshWishPurchaseData();finishBoughtWishes();document.addEventListener('visibilitychange',()=>{if(!document.hidden){finishBoughtWishes();if(document.getElementById('wishListDialog').open)refreshWishPurchaseData();}});window.addEventListener('storage',e=>{if(e.key==='jiwu_catalog_wishes_v1'){finishBoughtWishes();if(!wishPurchaseLoading&&document.getElementById('wishListDialog').open)drawWishList();}});
-</script><script>setInterval(()=>{if(!document.hidden&&document.getElementById('wishListDialog').open)refreshWishPurchaseData();},60000);</script></body>
+</script><script>setInterval(()=>{if(!document.hidden&&document.getElementById('wishListDialog').open)refreshWishPurchaseData();},60000);</script><script id="catalog-device-counter">
+(async()=>{
+ const output=document.getElementById('catalogDeviceCount'),key='jiwu_catalog_device_v1';
+ let device=null;
+ try{
+  const getDevice=()=>{let id=localStorage.getItem(key);if(!/^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/.test(id||'')){id=crypto.randomUUID();localStorage.setItem(key,id);}return id;};
+  device=navigator.locks?await navigator.locks.request(key,getDevice):getDevice();
+ }catch(_){}
+ for(let attempt=0;attempt<3;attempt++){
+  try{
+   const response=await fetch('https://jiwu-mac-relay.jiwusales.workers.dev/functions/v1/jiwu-public',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'catalogDeviceCount',site:'chiikawa',device}),signal:AbortSignal.timeout(15000)});
+   if(!response.ok)throw Error('counter');
+   const data=await response.json();if(!data.ok||!Number.isSafeInteger(data.count)||data.count<0)throw Error('counter');
+   output.textContent=data.count.toLocaleString('zh-TW')+' 人';return;
+  }catch(_){if(attempt<2)await new Promise(resolve=>setTimeout(resolve,1500*(attempt+1)));}
+ }
+ output.textContent='暫無法取得';
+})();
+</script></body>
 </html>
+
 
 
 
