@@ -31,13 +31,14 @@
   <meta name="apple-mobile-web-app-capable" content="yes" />
 
 <script>
-// Keep reload position stable through native restoration and asynchronous layout.
+// Start opened catalogs at the top; preserve position only for explicit reloads.
 (()=>{
  const key='jiwu_catalog_scroll_v1:'+location.pathname;
  const currentTab=()=>new URLSearchParams(location.search).get('tab')||'';
  let saved=null;try{saved=JSON.parse(sessionStorage.getItem(key)||'null');}catch(_){}
  const navigation=performance.getEntriesByType('navigation')[0];
  let pending=!!(saved&&Number.isFinite(saved.y)&&saved.tab===currentTab()&&(navigation?.type==='reload'||navigation?.type==='back_forward'));
+ if(!pending||navigation?.type==='back_forward'){saved={y:0,tab:currentTab()};pending=true;}
  let frame=0,ready=false,dataDone=false,stopTimer=0,hardTimer=0,frozen=false;
  history.scrollRestoration='manual';
  if(!pending){window.scrollTo({top:0,left:0,behavior:'instant'});window.addEventListener('DOMContentLoaded',()=>window.scrollTo({top:0,left:0,behavior:'instant'}),{once:true});}
@@ -54,7 +55,7 @@
  window.addEventListener('scroll',()=>{if(pending)schedule();else save();},{passive:true});
  window.addEventListener('beforeunload',()=>{if(!pending&&!frozen){write(false);frozen=true;}});
  window.addEventListener('pagehide',()=>{if(!frozen)save();});
- window.addEventListener('pageshow',event=>{frozen=false;if(event.persisted){pending=false;cancelAnimationFrame(frame);clearTimeout(stopTimer);clearTimeout(hardTimer);save();}});
+ window.addEventListener('pageshow',event=>{frozen=false;if(event.persisted){pending=false;cancelAnimationFrame(frame);clearTimeout(stopTimer);clearTimeout(hardTimer);resize?.disconnect();document.documentElement.style.removeProperty('overflow-anchor');document.body?.style.removeProperty('overflow-anchor');window.scrollTo({top:0,left:0,behavior:'instant'});save();}});
  window.jiwuCatalogReloadPosition={restore,reload(){if(!pending){write(true);frozen=true;}location.reload();}};
 })();
 </script>
