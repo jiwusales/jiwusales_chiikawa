@@ -751,10 +751,46 @@ function getCollectedKey(sheetName) {
 const tabElements = {};
 let currentData = {};
 
+const LEGACY_SHARED_ITEMS=[{"id":"jiwu-legacy-shared:08aa9b816cd52ecf842ba54e","roles":["吉伊","小八","兔兔"],"matches":[["小八","吊娃","注連繩三小隻","4571609383475","https://jiwusales.github.io/imgh/images_1350/al00332_58eb02dc.png"],["兔兔","吊娃","注連繩三小隻","4571609383475","https://jiwusales.github.io/imgh/images_1350/al00332_58eb02dc.png"],["吉伊","吊娃","注連繩三小隻","4571609383475","https://jiwusales.github.io/imgh/images_1350/al00332_58eb02dc.png"]]},{"id":"jiwu-legacy-shared:60b88221bd14d6fa726a9d8a","roles":["吉伊","小八","兔兔"],"matches":[["小八","娃","鏡餅三小隻","4571609380511","https://jiwusales.github.io/imgh/images_1350/al00331_2a91919a.png"],["兔兔","娃","鏡餅三小隻","4571609380511","https://jiwusales.github.io/imgh/images_1350/al00331_2a91919a.png"],["吉伊","娃","鏡餅三小隻","4571609380511","https://jiwusales.github.io/imgh/images_1350/al00331_2a91919a.png"]]},{"id":"jiwu-legacy-shared:93d0558b1d269dd7eff841cb","roles":["吉伊","小八"],"matches":[["小八","娃","抱抱吉伊小八","4589468450078","https://chiikawamarket.jp/cdn/shop/products/4589468450078_1.jpg?v=1663058946"],["吉伊","娃","抱抱吉伊小八","4589468450078","https://chiikawamarket.jp/cdn/shop/products/4589468450078_1.jpg?v=1663058946"]]},{"id":"jiwu-legacy-shared:7a712167b14cf92ec00a5ad0","roles":["吉伊","小八","兔兔"],"matches":[["小八","娃","甜夢床組","4582662913646","https://chiikawamarket.jp/cdn/shop/products/4582662913646_1.jpg?v=1663058866"],["兔兔","娃","甜夢床組","4582662913646","https://chiikawamarket.jp/cdn/shop/products/4582662913646_1.jpg?v=1663058866"],["吉伊","娃","甜夢床組","4582662913646","https://chiikawamarket.jp/cdn/shop/products/4582662913646_1.jpg?v=1663058866"]]},{"id":"jiwu-legacy-shared:bd5d4944b9ab1db34eb3f163","roles":["吉伊","小八","兔兔"],"matches":[["小八","娃","聖誕床組","4582662905658","https://chiikawamarket.jp/cdn/shop/files/4582662905658_1.jpg?v=1701074226&width=1100"],["兔兔","娃","聖誕床組","4582662905658","https://chiikawamarket.jp/cdn/shop/files/4582662905658_1.jpg?v=1701074226&width=1100"],["吉伊","娃","聖誕床組","4582662905658","https://chiikawamarket.jp/cdn/shop/files/4582662905658_1.jpg?v=1701074226&width=1100"]]},{"id":"jiwu-legacy-shared:f9fe525cb6c83474b8cc342c","roles":["吉伊","小八","兔兔"],"matches":[["小八","娃","翻車魚公車","4589468440758","https://chiikawamarket.jp/cdn/shop/products/000000000461_1.jpg?v=1655033223"],["兔兔","娃","翻車魚公車","4589468440758","https://chiikawamarket.jp/cdn/shop/products/000000000461_1.jpg?v=1655033223"],["吉伊","娃","翻車魚公車","4589468440758","https://chiikawamarket.jp/cdn/shop/products/000000000461_1.jpg?v=1655033223"]]},{"id":"jiwu-legacy-shared:cb0f42ad9e1c6d3dc9a60cc2","roles":["吉伊","小八","兔兔"],"matches":[["小八","其他","樂園三小隻髮箍","4571609362395","https://jiwusales.github.io/imgh/images_1350/al00327_d80352cf.png"],["兔兔","其他","樂園三小隻髮箍","4571609362395","https://jiwusales.github.io/imgh/images_1350/al00327_d80352cf.png"],["吉伊","其他","樂園三小隻髮箍","4571609362395","https://jiwusales.github.io/imgh/images_1350/al00327_d80352cf.png"]]},{"id":"jiwu-legacy-shared:de7df4b440e4b7cd842e4abd","roles":["吉伊","小八"],"matches":[["小八","其他","2023一番賞C賞 雙面抱枕","","https://www.chiikawatribe.com/wp-content/uploads/2025/07/mochifuwa_C.webp"],["吉伊","其他","2023一番賞C賞 雙面抱枕","","https://www.chiikawatribe.com/wp-content/uploads/2025/07/mochifuwa_C.webp"]]},{"id":"jiwu-legacy-shared:2ca2d7e6b7a2a12e23601852","roles":["吉伊","小八"],"matches":[["小八","扭蛋","水族館公仔吊飾CH","","https://jiwusales.github.io/imgh/images_1350/ba00640_8aa9a111.png"],["吉伊","扭蛋","水族館公仔吊飾CH","","https://jiwusales.github.io/imgh/images_1350/ba00640_8aa9a111.png"]]},{"id":"jiwu-legacy-shared:53d135d9d0bddfd1410c2ae6","roles":["吉伊","小八"],"matches":[["小八","扭蛋","食物公仔吊飾① 蛋包飯","","https://kitan.jp/wp-content/uploads/2021/12/05omurise-1200x1200.jpg"],["吉伊","扭蛋","食物公仔吊飾① 蛋包飯","","https://kitan.jp/wp-content/uploads/2021/12/05omurise-1200x1200.jpg"]]},{"id":"jiwu-legacy-shared:d74519f08a96074590232e20","roles":["吉伊","小八"],"matches":[["小八","扭蛋","食物公仔吊飾③鯛魚燒","","https://jiwusales.github.io/imgh/images_1350/tu-ceng-7_614d23c2.png"],["吉伊","扭蛋","食物公仔吊飾③鯛魚燒","","https://jiwusales.github.io/imgh/images_1350/tu-ceng-7_614d23c2.png"]]},{"id":"jiwu-legacy-shared:aebb3f5036b9c48d9a5b9b31","roles":["吉伊","小八"],"matches":[["小八","扭蛋","抱線公仔①貼貼","","https://kitan.jp/wp-content/uploads/2021/07/chiikawacable_fix6-1-e1632385150551.png"],["吉伊","扭蛋","抱線公仔①貼貼","","https://kitan.jp/wp-content/uploads/2021/07/chiikawacable_fix6-1-e1632385150551.png"]]},{"id":"jiwu-legacy-shared:d171b9bac5f40f16c3636eb9","roles":["吉伊","小八"],"matches":[["小八","扭蛋","水族館立牌CH","","https://kitan.jp/wp-content/uploads/2023/04/004.jpg"],["吉伊","扭蛋","水族館立牌CH","","https://kitan.jp/wp-content/uploads/2023/04/004.jpg"]]},{"id":"jiwu-legacy-shared:a050878ef04eeff86a1248a8","roles":["吉伊","小八"],"matches":[["小八","扭蛋","半立體磁鐵公仔CH","","https://jiwusales.github.io/imgh/images_1350/ba00644_a731f2d2.png"],["吉伊","扭蛋","半立體磁鐵公仔CH","","https://jiwusales.github.io/imgh/images_1350/ba00644_a731f2d2.png"]]},{"id":"jiwu-legacy-shared:6616571611f8b0dc40edaf80","roles":["吉伊","小八","兔兔"],"matches":[["小八","中","夏日三小隻","","https://jiwusales.github.io/imgh/images_1350/al00325_aa7180e6.png"],["兔兔","中","夏日三小隻","","https://jiwusales.github.io/imgh/images_1350/al00325_aa7180e6.png"],["吉伊","中","夏日三小隻","","https://jiwusales.github.io/imgh/images_1350/al00325_aa7180e6.png"]]},{"id":"jiwu-legacy-shared:51d931c7508010e9c3dac2e4","roles":["吉伊","兔兔"],"matches":[["兔兔","台","12吋翻車魚","","https://jiwusales.github.io/imgh/images_1350/al00328_8546c652.png"],["吉伊","台","12吋翻車魚","","https://jiwusales.github.io/imgh/images_1350/al00328_8546c652.png"]]},{"id":"jiwu-legacy-shared:893c889a926fe4d700a3727c","roles":["吉伊","兔兔"],"matches":[["兔兔","台","16吋翻車魚","","https://jiwusales.github.io/imgh/images_1350/al00328_8546c652.png"],["吉伊","台","16吋翻車魚","","https://jiwusales.github.io/imgh/images_1350/al00328_8546c652.png"]]}];
+const legacySharedLookup=new Map(LEGACY_SHARED_ITEMS.flatMap(item=>item.matches.map(match=>[JSON.stringify(match),item])));
+function legacySharedInfo(row,role){return legacySharedLookup.get(JSON.stringify([role,...[0,1,2,3].map(index=>row.c[index]?.v||'')]));}
+const SHARED_QUANTITY_KEY='jiwu_catalog_shared_quantities_v2';
+const sharedItemKeys=new Map(),sharedItemGroups=new Map();
+function readSharedStorage(key){try{const value=JSON.parse(localStorage.getItem(key)||'{}');return value&&typeof value==='object'&&!Array.isArray(value)?value:{};}catch(_){return {};}}
+function sharedItemKey(role,item){return `${role}|${item.type||'無類型'}|${item.name}`;}
+function registerSharedItem(item,role){
+ if(!item.sharedId||!Array.isArray(item.sharedRoles)||item.sharedRoles.length<2)return item;
+ let group=sharedItemGroups.get(item.sharedId);if(!group){group={id:item.sharedId,items:new Map(),roles:new Set()};sharedItemGroups.set(item.sharedId,group);}
+ for(const target of item.sharedRoles){group.roles.add(target);if(!group.items.has(target))group.items.set(target,{...item});sharedItemKeys.set(sharedItemKey(target,group.items.get(target)),group);}
+ group.items.set(role,item);sharedItemKeys.set(sharedItemKey(role,item),group);return item;
+}
+function sharedQuantity(group){
+ const saved=readSharedStorage(SHARED_QUANTITY_KEY);
+ if(Object.prototype.hasOwnProperty.call(saved,group.id))return Math.max(0,Math.min(9999,Math.floor(Number(saved[group.id])||0)));
+ const prior=readSharedStorage('jiwu_catalog_shared_collected_v1');
+ if(prior[group.id]===false)return 0;
+ let quantity=prior[group.id]===true?1:0;
+ for(const [role,item]of group.items)quantity=Math.max(quantity,legacyCollectionQuantity(role,sharedItemKey(role,item)));
+ return quantity;
+}
+function collectionQuantity(role,key){const group=sharedItemKeys.get(key);return group?sharedQuantity(group):legacyCollectionQuantity(role,key);}
+function storeQuantity(role,key,value){
+ const group=sharedItemKeys.get(key);if(!group)return legacyStoreQuantity(role,key,value);
+ const quantity=Math.max(0,Math.min(9999,Math.floor(Number(value)||0))),saved=readSharedStorage(SHARED_QUANTITY_KEY);saved[group.id]=quantity;localStorage.setItem(SHARED_QUANTITY_KEY,JSON.stringify(saved));
+ for(const [target,item]of group.items)legacyStoreQuantity(target,sharedItemKey(target,item),quantity);
+ collected=JSON.parse(localStorage.getItem(getCollectedKey(role)))||[];
+ for(const target of group.roles)updateTabCount(target);
+}
+function catalogCountSummary(data,role){
+ const seen=new Set();let owned=0,total=0,count=0;
+ for(const item of data){const key=sharedItemKey(role,item),id=item.sharedId?'shared:'+item.sharedId:key;if(seen.has(id))continue;seen.add(id);count++;const qty=collectionQuantity(role,key);if(qty>0){owned++;total+=qty;}}
+ return {owned,total,count};
+}
+
 function readQuantities(role){try{return JSON.parse(localStorage.getItem('jiwu_catalog_quantities_'+role))||{};}catch(_){return {};}}
-function collectionQuantity(role,key){const owned=JSON.parse(localStorage.getItem(getCollectedKey(role)))||[];return owned.includes(key)?Math.max(1,Number(readQuantities(role)[key])||1):0;}
-function storeQuantity(role,key,value){const quantities=readQuantities(role);let owned=JSON.parse(localStorage.getItem(getCollectedKey(role)))||[];owned=owned.filter(k=>k!==key);if(value>0){owned.push(key);quantities[key]=value;}else delete quantities[key];localStorage.setItem('jiwu_catalog_quantities_'+role,JSON.stringify(quantities));localStorage.setItem(getCollectedKey(role),JSON.stringify(owned));collected=owned;}
-function typeCollectionLabel(type,role,data){let owned=0,total=0;for(const item of data){const qty=collectionQuantity(role,`${role}|${item.type||'無類型'}|${item.name}`);if(qty>0){owned++;total+=qty;}}return `${type} （${owned}/${data.length}款 ． 總數${total}）`;}
+function legacyCollectionQuantity(role,key){const owned=JSON.parse(localStorage.getItem(getCollectedKey(role)))||[];return owned.includes(key)?Math.max(1,Number(readQuantities(role)[key])||1):0;}
+function legacyStoreQuantity(role,key,value){const quantities=readQuantities(role);let owned=JSON.parse(localStorage.getItem(getCollectedKey(role)))||[];owned=owned.filter(k=>k!==key);if(value>0){owned.push(key);quantities[key]=value;}else delete quantities[key];localStorage.setItem('jiwu_catalog_quantities_'+role,JSON.stringify(quantities));localStorage.setItem(getCollectedKey(role),JSON.stringify(owned));collected=owned;}
+function typeCollectionLabel(type,role,data){const counts=catalogCountSummary(data,role);return `${type} （${counts.owned}/${counts.count}款 ． 總數${counts.total}）`;}
 function renderTypeTitle(target,type,role,data){target.replaceChildren();const name=document.createElement('span');name.className='type-title-name';name.textContent=type;const counts=document.createElement('span');counts.className='type-title-counts';counts.textContent=typeCollectionLabel(type,role,data).slice(type.length).trim();target.append(name,counts);}
 var collectionReturnTimer;
 function showCollectionReturn(role,key,previousQuantity){const notice=document.getElementById('collectionReturnNotice'),button=document.getElementById('collectionReturnButton');clearTimeout(collectionReturnTimer);notice.hidden=false;button.onclick=()=>{clearTimeout(collectionReturnTimer);notice.hidden=true;if(collectionQuantity(role,key)!==0)return;storeQuantity(role,key,previousQuantity);const activeRole=document.querySelector('.tab.active .tab-name')?.textContent||getInitialSheet();collected=JSON.parse(localStorage.getItem(getCollectedKey(activeRole)))||[];updateTabCount(role);if(activeRole===role&&currentData[role])renderCards(currentData[role],role);};collectionReturnTimer=setTimeout(()=>{notice.hidden=true;button.onclick=null;},5000);}
@@ -810,10 +846,8 @@ function createTab(sheetName) {
 function updateTabCount(sheetName) {
   if (sheetName === "重置圖鑑") return;
   const data = currentData[sheetName] || [];
-  const storedCollected = JSON.parse(localStorage.getItem(getCollectedKey(sheetName))) || [];
-  const ownedCount = data.filter(item => storedCollected.includes(`${sheetName}|${item.type}|${item.name}`)).length;
-  const totalCount = data.length;
-  const totalQuantity = data.reduce((sum,item)=>sum+collectionQuantity(sheetName,`${sheetName}|${item.type}|${item.name}`),0);
+  const summary=catalogCountSummary(data,sheetName);
+  const ownedCount=summary.owned,totalCount=summary.count,totalQuantity=summary.total;
   const percent = totalCount ? ownedCount / totalCount : 0;
   const radius = 28;
   const strokeWidth = 4;
@@ -943,16 +977,16 @@ function fetchSheetRows(sheetName){
  const url=`./data/${encodeURIComponent(sheetName)}.json`;
  const request=fetch(url).then(res=>{if(!res.ok)throw new Error('資料讀取失敗');return res.text();}).then(text=>{
  const data=JSON.parse(text.match(/\{.*\}/s)[0]);const rows=(data.table.rows||[]).slice(1);
- const parsed=rows.map(row=>({type:row.c[0]?.v||'無類型',name:row.c[1]?.v||'',sn:String(row.c[2]?.v||''),url:String(row.c[4]?.v||''),imgUrl:fastImg(row.c[3]?.v||''),size:row.c[5]?.v||''}));
+ const parsed=rows.map(row=>{const legacy=legacySharedInfo(row,sheetName);return registerSharedItem({sharedId:row.catalogSharedId||legacy?.id||'',sharedRoles:row.catalogSharedRoles||legacy?.roles||[],type:row.c[0]?.v||'無類型',name:row.c[1]?.v||'',sn:String(row.c[2]?.v||''),url:String(row.c[4]?.v||''),imgUrl:fastImg(row.c[3]?.v||''),size:row.c[5]?.v||''},sheetName);});
  currentData[sheetName]=parsed;try{localStorage.setItem('jiwu_catalog_'+SHEET_ID+'_'+sheetName,JSON.stringify(parsed));}catch(_){}
- updateTabCount(sheetName);if(!wishPurchaseLoading&&document.getElementById('wishListDialog').open)drawWishList();return parsed;
+ sheetNames.forEach(updateTabCount);if(!wishPurchaseLoading&&document.getElementById('wishListDialog').open)drawWishList();return parsed;
  }).finally(()=>sheetRequests.delete(sheetName));sheetRequests.set(sheetName,request);return request;
 }
 async function loadSheetData(sheetName){
  const ticket=++activeSheetRequest;
  collected = JSON.parse(localStorage.getItem(getCollectedKey(sheetName))) || [];
  const cached=currentData[sheetName]||cachedSheetRows(sheetName);
- if(Array.isArray(cached)){currentData[sheetName]=cached;renderCards(cached,sheetName);updateNavBarForSheet(sheetName);}
+ if(Array.isArray(cached)){cached.forEach(item=>registerSharedItem(item,sheetName));currentData[sheetName]=cached;renderCards(cached,sheetName);updateNavBarForSheet(sheetName);}
  else cardContainer.textContent='載入中...';
  try{const parsed=await fetchSheetRows(sheetName);if(ticket!==activeSheetRequest)return;if(cached&&JSON.stringify(cached)===JSON.stringify(parsed))return;renderCards(parsed,sheetName);updateNavBarForSheet(sheetName);
  cardContainer.querySelectorAll('img').forEach((img,index)=>{if(index<12){img.loading='eager';img.fetchPriority='high';}});
@@ -961,7 +995,7 @@ async function loadSheetData(sheetName){
 function preloadAllSheets(){
  sheetNames.forEach(name=>{
   const cached=cachedSheetRows(name);
-  if(Array.isArray(cached)){currentData[name]=cached;updateTabCount(name);}
+  if(Array.isArray(cached)){cached.forEach(item=>registerSharedItem(item,name));currentData[name]=cached;updateTabCount(name);}
   fetchSheetRows(name).catch(error=>console.error(error));
  });
 }
@@ -994,6 +1028,7 @@ function createResetTab() {
     if (confirm("❗️確定要重置寶寶們嗎 ㅇㅅㅇ ！")) {
       collected = [];
       localStorage.removeItem('jiwu_catalog_wishes_v1');
+      localStorage.removeItem(SHARED_QUANTITY_KEY);localStorage.removeItem('jiwu_catalog_shared_collected_v1');
       clearTimeout(wishExpiryTimer);
       clearTimeout(collectionReturnTimer);
       document.getElementById('collectionReturnNotice').hidden=true;
@@ -1058,6 +1093,7 @@ document.getElementById('wishListButton').innerHTML=heartIcon();document.getElem
 })();
 </script></body>
 </html>
+
 
 
 
